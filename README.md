@@ -1,1 +1,3 @@
-# 527-web-app
+# COMPX527 Group Project
+
+## Movie Rater

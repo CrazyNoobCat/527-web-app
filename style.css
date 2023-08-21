@@ -1,0 +1,80 @@
+html {
+    height: 100%;
+}
+
+body {
+    background-color: #121212;
+}
+
+h1 {
+    font-family: monospace;
+    color: white;
+    text-align: center;
+    padding-bottom: 10%;
+}
+
+h2 {
+    color: white;
+    font-family: monospace;
+    text-align: center;
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+button {
+    background-color: #b092d1;
+    font-family: monospace;
+    height: 150%;
+    border: #b092d1;
+}
+
+button:hover {
+    background-color: #9266C2;
+    border: #9266C2;
+}
+
+input {
+    font-family: monospace;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.shadowbox {
+    background-color: #b092d1;
+    height: 380px;
+    width: 400px;
+    box-shadow: #9266C2;
+    z-index: 1;
+}
+.shadowbox-lg {
+    background-color: #b092d1;
+    height: 420px;
+    width: 400px;
+    box-shadow: #9266C2;
+    z-index: 1;
+}
+
+.centered {
+    align-content: center;
+}
+
+.submitting {
+    background-color: #9266C2;
+    border: #9266C2;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+.submitting:hover {
+    background: #8056b1;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
