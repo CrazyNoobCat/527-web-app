@@ -1,0 +1,15 @@
+section.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+li > a {
+  text-decoration: none;
+  color: black;
+}
+
+li > a > span {
+  font-style: italic;
+  text-decoration: underline;
+}
