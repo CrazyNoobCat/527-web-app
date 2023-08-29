@@ -1,0 +1,183 @@
+{
+	"info": {
+		"_postman_id": "714644f2-f2c3-4e8a-b7f1-2378d60d7b95",
+		"name": "Movie Information",
+		"description": "Below are all API calls which can be made to the backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "29195322-714644f2-f2c3-4e8a-b7f1-2378d60d7b95"
+	},
+	"item": [
+		{
+			"name": "Get/search for movie(s)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fab361da-629a-4e5f-a9a7-87b5dfcaecce",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "9101b385-8fc3-49a4-bfac-5de598b2e578",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/movie?id&name&category=\"Horror\"&limit=50&page=0",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"movie"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": null,
+							"description": "optional - string"
+						},
+						{
+							"key": "name",
+							"value": null,
+							"description": "optional - string"
+						},
+						{
+							"key": "category",
+							"value": "\"Horror\"",
+							"description": "optional - array[string]"
+						},
+						{
+							"key": "limit",
+							"value": "50",
+							"description": "optional - integer - how many items to return"
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"description": "optional - integer - which \"page\" of results"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new movie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8c12dc6f-1c6f-4b5a-8da3-c09d7aa63219",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "4b90f16b-e414-4443-b289-2bd3ac9acde7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Golden Eye\",\n    \"description\": \"James Bond hunts down the bad guys\",\n    \"categories\": [\n        \"Horror\",\n        \"Comedy\"\n    ],\n    \"releaseDate\": \"2016-08-29\",\n    \"director\": {\n        \"name\": \"Best Director\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/movie",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"movie"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "jwt",
+		"jwt": [
+			{
+				"key": "algorithm",
+				"value": "HS256",
+				"type": "string"
+			},
+			{
+				"key": "isSecretBase64Encoded",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "payload",
+				"value": "{}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "headerPrefix",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "queryParamKey",
+				"value": "token",
+				"type": "string"
+			},
+			{
+				"key": "header",
+				"value": "{}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ca968f6b-f43f-49af-86d7-52c8016f6ca8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ae5b1024-6abc-493f-ae49-c2b23108af52",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
