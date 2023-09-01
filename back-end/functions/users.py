@@ -2,7 +2,7 @@
 
 from utils.util import create_response, get_body, has_required_fields
 from utils.dbHelper import find_user, create_user
-from utils.auth import generate_auth_header
+from utils.auth import generate_auth_token
 
 
 def login(event, context):
@@ -19,12 +19,12 @@ def login(event, context):
         return create_response(401, "Invalid username or password")
 
     # Generate auth token
-    header = generate_auth_header(user.username)
+    authToken = generate_auth_token(user.username)
 
-    if header is None:
+    if authToken is None:
         return create_response(500, "Error generating auth token")
 
-    return create_response(200, "Login successful", header)
+    return create_response(200, "Login successful", body=authToken)
 
 
 def register(event, context):

@@ -13,10 +13,12 @@ def get_secret():
     client = boto3.client("secretsmanager")
     response = client.get_secret_value(SecretId="JWT_SECRET_KEY")
 
-    return response["SecretString"]
+    secrets = json.loads(response["SecretString"])
+
+    return secrets["JWT_SECRET_KEY"]
 
 
-def generate_auth_header(username: str):
+def generate_auth_token(username: str):
     """Generates the Auth Token and returns it as a header dictionary with an Authorization token"""
     try:
         payload = {
@@ -25,9 +27,9 @@ def generate_auth_header(username: str):
             + datetime.timedelta(hours=TOKEN_EXPIRATION_TIME),
         }
 
-        header = {"Authorization": f"Bearer {jwt.encode(payload, get_secret())}"}
+        token = {"authToken": jwt.encode(payload, get_secret(), algorithms=["HS256"])}
 
-        return header
+        return token
     except Exception as e:
         # TODO: log error
         return None
@@ -39,7 +41,7 @@ def decode_auth_token(auth_token: str):
         # TODO: log token use
 
         auth_token = auth_token.replace("Bearer ", "")
-        payload = jwt.decode(auth_token.encode(), get_secret())
+        payload = jwt.decode(auth_token, get_secret(), algorithms=["HS256"])
 
         # Check expiration
         if datetime.datetime.utcnow() > datetime.datetime.fromtimestamp(payload["exp"]):

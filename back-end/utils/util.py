@@ -20,15 +20,11 @@ def create_response(
 
     body["message"] = message
 
-    response = {
+    return {
         "statusCode": status_code,
         "headers": header,
         "body": json.dumps(body),
     }
-
-    print(response)
-
-    return response
 
 
 def has_required_fields(body: dict, fields: list[str]) -> bool:

@@ -37,7 +37,7 @@ To install dependencies, you need to ensure they will run on lambda, as such mak
 3. Zip the lambda function code
     ```bash
     cd back-end
-    zip -r code_package.zip . -x packages/\* -x \*.zip -x \*.md
+    zip -r code_package.zip . -x python/\* -x \*.zip -x \*.md
     ```
 4. Upload the dependencies zip to the lambda function dependencies layer
 5. Upload the lambda function code zip to the lambda function code layer
@@ -68,7 +68,3 @@ Primary Key: `username`
 
 ### movies
 Primary Key: `movieId`
-
-## Notes:
-
-- **We should consider uploading our deployment zip through s3 as it is larger than 10MB**
