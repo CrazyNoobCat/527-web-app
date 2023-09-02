@@ -7,14 +7,12 @@ from utils.customTypes import Roles, User
 from functions.users import login, register
 from functions.movies import get_movie
 
-API_VERSION = "/v1"
-
 
 def lambda_handler(event, context):
     print(event)
     method = event["httpMethod"]
     # Ensure we only get the path after the API version
-    path = event["path"].split(API_VERSION)[1]
+    path = event["path"]
 
     ### Public routes ###
 
