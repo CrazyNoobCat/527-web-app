@@ -13,6 +13,7 @@ To install dependencies, you need to ensure they will run on lambda, as such mak
 - pyjwt
 - datetime
 - passlib[bcrypt]
+- uuid6
 
 ## Explanation
 
@@ -64,7 +65,7 @@ These are defined in [Postman](https://www.postman.com/dark-resonance-216951/wor
 ## DynamoDB Tables
 
 ### users
-Primary Key: `username`
+Primary Key: `username` (string)
 
 ### movies
-Primary Key: `movieId`
+Primary Key: `uuid` (number)

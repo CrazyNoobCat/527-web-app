@@ -19,25 +19,25 @@ class User:
 
 
 class Movie:
-    movieID: str
+    uuid: str
     title: str
     year: int
     director: str
     genre: List[str]
-    plot: str
+    summary: str
 
     def __init__(
         self,
-        movieID: str,
+        uuid: str,
         title: str,
         year: int,
         director: str,
         genre: List[str],
-        plot: str,
+        summary: str,
     ) -> None:
-        self.movieID = movieID
+        self.uuid = uuid
         self.title = title
         self.year = year
         self.director = director
         self.genre = genre
-        self.plot = plot
+        self.summary = summary
