@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../components/buttons/PrimaryButton";
+import PrimaryButton from "../Components/buttons/PrimaryButton";
 import "../styles/homepage.css";
-import PageLink, { Page } from "../components/PageLink";
+import PageLink, { Page } from "../Components/PageLink";
 
 const pages: Page[] = [
   {

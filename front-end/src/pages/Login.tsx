@@ -1,6 +1,6 @@
 import "../styles/login.css";
 import { FormEventHandler, useState } from "react";
-import SubmitButton from "../components/buttons/SubmitButton";
+import SubmitButton from "../Components/buttons/SubmitButton";
 import { requestLogin } from "../utils/api/login";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "../utils/store/AppState";
