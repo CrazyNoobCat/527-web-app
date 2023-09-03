@@ -2,9 +2,11 @@
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import Login from '../Login/LoginPage.js';
+import RegisterBox from '../RegisterPage.js';
 
 function LandingPage() {
   const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   const landingStyle = {
     display: 'flex',
@@ -26,12 +28,18 @@ function LandingPage() {
       <h1>Movies Rater</h1>
 
       <button style={buttonStyle} onClick={() => setShowLogin(true)}>Login</button>
-      <Link to="/register"><button style={buttonStyle}>Register</button></Link>
+      <button style={buttonStyle} onClick={() => setShowRegister(true)}>Register</button>
+      
 
       {showLogin && (
         <div className="login-popup">
-          <button onClick={() => setShowLogin(false)}>Close</button>
-          <Login />
+          <Login handleClose={() => setShowLogin(false)} />
+        </div>
+      )}
+
+      {showRegister && (
+        <div className="register-popup">
+          <RegisterBox handleClose={() => setShowRegister(false)} />
         </div>
       )}
 
@@ -40,10 +48,9 @@ function LandingPage() {
       </div>
     </div>
   );
-}
+};
 
 export default LandingPage;
-
 
 
 
