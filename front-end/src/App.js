@@ -5,6 +5,7 @@ import SearchAndCategories from './Components/Homepage/Search.js';
 import LandingPage from './Components/LandingPage/Landingpage.js';
 import LoginPage from './Components/Login/LoginPage.js';
 import AppState from "./Components/Login/authentication.js";
+import RegisterBox from './Components/RegisterPage.js';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
     height: '100vh',
   };
   
-function HomePage() {
+function HomePage() { {/* This is just needed because to I created the home page in 3 different sections so this joins them into one on the HomePage  */}
   return (
     <div style={{...appStyle, justifyContent: 'space-between', width: '100%'}}>
       <Menu />
@@ -31,6 +32,7 @@ return (
           <Route exact path="/landing" element={<LandingPage />} />
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/login" element={<LoginPage />} />
+          <Route exact path="/register" element={<RegisterBox />}/>
           {/* Add more Routes as needed */}
         </Routes>
       </div>
