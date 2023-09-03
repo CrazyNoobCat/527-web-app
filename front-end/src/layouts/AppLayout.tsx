@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import PrimaryButton from "../components/buttons/PrimaryButton";
+import PrimaryButton from "../Components/buttons/PrimaryButton";
 
 /**
  * Provides a common layout to any nested routes
