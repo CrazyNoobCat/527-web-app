@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./authentication.js";
-import '/Users/niamhathy/movies-rater-pages/src/App.css';
+import '../../App.css';
 
 const requestLogin = (username, password) => {
   return new Promise((resolve) => {
