@@ -6,6 +6,7 @@ import LandingPage from './Components/LandingPage/Landingpage.js';
 import LoginPage from './Components/Login/LoginPage.js';
 import AppState from "./Components/Login/authentication.js";
 import RegisterBox from './Components/RegisterPage.js';
+import SearchPage from './Components/SearchPage/SearchPage.js';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 function App() {
@@ -33,6 +34,7 @@ return (
           <Route exact path="/" element={<HomePage />} />
           <Route exact path="/login" element={<LoginPage />} />
           <Route exact path="/register" element={<RegisterBox />}/>
+          <Route exact path='/search' element={<SearchPage />}/>
           {/* Add more Routes as needed */}
         </Routes>
       </div>
