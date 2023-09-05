@@ -14,8 +14,8 @@ function SearchAndCategories() {
   };
 
   const categories = [
-    'Action', 'Adventure', 'Crime', 'Comedy', 'Drama',
-    'Family', 'History', 'Horror', 'Romance', 'Thriller'
+    'Action/Adventure', 'Animation', 'Crime', 'Comedy', 'Drama', 'Documentary', 'Family',
+    'Fantasy', 'Historical', 'Horror', 'Romance', 'Science Fiction', 'Thriller'
   ];
 
   const categoryStyle = {
@@ -23,12 +23,13 @@ function SearchAndCategories() {
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     marginBottom: '30px',
     borderRadius: '15px',
-    textAlign: 'center'
+    textAlign: 'center', 
+    overflowY: 'scroll'
   };
   
 
   return (
-    <div style={searchAndCategoriesStyle}>
+    <div className='sideSearch' style={searchAndCategoriesStyle}>
       <input type="text" placeholder="Search" style={searchBarStyle} />
       <h2> Browse by Categories</h2>
       <div>

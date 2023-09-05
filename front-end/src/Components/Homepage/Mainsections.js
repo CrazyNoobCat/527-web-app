@@ -117,10 +117,6 @@ return (
   </div>
 );
 
-
-
-
-
 }
 
 export default MainSection;

@@ -45,6 +45,7 @@ function Menu() {
       <h2>Welcome, username</h2>
       <nav>
         <Link to="/" style={checkActive('/') ? activeLinkStyle : linkStyle}>Home</Link><br/>
+        <Link to="/userprofile" style={checkActive('/userprofile') ? activeLinkStyle : linkStyle}>User Profile</Link><br/>
         <Link to="/future-watchlist" style={checkActive('/future-watchlist') ? activeLinkStyle : linkStyle}>Future Watchlist</Link><br/>
         <Link to="/previously-watched" style={checkActive('/previously-watched') ? activeLinkStyle : linkStyle}>Previously Watched</Link><br/>
         <Link to="/search" style={checkActive('/search') ? activeLinkStyle : linkStyle}>Search</Link>

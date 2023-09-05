@@ -21,7 +21,9 @@ function LandingPage() {
     margin: '10px',
     padding: '10px 20px',
     fontSize: '1em',
+    width: '20%',
   };
+
 
   return (
     <div style={landingStyle}>
