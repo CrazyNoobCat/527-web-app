@@ -1,6 +1,6 @@
 import React from 'react';
 
-function MovieDisplay({movies, hasSearched}){
+function MovieDisplay({ movies, hasSearched, onAddMovieClick }) { 
 
     // CSS // 
     const moviesStyle = {
@@ -35,9 +35,19 @@ function MovieDisplay({movies, hasSearched}){
         return <div style={messageStyle}>Please search for movies...</div>;
     }
 
-    if (movies.length === 0) { //If search yeilds no reults
-        return <div style={messageStyle}>No movies found for your search.</div>;
+    if (movies.length === 0 && hasSearched) {
+        return (
+            <div style={messageStyle}>
+                No movie found! 
+                <span 
+                    style={{ color: 'white', textDecoration: 'underline', cursor: 'pointer' }}
+                    onClick={onAddMovieClick}>
+                    Add movie
+                </span>
+            </div>
+        );
     }
+
       return (
         <div style={moviesStyle}>
             {movies.map((movie, index) => (
