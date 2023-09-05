@@ -2,14 +2,19 @@ import React, {useState} from 'react';
 import SearchBar from './SearchBar';
 import MovieDisplay from './MovieDisplay';
 import Menu from '../../Common/Menu';
+import AddMoviePopup from '../AddMovie/AddMoviePopup';
 
 function SearchPage() {
   const [movies, setMovies] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isAddMoviePopupVisible, setAddMoviePopupVisible] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
-  const handleSearch = (searchedMovies) => {
+
+  const handleSearch = (searchedMovies, error = null) => {
     setMovies(searchedMovies);
-    setHasSearched(true);  // set hasSearched to true when a search happens
+    setHasSearched(true); // set hasSearched to true when a search happens
+    setApiError(error);   // store any error that occurs
   }
 
     const appStyle = {
@@ -44,7 +49,8 @@ function SearchPage() {
                   <SearchBar onSearch={handleSearch} />
               </div>
               <div style={moviesContainerStyle}>
-                  <MovieDisplay movies={movies} hasSearched={hasSearched} />
+                 <MovieDisplay movies={movies} hasSearched={hasSearched} onAddMovieClick={() => setAddMoviePopupVisible(true)} />
+                  {isAddMoviePopupVisible && <AddMoviePopup onClose={() => setAddMoviePopupVisible(false)} />}
               </div>
           </div>
       </div>
