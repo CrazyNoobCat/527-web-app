@@ -31,9 +31,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/v1/movie?id&name&category=\"Horror\"&limit=50&page=0",
+					"raw": "api.cinemate.link/v1/movie?id&title&release_date&genre=\"Horror\"&limit=50&page=0",
 					"host": [
-						"{{base_url}}"
+						"api",
+						"cinemate",
+						"link"
 					],
 					"path": [
 						"v1",
@@ -46,12 +48,17 @@
 							"description": "optional - string"
 						},
 						{
-							"key": "name",
+							"key": "title",
 							"value": null,
 							"description": "optional - string"
 						},
 						{
-							"key": "category",
+							"key": "release_date",
+							"value": null,
+							"description": "optional - Date"
+						},
+						{
+							"key": "genre",
 							"value": "\"Horror\"",
 							"description": "optional - array[string]"
 						},
@@ -68,7 +75,78 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"id": "fd928705-da3e-4d14-a5cd-0484b8c7f9ac",
+					"name": "Get/search for movie(s)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "api.cinemate.link/v1/movie?id=615656",
+							"host": [
+								"api",
+								"cinemate",
+								"link"
+							],
+							"path": [
+								"v1",
+								"movie"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "615656"
+								},
+								{
+									"key": "title",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "release_date",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "genre",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "last_evaluated_key",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"name": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n\"genre_names\": \"Action,Science Fiction,Horror\",\n\"id\":\"615656\",\n\"original_language\":\"English\",\n\"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\n\"release_date\":\"2/08/2023\",\n\"title\":\"Meg 2: The Trench\",\n\"budget\":\"129000000\",\n\"revenue\":\"352056482\",\n\"runtime\":\"116\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Add new movie",
@@ -96,7 +174,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Golden Eye\",\n    \"description\": \"James Bond hunts down the bad guys\",\n    \"categories\": [\n        \"Horror\",\n        \"Comedy\"\n    ],\n    \"releaseDate\": \"2016-08-29\",\n    \"director\": {\n        \"name\": \"Best Director\"\n    }\n}",
+					"raw": "{\n    \"title\":\"Meg 2: The Trench\",\n    \"genre_names\": \"Horror,Comedy\",    \n    \"original_language\":\"English\",\n    \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\n    \"release_date\":\"2/08/2023\",\n    \"budget\":\"129000000\",\n    \"revenue\":\"352056482\",\n    \"runtime\":\"116\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -104,9 +182,11 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/v1/movie",
+					"raw": "api.cinemate.link/v1/movie",
 					"host": [
-						"{{base_url}}"
+						"api",
+						"cinemate",
+						"link"
 					],
 					"path": [
 						"v1",
