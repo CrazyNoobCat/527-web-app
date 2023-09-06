@@ -46,6 +46,9 @@ def lambda_handler(event, context):
 
     # Movie Routes
 
+    if method == "GET" and path == "/movies":
+        return get_movie(event, context)
+
     # TODO: add movie routes
 
     return create_response(404, "Route not found")

@@ -122,7 +122,7 @@ def search_movies(
     title: str = "",
     genre_names: list[str] = [],
     year: str = "",
-    batch_size: int = 50,
+    limit: int = 50,
     page_index: int = 0,
 ) -> list[Movie]:
     """Search for movies based on title, genre_names, director, and genre"""
@@ -154,7 +154,7 @@ def search_movies(
         while current_page < page_index:
             _, last_evaluated_key = filter_scan_movies(
                 filter_expression,
-                max_results=batch_size,
+                max_results=limit,
                 last_evaluated_key=last_evaluated_key,
             )
 
@@ -169,7 +169,7 @@ def search_movies(
 
         rawMovies, last_evaluated_key = filter_scan_movies(
             filter_expression,
-            max_results=batch_size,
+            max_results=limit,
             last_evaluated_key=last_evaluated_key,
         )
 
