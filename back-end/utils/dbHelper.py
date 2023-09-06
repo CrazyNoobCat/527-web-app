@@ -65,8 +65,7 @@ def find_user(username: str, password: str) -> User | None:
         if bcrypt.verify(password, user.get("password")):
             return User(
                 username=user.get("username"),
-                email=user.get("email"),
-                password=user.get("password"),
+                email=user.get("email")
             )
 
         return None
@@ -89,8 +88,7 @@ def get_user_by_username(username) -> User | None:
         if user is not None:
             return User(
                 username=user.get("username"),
-                email=user.get("email"),
-                password=user.get("password"),
+                email=user.get("email")
             )
 
         return None

@@ -1,10 +1,10 @@
 # Import utils
 from utils.util import create_response
-from utils.auth import decode_auth_token, has_role
-from utils.customTypes import Roles, User
+from utils.auth import decode_auth_token
+from utils.customTypes import User
 
 # Import routes
-from functions.users import login, register
+from functions.users import login, register, get_user
 from functions.movies import get_movie
 
 
@@ -39,13 +39,10 @@ def lambda_handler(event, context):
 
     user: User = data
 
-    if has_role(user, Roles.AWAITING_EMAIL_VERIFICATION):
-        # TODO: add email verification
-        return create_response(401, "Email not verified")
-
     # User Routes
 
-    # TODO: add user routes
+    if method == "GET" and path == "/users":
+        return get_user(event, context, user)
 
     # Movie Routes
 

@@ -3,6 +3,7 @@
 from utils.util import create_response, get_body, has_required_fields
 from utils.dbHelper import find_user, create_user
 from utils.auth import generate_auth_token
+from utils.customTypes import User
 
 
 def login(event, context):
@@ -43,8 +44,12 @@ def register(event, context):
     return create_response(201, message)
 
 
-def get_user(event, context):
-    pass
+def get_user(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
+
+    return create_response(200, body={"username": user.username, "email": user.email})
 
 
 def update_user(event, context):
