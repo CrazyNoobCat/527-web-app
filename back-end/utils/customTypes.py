@@ -5,19 +5,21 @@ from typing import List
 class User:
     username: str
     email: str
-    password: str
+    password: str  # hashed passwod
+    reviews: str  # comma seperated list of movie ids
 
-    def __init__(self, username: str, email: str, password: str) -> None:
+    def __init__(self, username: str, email: str, password: str, reviews: str) -> None:
         self.username = username
         self.email = email
         self.password = password
+        self.reviews = reviews
 
 
 class Movie:
     id: str
     title: str
     release_date: int
-    genre: str
+    genre: str  # comma seperated list of genres
     summary: str
     language: str
     budget: int

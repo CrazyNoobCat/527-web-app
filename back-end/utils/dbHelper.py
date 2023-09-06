@@ -28,25 +28,24 @@ def create_user(username: str, email: str, password: str):
         if len(password) < 8:
             return (False, "Password must be at least 8 characters")
 
-        # TODO: add email validation
-
         # Hash password
         hashed_password = bcrypt.hash(password)
 
+        new_user = {
+            "username": username,
+            "email": email,
+            "password": hashed_password,
+            "reviews": "",
+        }
+
         # Create user in DB
-        result = userTable.put_item(
-            Item={
-                "username": username,
-                "email": email,
-                "password": hashed_password,
-            }
-        )
-        # TODO: log creation
+        result = userTable.put_item(Item=new_user)
+
+        print("create_user: new_user: ", new_user)
 
         return (True, "User created successfully")
     except Exception as e:
-        # TODO: log error
-        print("Error creating user:", e)
+        print("create_user: Error:", e)
         return (False, "Error creating user")
 
 
@@ -63,10 +62,7 @@ def find_user(username: str, password: str) -> User | None:
 
         # If username found, check password bcrypt matches
         if bcrypt.verify(password, user.get("password")):
-            return User(
-                username=user.get("username"),
-                email=user.get("email")
-            )
+            return User(username=user.get("username"), email=user.get("email"))
 
         return None
     except Exception as e:
@@ -86,10 +82,7 @@ def get_user_by_username(username) -> User | None:
 
         # If username found, return user object
         if user is not None:
-            return User(
-                username=user.get("username"),
-                email=user.get("email")
-            )
+            return User(username=user.get("username"), email=user.get("email"))
 
         return None
     except Exception as e:
