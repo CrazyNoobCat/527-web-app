@@ -32,10 +32,13 @@ def create_user(username: str, email: str, password: str):
         hashed_password = bcrypt.hash(password)
 
         new_user = {
+            "pt_key": "user",
             "username": username,
             "email": email,
             "password": hashed_password,
             "reviews": "",
+            "watch_list": "",
+            "watch_history": "",
         }
 
         # Create user in DB
@@ -49,7 +52,7 @@ def create_user(username: str, email: str, password: str):
         return (False, "Error creating user")
 
 
-def find_user(username: str, password: str) -> User | None:
+def authenticate_user(username: str, password: str) -> User | None:
     """Find a user in the DB, return User object if found else None"""
     try:
         # Query for username
@@ -66,11 +69,11 @@ def find_user(username: str, password: str) -> User | None:
 
         return None
     except Exception as e:
-        print("find_user: Error:", e)
+        print("authenticate_user: Error:", e)
         return None
 
 
-def get_user_by_username(username) -> User | None:
+def get_user(username) -> User | None:
     """Get a user by username, return User object if found else None"""
     try:
         # Query for username
@@ -82,15 +85,21 @@ def get_user_by_username(username) -> User | None:
 
         # If username found, return user object
         if user is not None:
-            return User(username=user.get("username"), email=user.get("email"))
+            return User(
+                username=user.get("username"),
+                email=user.get("email"),
+                reviews=user.get("reviews"),
+                watch_list=user.get("watch_list"),
+                watch_history=user.get("watch_history"),
+            )
 
         return None
     except Exception as e:
-        print("get_user_by_username: Error: ", e)
+        print("get_user: Error: ", e)
         return None
 
 
-def get_movie_by_id(id: int) -> Movie | None:
+def get_movie(id: int) -> Movie | None:
     """Get a movie by id, return Movie object if found else None"""
     try:
         # Query for id
@@ -114,7 +123,7 @@ def get_movie_by_id(id: int) -> Movie | None:
         return None
 
     except Exception as e:
-        print("get_movie_by_id: Error: ", e)
+        print("get_movie: Error: ", e)
         return None
 
 

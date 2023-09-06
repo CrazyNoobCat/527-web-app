@@ -1,7 +1,7 @@
 # User API functions
 
 from utils.util import create_response, get_body, has_required_fields
-from utils.dbHelper import find_user, create_user
+from utils.dbHelper import authenticate_user, create_user
 from utils.auth import generate_auth_token
 from utils.customTypes import User
 
@@ -14,7 +14,7 @@ def login(event, context):
         return create_response(400, "Missing required fields")
 
     # Find matching user
-    user = find_user(body["username"], body["password"])
+    user = authenticate_user(body["username"], body["password"])
 
     if user is None:
         return create_response(401, "Invalid username or password")
@@ -64,8 +64,12 @@ def remove_watchlist_movie(event, context):
     pass
 
 
-def get_watchlist(event, context):
-    pass
+def get_watchlist(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
+
+    return create_response(200, body={"watch_list": user.watch_list})
 
 
 def add_watched_movie(event, context):

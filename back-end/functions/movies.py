@@ -1,5 +1,5 @@
 # Movie API functions
-from utils.dbHelper import get_movie_by_id, search_movies
+from utils.dbHelper import get_movie, search_movies
 from utils.util import create_response
 
 
@@ -17,7 +17,7 @@ def get_movie(event, context):
     movie: movie = None
 
     if id != "":
-        movie = get_movie_by_id(id)
+        movie = get_movie(id)
     else:
         movie = search_movies(
             title=title,
