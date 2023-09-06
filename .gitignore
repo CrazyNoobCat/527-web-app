@@ -1,0 +1,7 @@
+# Back-end ignores
+back-end/*.zip
+
+# Front-end ignores
+
+# Other ignores
+.vscode/*
