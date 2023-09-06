@@ -31,7 +31,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "api.cinemate.link/v1/movie?id&title&release_date&genre=\"Horror\"&limit=50&page=0",
+					"raw": "api.cinemate.link/v1/movie?id&title&year=2012&genre=\"Horror\"&limit=50&page=0",
 					"host": [
 						"api",
 						"cinemate",
@@ -53,8 +53,8 @@
 							"description": "optional - string"
 						},
 						{
-							"key": "release_date",
-							"value": null,
+							"key": "year",
+							"value": "2012",
 							"description": "optional - Date"
 						},
 						{
