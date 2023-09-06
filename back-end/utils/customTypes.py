@@ -1,6 +1,7 @@
 # Custom types for the back-end
 from typing import List
 
+
 class User:
     username: str
     email: str
@@ -16,7 +17,7 @@ class Movie:
     id: str
     title: str
     release_date: int
-    genre: List[str]
+    genre: str
     summary: str
     language: str
     budget: int
@@ -28,12 +29,12 @@ class Movie:
         id: str,
         title: str,
         release_date: int,
-        genre: List[str],
+        genre: str,
         summary: str,
         language: str,
         budget: int,
         revenue: int,
-        runtime: int
+        runtime: int,
     ) -> None:
         self.id = id
         self.title = title

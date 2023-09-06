@@ -2,7 +2,6 @@ import datetime
 import jwt
 import boto3
 import json
-from .customTypes import User, Roles
 from .dbHelper import get_user_by_username
 
 TOKEN_EXPIRATION_TIME = 1  # hours
@@ -60,11 +59,3 @@ def decode_auth_token(auth_token: str):
     except jwt.InvalidTokenError:
         # TODO: log error
         return (False, "Invalid token. Please log in again.")
-
-
-def has_role(user: User, role: str) -> bool:
-    """Check if the user has the required role or is an admin"""
-    if user.role == Roles.ADMIN:
-        return True
-
-    return user.role == role
