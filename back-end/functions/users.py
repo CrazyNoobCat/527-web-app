@@ -4,12 +4,13 @@ from utils.util import (
     create_response,
     get_body,
     get_list_movies,
+    get_list_reviews,
     has_required_fields,
     retrieve_paginated_list,
 )
 from utils.dbHelper import authenticate_user, create_user, get_movie, update_user
 from utils.auth import generate_auth_token
-from utils.customTypes import User
+from utils.customTypes import Review, User
 
 
 def login(event, context):
@@ -159,6 +160,27 @@ def get_watch_history(event, context, user: User):
     movies = get_list_movies(paginated_history)
 
     return movies
+
+
+def get_user_reviews(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
+
+    params = event["queryStringParameters"]
+
+    limit = params["limit"] if params["limit"] else 50
+    page = params["page"] if params["page"] else 0
+
+    reviews = user.reviews.split(",")
+    paginated_reviews = retrieve_paginated_list(reviews, limit, page)
+
+    if paginated_reviews == []:
+        return create_response(200, body={"reviews": []})
+
+    reviews: list[Review] = get_list_reviews(paginated_reviews)
+
+    return create_response(200, body={"reviews": reviews})
 
 
 def create_review(event, context):

@@ -59,3 +59,22 @@ class Movie:
         self.budget = budget
         self.revenue = revenue
         self.runtime = runtime
+
+
+class Review:
+    movie: Movie
+    username: str
+    summary: str
+    rating: int
+
+    def __init__(
+        self,
+        movie: Movie,
+        username: str,
+        summary: str,
+        rating: int,
+    ) -> None:
+        self.movie = movie
+        self.username = username
+        self.summary = summary
+        self.rating = rating

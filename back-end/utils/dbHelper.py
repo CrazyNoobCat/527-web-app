@@ -1,9 +1,15 @@
 # Handle accessing the DB
 import boto3
-from .customTypes import Movie, User
+from .customTypes import Movie, Review, User
 from passlib.hash import bcrypt
 from boto3.dynamodb.conditions import Key, Attr
 
+# User Table
+USER_PARTITION_KEY = "user"
+
+# Movie Table
+MOVIE_PARTITION_KEY = "movie"
+REVIEW_PARTITION_KEY = "review"
 
 # Connect to DB
 dynamodb = boto3.resource("dynamodb")
@@ -16,7 +22,12 @@ def create_user(username: str, email: str, password: str):
 
     try:
         # Check if username already exists
-        result: dict = userTable.get_item(Key={"username": username})
+        result: dict = userTable.get_item(
+            Key={
+                "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+                "username": username,
+            }
+        )
 
         user: dict = result.get("Item")
 
@@ -32,7 +43,7 @@ def create_user(username: str, email: str, password: str):
         hashed_password = bcrypt.hash(password)
 
         new_user = {
-            "pt_key": "user",
+            "pt_key": USER_PARTITION_KEY,
             "username": username,
             "email": email,
             "password": hashed_password,
@@ -56,7 +67,12 @@ def update_user(user: User):
     """Update a user in the DB, return True if successful else False also a message to return to the user"""
     try:
         # Check if username already exists
-        result: dict = userTable.get_item(Key={"username": user.username})
+        result: dict = userTable.get_item(
+            Key={
+                "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+                "username": user.username,
+            }
+        )
 
         originalUser: dict = result.get("Item")
 
@@ -90,7 +106,12 @@ def authenticate_user(username: str, password: str) -> User | None:
     """Find a user in the DB, return User object if found else None"""
     try:
         # Query for username
-        result: dict = userTable.get_item(Key={"username": username})
+        result: dict = userTable.get_item(
+            Key={
+                "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+                "username": username,
+            }
+        )
 
         user: dict = result.get("Item")
 
@@ -111,7 +132,12 @@ def get_user(username) -> User | None:
     """Get a user by username, return User object if found else None"""
     try:
         # Query for username
-        result: dict = userTable.get_item(Key={"username": username})
+        result: dict = userTable.get_item(
+            Key={
+                "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+                "username": username,
+            }
+        )
         user: dict = result.get("Item")
 
         if user is None:
@@ -137,7 +163,12 @@ def get_movie(id: int) -> Movie | None:
     """Get a movie by id, return Movie object if found else None"""
     try:
         # Query for id
-        result: dict = movieTable.get_item(Key={"id": id})
+        result: dict = movieTable.get_item(
+            Key={
+                "pt_key": MOVIE_PARTITION_KEY,  # Only searching for the movie partition
+                "id": id,
+            }
+        )
         movie: dict = result.get("Item")
 
         # If id found, return movie object
@@ -252,8 +283,8 @@ def filter_scan_movies(
 
             response = movieTable.scan(
                 KeyExpression=Key("pt_key").eq(
-                    "movie"
-                ),  # Only searching for the movie partition
+                    MOVIE_PARTITION_KEY  # Only searching for the movie partition
+                ),
                 FilterExpression=filter_expression,
                 Select="ALL_ATTRIBUTES",
                 ExclusiveStartKey=last_evaluated_key,
@@ -325,3 +356,35 @@ def create_movie(
 # Create a movie
 
 # Update a movie
+
+
+def get_review(id, username) -> Review | None:
+    try:
+        movie = get_movie(id)
+
+        if movie is None:
+            return None
+
+        result = movieTable.get_item(
+            Key={
+                "pt_key": REVIEW_PARTITION_KEY,  # Only searching for the review partition
+                "id": id,
+                "username": username,
+            }
+        )
+
+        review = result.get("Item")
+
+        if review is None:
+            return None
+
+        return Review(
+            movie=movie,
+            username=review.get("username"),
+            summary=review.get("summary"),
+            rating=review.get("rating"),
+        )
+
+    except Exception as e:
+        print("get_review: Error:", e)
+        return None
