@@ -14,7 +14,7 @@ from functions.users import (
     register,
     get_user,
 )
-from functions.movies import get_movie
+from functions.movies import get_movie, get_movie_reviews
 
 
 def lambda_handler(event, context):
@@ -74,6 +74,9 @@ def lambda_handler(event, context):
 
     if method == "GET" and path == "/movies":
         return get_movie(event, context)
+    
+    if method == "GET" and path == "/movies/reviews":
+        return get_movie_reviews(event, context)
 
     # TODO: add movie routes
 

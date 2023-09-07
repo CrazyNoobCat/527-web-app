@@ -230,6 +230,7 @@ def search_movies(
                 filter_expression,
                 max_results=limit,
                 last_evaluated_key=last_evaluated_key,
+                partition_key=MOVIE_PARTITION_KEY,
             )
 
             current_page += 1
@@ -245,6 +246,7 @@ def search_movies(
             filter_expression,
             max_results=limit,
             last_evaluated_key=last_evaluated_key,
+            partition_key=MOVIE_PARTITION_KEY,
         )
 
         movies = list[Movie]
@@ -271,8 +273,16 @@ def search_movies(
 
 
 def filter_scan_movies(
-    filter_expression, max_results, batch_size=50, last_evaluated_key=None
+    filter_expression,
+    max_results,
+    batch_size=50,
+    last_evaluated_key=None,
+    partition_key=MOVIE_PARTITION_KEY,
 ):
+    """
+    Scan the movies table with a filter expression, return the results and the last evaluated key
+    :param partition_key the partition key to search for on the movie table
+    """
     results = []
 
     try:
@@ -282,9 +292,7 @@ def filter_scan_movies(
             print("filter_scan_movies: batch_size: " + str(batch_size))
 
             response = movieTable.scan(
-                KeyExpression=Key("pt_key").eq(
-                    MOVIE_PARTITION_KEY  # Only searching for the movie partition
-                ),
+                KeyExpression=Key("pt_key").eq(partition_key),
                 FilterExpression=filter_expression,
                 Select="ALL_ATTRIBUTES",
                 ExclusiveStartKey=last_evaluated_key,
@@ -387,4 +395,53 @@ def get_review(id, username) -> Review | None:
 
     except Exception as e:
         print("get_review: Error:", e)
+        return None
+
+
+def get_all_movie_reviews(id, limit: int = 50, page_index: int = 0) -> list[Review]:
+    try:
+        current_page = 0
+
+        filter_expression = Key("id").eq(id)
+
+        while current_page < page_index:
+            _, last_evaluated_key = filter_scan_movies(
+                filter_expression,
+                max_results=limit,
+                last_evaluated_key=last_evaluated_key,
+                partition_key=REVIEW_PARTITION_KEY,
+            )
+
+            current_page += 1
+
+            print("get_all_movie_reviews: Current page: " + str(current_page))
+
+            # If there are no more items to query, return an empty list
+            if last_evaluated_key is None:
+                print("get_all_movie_reviews: no more reviews to query")
+                return []
+
+        rawReviews, last_evaluated_key = filter_scan_movies(
+            filter_expression,
+            max_results=limit,
+            last_evaluated_key=last_evaluated_key,
+            partition_key=REVIEW_PARTITION_KEY,
+        )
+
+        reviews = list[Movie]
+
+        for review in rawReviews:
+            reviews.append(
+                Review(
+                    movie="",
+                    username=review.get("username"),
+                    summary=review.get("summary"),
+                    rating=review.get("rating"),
+                )
+            )
+
+        return reviews
+
+    except Exception as e:
+        print("get_all_movie_reviews: Error:", e)
         return None

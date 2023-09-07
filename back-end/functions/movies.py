@@ -1,5 +1,5 @@
 # Movie API functions
-from utils.dbHelper import get_movie, search_movies
+from utils.dbHelper import get_all_movie_reviews, get_movie, search_movies
 from utils.util import create_response
 
 
@@ -37,5 +37,20 @@ def add_movie(event, context):
     pass
 
 
-def get_reviews(event, context):
-    pass
+def get_movie_reviews(event, context):
+    params = event["queryStringParameters"]
+
+    id = params["id"] if params["id"] else ""
+
+    if id == "":
+        return create_response(400, "Missing id")
+
+    limit = params["limit"] if params["limit"] else 50
+    page = params["page"] if params["page"] else 0
+
+    reviews = get_all_movie_reviews(id, limit, page)
+
+    if reviews is None:
+        return create_response(404, "Movie or Reviews not found")
+
+    return create_response(200, body={"reviews": reviews})
