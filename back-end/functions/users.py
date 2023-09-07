@@ -7,7 +7,7 @@ from utils.util import (
     has_required_fields,
     retrieve_paginated_list,
 )
-from utils.dbHelper import authenticate_user, create_user, get_movie
+from utils.dbHelper import authenticate_user, create_user, get_movie, update_user
 from utils.auth import generate_auth_token
 from utils.customTypes import User
 
@@ -58,12 +58,30 @@ def get_user(event, context, user: User):
     return create_response(200, body={"username": user.username, "email": user.email})
 
 
-def update_user(event, context):
-    pass
+def add_watchlist_movie(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
 
+    body = get_body(event)
 
-def add_watchlist_movie(event, context):
-    pass
+    if body is None:
+        return create_response(400, "Missing body")
+
+    if body["id"] is None or body["id"] == "":
+        return create_response(400, "Missing id")
+
+    watchlist = user.watch_list.split(",")
+    watchlist.append(body["id"])
+
+    user.watch_list = ",".join(watchlist)
+
+    result, message = update_user(user)
+
+    if result is False:
+        return create_response(500, message)
+
+    return create_response(200, "Watchlist updated")
 
 
 def remove_watchlist_movie(event, context):

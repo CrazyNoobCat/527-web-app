@@ -52,6 +52,40 @@ def create_user(username: str, email: str, password: str):
         return (False, "Error creating user")
 
 
+def update_user(user: User):
+    """Update a user in the DB, return True if successful else False also a message to return to the user"""
+    try:
+        # Check if username already exists
+        result: dict = userTable.get_item(Key={"username": user.username})
+
+        originalUser: dict = result.get("Item")
+
+        if originalUser is None:
+            return (False, "User does not exist")
+
+        # TODO: optimising by only updating the fields that have changed
+
+        # Update user in DB
+        result = userTable.update_item(
+            Key={"username": user.username},
+            UpdateExpression="set email=:e, reviews=:r, watch_list=:w, watch_history=:h",
+            ExpressionAttributeValues={
+                ":e": user.email,
+                ":r": user.reviews,
+                ":w": user.watch_list,
+                ":h": user.watch_history,
+            },
+            ReturnValues="UPDATED_NEW",
+        )
+
+        print("update_user: user: ", user)
+
+        return (True, "User updated successfully")
+    except Exception as e:
+        print("update_user: Error:", e)
+        return (False, "Error updating user")
+
+
 def authenticate_user(username: str, password: str) -> User | None:
     """Find a user in the DB, return User object if found else None"""
     try:
