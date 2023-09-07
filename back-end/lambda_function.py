@@ -4,7 +4,7 @@ from utils.auth import decode_auth_token
 from utils.customTypes import User
 
 # Import routes
-from functions.users import add_watchlist_movie, get_watch_history, get_watchlist, login, register, get_user
+from functions.users import add_watched_movie, add_watchlist_movie, get_watch_history, get_watchlist, login, register, get_user
 from functions.movies import get_movie
 
 
@@ -55,6 +55,9 @@ def lambda_handler(event, context):
 
     if method == "POST" and path == "/users/watch/list":
         return add_watchlist_movie(event, context, user)
+    
+    if method == "POST" and path == "/users/watch/history":
+        return add_watched_movie(event, context, user)
 
     # Movie Routes
 

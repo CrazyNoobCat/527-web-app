@@ -110,8 +110,30 @@ def get_watchlist(event, context, user: User):
     return create_response(200, body={"movies": movies})
 
 
-def add_watched_movie(event, context):
-    pass
+def add_watched_movie(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
+
+    body = get_body(event)
+
+    if body is None:
+        return create_response(400, "Missing body")
+
+    if body["id"] is None or body["id"] == "":
+        return create_response(400, "Missing id")
+
+    watch_history = user.watch_history.split(",")
+    watch_history.append(body["id"])
+
+    user.watch_history = ",".join(watch_history)
+
+    result, message = update_user(user)
+
+    if result is False:
+        return create_response(500, message)
+
+    return create_response(200, "Watch history updated")
 
 
 def remove_watched_movie(event, context):
