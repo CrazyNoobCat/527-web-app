@@ -464,6 +464,155 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "User Reviews",
+			"id": "236135ed-d7a7-47fb-85b0-cd97445167bb",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "api.cinemate.link/v1/users/reviews?limit=50&page=0",
+					"host": [
+						"api",
+						"cinemate",
+						"link"
+					],
+					"path": [
+						"v1",
+						"users",
+						"reviews"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "50",
+							"type": "text"
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"type": "text"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"id": "009ccd68-143e-4d05-aa9e-9eb1d2a09e7e",
+					"name": "User Reviews",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "api.cinemate.link/v1/users/reviews?limit=50&page=0",
+							"host": [
+								"api",
+								"cinemate",
+								"link"
+							],
+							"path": [
+								"v1",
+								"users",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"name": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\r\n    \"reviews\": [\r\n        {\r\n            \"movie\": {\r\n                \"genre_names\": \"Action,Science Fiction,Horror\",\r\n                \"id\":\"615656\",\r\n                \"original_language\":\"English\",\r\n                \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\r\n                \"release_date\":\"2/08/2023\",\r\n                \"title\":\"Meg 2: The Trench\",\r\n                \"budget\":\"129000000\",\r\n                \"revenue\":\"352056482\",\r\n                \"runtime\":\"116\"\r\n            },\r\n            \"summary\": \"The movie overall was fantastic\",\r\n            \"rating\": 3\r\n        },\r\n        {\r\n            \"movie\": {\r\n                \"genre_names\": \"Action,Science Fiction,Horror\",\r\n                \"id\":\"615656\",\r\n                \"original_language\":\"English\",\r\n                \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\r\n                \"release_date\":\"2/08/2023\",\r\n                \"title\":\"Meg 2: The Trench\",\r\n                \"budget\":\"129000000\",\r\n                \"revenue\":\"352056482\",\r\n                \"runtime\":\"116\"\r\n            },\r\n            \"summary\": \"The movie overall was fantastic\",\r\n            \"rating\": 3\r\n        }\r\n    ]\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Add Review",
+			"id": "21de73fc-febc-4bf6-9ef1-fcb49769df61",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 123123,\r\n    \"summary\": \"This is the users review of the movie\",\r\n    \"rating\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "api.cinemate.link/v1/users/reviews",
+					"host": [
+						"api",
+						"cinemate",
+						"link"
+					],
+					"path": [
+						"v1",
+						"users",
+						"reviews"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Review",
+			"id": "87780cbe-15f8-4ca3-9690-8182ad554c1a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "api.cinemate.link/v1/users/reviews?id=123123",
+					"host": [
+						"api",
+						"cinemate",
+						"link"
+					],
+					"path": [
+						"v1",
+						"users",
+						"reviews"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "123123",
+							"description": "movie id"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {

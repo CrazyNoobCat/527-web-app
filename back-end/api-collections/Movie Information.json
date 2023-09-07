@@ -196,6 +196,88 @@
 				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 			},
 			"response": []
+		},
+		{
+			"name": "Movie Reviews",
+			"id": "34b5aea8-266d-416d-a83f-50d4967d730a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "Movie Reviews?id=123123&limit=50&page=0",
+					"host": [
+						"Movie Reviews"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "123123",
+							"description": "movie id",
+							"type": "text"
+						},
+						{
+							"key": "limit",
+							"value": "50",
+							"type": "text"
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"description": "page index starts at 0",
+							"type": "text"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"id": "2e0adad0-bf2e-4246-aaa7-f431c4bbc080",
+					"name": "Movie Reviews",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "Movie Reviews?id=123123&limit=50&page=0",
+							"host": [
+								"Movie Reviews"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "123123",
+									"description": "movie id"
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "page index starts at 0"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"name": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\r\n    \"reviews\": [\r\n        {\r\n            \"username\": \"bestUser\",\r\n            \"summary\": \"the users reviews\",\r\n            \"rating\": 4\r\n        },\r\n        {\r\n            \"username\": \"another user\",\r\n            \"summary\": \"the users reviews\",\r\n            \"rating\": 2\r\n        }\r\n    ]\r\n}"
+				}
+			]
 		}
 	],
 	"auth": {
