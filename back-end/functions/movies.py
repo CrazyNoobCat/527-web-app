@@ -20,7 +20,7 @@ def get_movie(event, context):
     title = params["title"] if params["title"] is not None else ""
     year = params["year"] if params["year"] is not None else ""
     limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 0)
+    page = safe_cast(params["page"], int, 1)
 
     if page < 0 or limit < 0:
         return create_response(400, "Invalid page or limit")
@@ -37,7 +37,7 @@ def get_movie(event, context):
             genre_names=genres,
             year=year,
             limit=limit,
-            page_index=page,
+            page=page,
         )
 
     # Serialize the movies
@@ -59,7 +59,7 @@ def get_movie_reviews(event, context):
         return create_response(400, "Missing id")
 
     limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 0)
+    page = safe_cast(params["page"], int, 1)
 
     reviews = get_all_movie_reviews(id, limit, page)
 
