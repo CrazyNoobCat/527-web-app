@@ -10,7 +10,7 @@ def get_body(event) -> dict:
 
 def create_response(
     status_code: int,
-    message: str,
+    message: str = "",
     header: dict[str, str] = {"Content-Type": "application/json"},
     body: dict[str, str] = None,
 ):
@@ -21,7 +21,8 @@ def create_response(
     if header is None:
         header = {"Content-Type": "application/json"}
 
-    body["message"] = message
+    if message != "":
+        body["message"] = message
 
     return {
         "statusCode": status_code,
@@ -73,3 +74,10 @@ def get_list_reviews(review_ids: list[str], username) -> list[Review]:
             reviews.append(review)
 
     return reviews
+
+
+def safe_cast(val, to_type, default=None):
+    try:
+        return to_type(val)
+    except (ValueError, TypeError):
+        return default

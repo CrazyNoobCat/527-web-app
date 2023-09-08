@@ -7,6 +7,7 @@ from utils.util import (
     get_list_reviews,
     has_required_fields,
     retrieve_paginated_list,
+    safe_cast,
 )
 from utils.dbHelper import authenticate_user, create_user, get_movie, update_user
 from utils.auth import generate_auth_token
@@ -25,6 +26,8 @@ def login(event, context):
 
     if user is None:
         return create_response(401, "Invalid username or password")
+
+    print("login: user: ", user)
 
     # Generate auth token
     authToken = generate_auth_token(user.username)
@@ -96,14 +99,14 @@ def get_watchlist(event, context, user: User):
 
     params = event["queryStringParameters"]
 
-    limit = params["limit"] if params["limit"] else 50
-    page = params["page"] if params["page"] else 0
+    limit = safe_cast(params["limit"], int, 50)
+    page = safe_cast(params["page"], int, 0)
 
     watchlist = user.watch_list.split(",")
 
     paginated_watchlist = retrieve_paginated_list(watchlist, limit, page)
 
-    if paginated_watchlist == []:
+    if paginated_watchlist == [""]:
         return create_response(200, body={"movies": []})
 
     movies = get_list_movies(paginated_watchlist)
@@ -148,13 +151,13 @@ def get_watch_history(event, context, user: User):
 
     params = event["queryStringParameters"]
 
-    limit = params["limit"] if params["limit"] else 50
-    page = params["page"] if params["page"] else 0
+    limit = safe_cast(params["limit"], int, 50)
+    page = safe_cast(params["page"], int, 0)
 
     history = user.watch_history.split(",")
     paginated_history = retrieve_paginated_list(history, limit, page)
 
-    if paginated_history == []:
+    if paginated_history == [""]:
         return create_response(200, body={"movies": []})
 
     movies = get_list_movies(paginated_history)
@@ -169,13 +172,13 @@ def get_user_reviews(event, context, user: User):
 
     params = event["queryStringParameters"]
 
-    limit = params["limit"] if params["limit"] else 50
-    page = params["page"] if params["page"] else 0
+    limit = safe_cast(params["limit"], int, 50)
+    page = safe_cast(params["page"], int, 0)
 
     reviews = user.reviews.split(",")
     paginated_reviews = retrieve_paginated_list(reviews, limit, page)
 
-    if paginated_reviews == []:
+    if paginated_reviews == [""]:
         return create_response(200, body={"reviews": []})
 
     reviews: list[Review] = get_list_reviews(paginated_reviews)

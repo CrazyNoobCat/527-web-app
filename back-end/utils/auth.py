@@ -26,11 +26,11 @@ def generate_auth_token(username: str):
             + datetime.timedelta(hours=TOKEN_EXPIRATION_TIME),
         }
 
-        token = {"authToken": jwt.encode(payload, get_secret(), algorithms=["HS256"])}
+        token = {"authToken": jwt.encode(payload, get_secret())}
 
         return token
     except Exception as e:
-        # TODO: log error
+        print("generate_auth_token: error: ", e)
         return None
 
 

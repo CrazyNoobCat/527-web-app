@@ -4,6 +4,9 @@ from .customTypes import Movie, Review, User
 from passlib.hash import bcrypt
 from boto3.dynamodb.conditions import Key, Attr
 
+import traceback
+
+
 # User Table
 USER_PARTITION_KEY = "user"
 
@@ -131,6 +134,9 @@ def authenticate_user(username: str, password: str) -> User | None:
 def get_user(username) -> User | None:
     """Get a user by username, return User object if found else None"""
     try:
+        if username is None:
+            return None
+
         # Query for username
         result: dict = userTable.get_item(
             Key={
@@ -162,30 +168,32 @@ def get_user(username) -> User | None:
 def get_movie(id: int) -> Movie | None:
     """Get a movie by id, return Movie object if found else None"""
     try:
-        # Query for id
-        result: dict = movieTable.get_item(
-            Key={
-                "pt_key": MOVIE_PARTITION_KEY,  # Only searching for the movie partition
-                "id": id,
-            }
-        )
+        if id is None:
+            return None
+
+        key = {
+            "pt_key": MOVIE_PARTITION_KEY,  # Only searching for the movie partition
+            "id": id,
+        }
+
+        result: dict = movieTable.get_item(Key=key)
         movie: dict = result.get("Item")
 
         # If id found, return movie object
         if movie is not None:
             return Movie(
-                id=movie.get("id"),
+                id=str(movie.get("id")),
                 title=movie.get("title"),
-                release_date=movie.get("release_date"),
+                release_date=str(movie.get("release_date")),
                 genre=movie.get("genre_names"),
                 summary=movie.get("summary"),
                 language=movie.get("original_language"),
-                budget=movie.get("budget"),
-                revenue=movie.get("revenue"),
-                runtime=movie.get("runtime"),
+                budget=str(movie.get("budget")),
+                revenue=str(movie.get("revenue")),
+                runtime=str(movie.get("runtime")),
             )
 
-        return None
+        return movie
 
     except Exception as e:
         print("get_movie: Error: ", e)
@@ -197,85 +205,147 @@ def search_movies(
     genre_names: list[str] = [],
     year: str = "",
     limit: int = 50,
-    page_index: int = 0,
+    page_index: int = 1,
 ) -> list[Movie]:
     """Search for movies based on title, genre_names, director, and genre"""
 
     try:
-        current_page = 0
-        last_evaluated_key = None
+        client = boto3.client("dynamodb")
+        paginator = client.get_paginator("query")
+        response_iterator = None
+
+        # current_page = 0
+        # last_evaluated_key = None
+
+        key_condition_expression = "pt_key = :partition_key_value"
+
+        # Define the filter expression as a string
+        filter_expression = "contains(title, :title) AND contains(release_date, :year)"
+
+        # Define the expression attribute values
+        expression_attribute_values = {
+            ":title": {"S": title},
+            ":year": {"S": year},
+            ":partition_key_value": {"S": MOVIE_PARTITION_KEY},
+        }
+
+        # Do the same for genres
+        if genre_names is not []:
+            genre_filter = ""
+            for genre in genre_names:
+                print("search_movies: genre: ", genre)
+                count += 1
+                if genre_filter == "":
+                    genre_filter = f"contains(genre_names, :g{count})"
+                else:
+                    genre_filter = (
+                        genre_filter + f" OR contains(genre_names, :g{count})"
+                    )
+
+                expression_attribute_values[f":g{count}"] = {"S": genre}
+
+            if genre_filter != "":
+                filter_expression = (
+                    "(" + filter_expression + ") AND (" + genre_filter + ")"
+                )
+
+        print("search_movies: filter_expression: ", filter_expression)
+        print(
+            "search_movies: expression_attribute_values: ", expression_attribute_values
+        )
+
+        # filter_expression = Attr("title").contains(title) & Attr("release_date").contains(year)
 
         # genre filter expression
-        genre_filter = ""
-        if genre_names != []:
-            for genre in genre_names:
-                if genre == genre_names[0]:
-                    genre_filter = " AND "
-                genre_filter += Attr("genre").contains(genre)
-                if genre != genre_names[-1]:
-                    genre_filter += " OR "
+        # if genre_names is not []:
+        #     genre_filter = None
+        #     for genre in genre_names:
+        #         print("search_movies: genre: ", genre)
+        #         if genre_filter is None:
+        #             genre_filter = Attr("genre_names").contains(genre)
+        #         else:
+        #             genre_filter = genre_filter | Attr("genre_names").contains(genre)
 
-        filter_expression = (
-            Attr("title").contains(title)
-            + " AND "
-            + Attr("release_date").contains(year)
-            + genre_filter
-        )
+        #     if genre_filter is not None:
+        #         filter_expression = filter_expression & genre_filter
 
-        print("search_movies: Filter expression: " + filter_expression)
+        # Get first page of results
+
+        rawMovies = []
 
         # Keep querying until we have skipped enough items or there are no more items to query
-        while current_page < page_index:
-            _, last_evaluated_key = filter_scan_movies(
-                filter_expression,
-                max_results=limit,
-                last_evaluated_key=last_evaluated_key,
-                partition_key=MOVIE_PARTITION_KEY,
+        for _ in range(page_index):
+            response_iterator = paginator.paginate(
+                TableName="movies",
+                # KeyConditionExpression=Key("pt_key").eq(MOVIE_PARTITION_KEY),
+                KeyConditionExpression=key_condition_expression,
+                FilterExpression=filter_expression,
+                ExpressionAttributeValues=expression_attribute_values,
+                Select="ALL_ATTRIBUTES",
+                PaginationConfig={
+                    "MaxItems": limit * page_index,
+                    "PageSize": limit,
+                    "StartingToken": None,
+                },
             )
 
-            current_page += 1
+        rawMovies = response_iterator.build_full_result().get("Items")
 
-            print("search_movies: Current page: " + str(current_page))
+        # Retrieve specific page
+        # for page in response_iterator:
+        #     print("Items : ", page["Items"])
+        #     # if page["Count"] >= limit * page_index or len(page["Items"]) == 0:
+        #     #     rawMovies = page["Items"]
+        #     #     break
 
-            # If there are no more items to query, return an empty list
-            if last_evaluated_key is None:
-                print("search_movies: no more movies to query")
-                return []
+        if len(rawMovies) == 0:
+            return []
 
-        rawMovies, last_evaluated_key = filter_scan_movies(
-            filter_expression,
-            max_results=limit,
-            last_evaluated_key=last_evaluated_key,
-            partition_key=MOVIE_PARTITION_KEY,
-        )
+        # _, last_evaluated_key = filter_scan_movies(
+        #     filter_expression,
+        #     max_results=limit,
+        #     last_evaluated_key=last_evaluated_key,
+        #     partition_key=MOVIE_PARTITION_KEY,
+        # )
 
-        movies = list[Movie]
+        # If there are no more items to query, return an empty list
+
+        # rawMovies, last_evaluated_key = filter_scan_movies(
+        #     filter_expression,
+        #     max_results=limit,
+        #     last_evaluated_key=last_evaluated_key,
+        #     partition_key=MOVIE_PARTITION_KEY,
+        # )
+
+        movies: list[Movie] = []
 
         for movie in rawMovies:
             movies.append(
                 Movie(
-                    id=movie.get("id"),
+                    id=str(movie.get("id")),
                     title=movie.get("title"),
-                    release_date=movie.get("release_date"),
+                    release_date=str(movie.get("release_date")),
                     genre=movie.get("genre_names"),
                     summary=movie.get("summary"),
                     language=movie.get("original_language"),
-                    budget=movie.get("budget"),
-                    revenue=movie.get("revenue"),
-                    runtime=movie.get("runtime"),
+                    budget=str(movie.get("budget")),
+                    revenue=str(movie.get("revenue")),
+                    runtime=str(movie.get("runtime")),
                 )
             )
 
         return movies
     except Exception as e:
         print("search_movies: Error: ", e)
+        traceback.print_exc()
+
         return []
 
 
 def filter_scan_movies(
     filter_expression,
     max_results,
-    batch_size=50,
+    batch_size=100,
     last_evaluated_key=None,
     partition_key=MOVIE_PARTITION_KEY,
 ):
@@ -287,21 +357,32 @@ def filter_scan_movies(
 
     try:
         while len(results) < max_results:
-            batch_size = min(batch_size, max_results - len(results))
+            response = None
 
-            print("filter_scan_movies: batch_size: " + str(batch_size))
+            if last_evaluated_key is None:
+                response = movieTable.query(
+                    KeyConditionExpression=Key("pt_key").eq(partition_key),
+                    FilterExpression=filter_expression,
+                    Select="ALL_ATTRIBUTES",
+                    Limit=batch_size,
+                )
 
-            response = movieTable.scan(
-                KeyExpression=Key("pt_key").eq(partition_key),
-                FilterExpression=filter_expression,
-                Select="ALL_ATTRIBUTES",
-                ExclusiveStartKey=last_evaluated_key,
-                Limit=batch_size,
-            )
+            else:
+                response = movieTable.query(
+                    KeyConditionExpression=Key("pt_key").eq(partition_key),
+                    FilterExpression=filter_expression,
+                    Select="ALL_ATTRIBUTES",
+                    ExclusiveStartKey=last_evaluated_key,
+                    Limit=batch_size,
+                )
 
             results.extend(response["Items"])
 
-            print("filter_scan_movies: results length: " + str(len(results)))
+            # Limit results to max_results
+            if len(results) >= max_results:
+                results = results[:max_results]
+                last_evaluated_key = results[-1]  # Was trying to do something here
+                break
 
             last_evaluated_key = response.get("LastEvaluatedKey")
 
@@ -402,7 +483,7 @@ def get_all_movie_reviews(id, limit: int = 50, page_index: int = 0) -> list[Revi
     try:
         current_page = 0
 
-        filter_expression = Key("id").eq(id)
+        filter_expression = str(Key("id").eq(id))
 
         while current_page < page_index:
             _, last_evaluated_key = filter_scan_movies(
@@ -428,7 +509,7 @@ def get_all_movie_reviews(id, limit: int = 50, page_index: int = 0) -> list[Revi
             partition_key=REVIEW_PARTITION_KEY,
         )
 
-        reviews = list[Movie]
+        reviews: list[Movie] = []
 
         for review in rawReviews:
             reviews.append(

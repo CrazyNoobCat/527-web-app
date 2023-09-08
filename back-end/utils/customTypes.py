@@ -12,12 +12,12 @@ class User:
 
     def __init__(
         self,
-        username: str,
-        email: str,
-        password: str,
-        reviews: str,
-        watch_list: str,
-        watch_history: str,
+        username: str = "",
+        email: str = "",
+        password: str = "",
+        reviews: str = "",
+        watch_list: str = "",
+        watch_history: str = "",
     ) -> None:
         self.username = username
         self.email = email
@@ -30,25 +30,25 @@ class User:
 class Movie:
     id: str
     title: str
-    release_date: int
+    release_date: str
     genre: str  # comma seperated list of genres
     summary: str
     language: str
-    budget: int
-    revenue: int
-    runtime: int
+    budget: str
+    revenue: str
+    runtime: str
 
     def __init__(
         self,
-        id: str,
-        title: str,
-        release_date: int,
-        genre: str,
-        summary: str,
-        language: str,
-        budget: int,
-        revenue: int,
-        runtime: int,
+        id: str = "",
+        title: str = "",
+        release_date: str = "",
+        genre: str = "",
+        summary: str = "",
+        language: str = "",
+        budget: str = "",
+        revenue: str = "",
+        runtime: str = "",
     ) -> None:
         self.id = id
         self.title = title
@@ -69,10 +69,10 @@ class Review:
 
     def __init__(
         self,
-        movie: Movie,
-        username: str,
-        summary: str,
-        rating: int,
+        movie: Movie = "",
+        username: str = "",
+        summary: str = "",
+        rating: int = "",
     ) -> None:
         self.movie = movie
         self.username = username
