@@ -5,9 +5,6 @@ from .customTypes import Movie, Review, User
 from passlib.hash import bcrypt
 from boto3.dynamodb.conditions import Key, Attr
 
-import traceback
-
-
 # User Table
 USER_PARTITION_KEY = "user"
 
@@ -59,8 +56,6 @@ def create_user(username: str, email: str, password: str):
         # Create user in DB
         result = userTable.put_item(Item=new_user)
 
-        print("create_user: new_user: ", new_user)
-
         return (True, "User created successfully")
     except Exception as e:
         print("create_user: Error:", e)
@@ -97,8 +92,6 @@ def update_user(user: User):
             },
             ReturnValues="UPDATED_NEW",
         )
-
-        print("update_user: user: ", user)
 
         return (True, "User updated successfully")
     except Exception as e:
@@ -218,7 +211,6 @@ def search_movies(
         if genre_names is not []:
             genre_filter = None
             for genre in genre_names:
-                print("search_movies: genre: ", genre)
                 if genre_filter is None:
                     genre_filter = Attr("genre_names").contains(genre)
                 else:
@@ -319,7 +311,6 @@ def query_page_movies(
 
     except Exception as e:
         print("filter_scan_movies: Error:", e)
-        traceback.print_exc()
         return results
 
 

@@ -74,7 +74,7 @@ def lambda_handler(event, context):
 
     if method == "GET" and path == "/movies":
         return get_movie(event, context)
-    
+
     if method == "GET" and path == "/movies/reviews":
         return get_movie_reviews(event, context)
 
