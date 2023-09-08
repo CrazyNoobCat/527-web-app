@@ -31,7 +31,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://api.cinemate.link/movies?id&title&year=2012&genre=\"Horror,Action\"&limit=50&page=0",
+					"raw": "https://api.cinemate.link/movies?id=&title=finding&year=&genre=Family&limit=50&page=1",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -44,22 +44,22 @@
 					"query": [
 						{
 							"key": "id",
-							"value": null,
+							"value": "",
 							"description": "optional - string"
 						},
 						{
 							"key": "title",
-							"value": null,
+							"value": "finding",
 							"description": "optional - string"
 						},
 						{
 							"key": "year",
-							"value": "2012",
+							"value": "",
 							"description": "optional - Date"
 						},
 						{
 							"key": "genre",
-							"value": "\"Horror,Action\"",
+							"value": "Family",
 							"description": "optional - string commas seperated values"
 						},
 						{
@@ -69,7 +69,7 @@
 						},
 						{
 							"key": "page",
-							"value": "0",
+							"value": "1",
 							"description": "optional - integer - which \"page\" of results"
 						}
 					]
@@ -294,41 +294,11 @@
 		}
 	],
 	"auth": {
-		"type": "jwt",
-		"jwt": [
+		"type": "bearer",
+		"bearer": [
 			{
-				"key": "algorithm",
-				"value": "HS256",
-				"type": "string"
-			},
-			{
-				"key": "isSecretBase64Encoded",
-				"value": false,
-				"type": "boolean"
-			},
-			{
-				"key": "payload",
-				"value": "{}",
-				"type": "string"
-			},
-			{
-				"key": "addTokenTo",
-				"value": "header",
-				"type": "string"
-			},
-			{
-				"key": "headerPrefix",
-				"value": "Bearer",
-				"type": "string"
-			},
-			{
-				"key": "queryParamKey",
-				"value": "token",
-				"type": "string"
-			},
-			{
-				"key": "header",
-				"value": "{}",
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MTY0OTgxfQ.UwRC8mx_siY7J6oNBn82WiG32ShL3t_KLNJJ-F8FdN4",
 				"type": "string"
 			}
 		]
@@ -337,7 +307,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "ca968f6b-f43f-49af-86d7-52c8016f6ca8",
+				"id": "b694ed7a-11bd-4dce-91ca-f3baa8956e07",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -347,7 +317,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "ae5b1024-6abc-493f-ae49-c2b23108af52",
+				"id": "e7d440dc-f81e-4cf4-b9e8-3d8800b1ebb8",
 				"type": "text/javascript",
 				"exec": [
 					""
