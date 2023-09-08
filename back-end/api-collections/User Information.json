@@ -40,14 +40,14 @@
 					}
 				},
 				"url": {
-					"raw": "api.cinemate.link/v1/users/watch/list",
+					"raw": "https://api.cinemate.link/users/watch/list",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"watch",
 						"list"
@@ -91,14 +91,14 @@
 					}
 				},
 				"url": {
-					"raw": "api.cinemate.link/v1/users/watch/history",
+					"raw": "https://api.cinemate.link/users/watch/history",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"watch",
 						"history"
@@ -132,14 +132,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "api.cinemate.link/v1/users",
+					"raw": "https://api.cinemate.link/users",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users"
 					]
 				}
@@ -152,14 +152,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "api.cinemate.link/v1/users",
+							"raw": "https://api.cinemate.link/users",
+							"protocol": "https",
 							"host": [
 								"api",
 								"cinemate",
 								"link"
 							],
 							"path": [
-								"v1",
 								"users"
 							]
 						}
@@ -205,14 +205,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "api.cinemate.link/v1/users/watch/list?limit=50&page=0",
+					"raw": "https://api.cinemate.link/users/watch/list?limit=50&page=0",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"watch",
 						"list"
@@ -237,14 +237,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "api.cinemate.link/v1/users/watch/list?limit=50&page=0",
+							"raw": "https://api.cinemate.link/users/watch/list?limit=50&page=0",
+							"protocol": "https",
 							"host": [
 								"api",
 								"cinemate",
 								"link"
 							],
 							"path": [
-								"v1",
 								"users",
 								"watch",
 								"list"
@@ -302,14 +302,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "api.cinemate.link/v1/users/watch/history?limit=50&page=0",
+					"raw": "https://api.cinemate.link/users/watch/history?limit=50&page=0",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"watch",
 						"history"
@@ -334,14 +334,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "api.cinemate.link/v1/users/watch/history?limit=50&page=0",
+							"raw": "https://api.cinemate.link/users/watch/history?limit=50&page=0",
+							"protocol": "https",
 							"host": [
 								"api",
 								"cinemate",
 								"link"
 							],
 							"path": [
-								"v1",
 								"users",
 								"watch",
 								"history"
@@ -404,7 +404,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"bestUsedr\",\n    \"email\": \"best@bestemail.com\",\n    \"password\": \"password-to-be-hashed\"\n}",
+					"raw": "{\n    \"username\": \"bestUser\",\n    \"email\": \"best@bestemail.com\",\n    \"password\": \"password-to-be-hashed\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -412,14 +412,14 @@
 					}
 				},
 				"url": {
-					"raw": "api.cinemate.link/v1/users/register",
+					"raw": "https://api.cinemate.link/users/register",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"register"
 					]
@@ -450,14 +450,14 @@
 					}
 				},
 				"url": {
-					"raw": "api.cinemate.link/v1/users/login",
+					"raw": "https://api.cinemate.link/users/login",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"login"
 					]
@@ -475,27 +475,25 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "api.cinemate.link/v1/users/reviews?limit=50&page=0",
+					"raw": "https://api.cinemate.link/users/reviews?limit=50&page=0",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"reviews"
 					],
 					"query": [
 						{
 							"key": "limit",
-							"value": "50",
-							"type": "text"
+							"value": "50"
 						},
 						{
 							"key": "page",
-							"value": "0",
-							"type": "text"
+							"value": "0"
 						}
 					]
 				}
@@ -508,14 +506,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "api.cinemate.link/v1/users/reviews?limit=50&page=0",
+							"raw": "https://api.cinemate.link/users/reviews?limit=50&page=0",
+							"protocol": "https",
 							"host": [
 								"api",
 								"cinemate",
 								"link"
 							],
 							"path": [
-								"v1",
 								"users",
 								"reviews"
 							],
@@ -567,14 +565,14 @@
 					}
 				},
 				"url": {
-					"raw": "api.cinemate.link/v1/users/reviews",
+					"raw": "https://api.cinemate.link/users/reviews",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"reviews"
 					]
@@ -592,14 +590,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "api.cinemate.link/v1/users/reviews?id=123123",
+					"raw": "https://api.cinemate.link/users/reviews?id=123123",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
 						"users",
 						"reviews"
 					],
@@ -620,7 +618,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "{{user-token}}",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MTM0NTQ0fQ.3ImayrD0TA9OjIxMYuF8cYGsXSJGhZKDUayNHGJXMQI",
 				"type": "string"
 			}
 		]
@@ -629,7 +627,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "0d453b73-a67b-438a-a6fd-b5463b899a5d",
+				"id": "8974c583-a858-4e43-bd1d-e23c8b441532",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -639,7 +637,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "fb45822c-ea54-4b51-952d-8db6b6b34243",
+				"id": "524f09e0-04fc-4264-95e3-62a0b72ede57",
 				"type": "text/javascript",
 				"exec": [
 					""

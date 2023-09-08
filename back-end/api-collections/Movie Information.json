@@ -31,15 +31,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "api.cinemate.link/v1/movie?id&title&year=2012&genre=\"Horror,Action\"&limit=50&page=0",
+					"raw": "https://api.cinemate.link/movies?id&title&year=2012&genre=\"Horror,Action\"&limit=50&page=0",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
-						"movie"
+						"movies"
 					],
 					"query": [
 						{
@@ -83,15 +83,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "api.cinemate.link/v1/movie?id=615656",
+							"raw": "https://api.cinemate.link/movies?id=615656",
+							"protocol": "https",
 							"host": [
 								"api",
 								"cinemate",
 								"link"
 							],
 							"path": [
-								"v1",
-								"movie"
+								"movies"
 							],
 							"query": [
 								{
@@ -182,15 +182,15 @@
 					}
 				},
 				"url": {
-					"raw": "api.cinemate.link/v1/movie",
+					"raw": "https://api.cinemate.link/movies",
+					"protocol": "https",
 					"host": [
 						"api",
 						"cinemate",
 						"link"
 					],
 					"path": [
-						"v1",
-						"movie"
+						"movies"
 					]
 				},
 				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
@@ -207,27 +207,32 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "Movie Reviews?id=123123&limit=50&page=0",
+					"raw": "https://api.cinemate.link/movies/reviews/?id=123123&limit=50&page=0",
+					"protocol": "https",
 					"host": [
-						"Movie Reviews"
+						"api",
+						"cinemate",
+						"link"
+					],
+					"path": [
+						"movies",
+						"reviews",
+						""
 					],
 					"query": [
 						{
 							"key": "id",
 							"value": "123123",
-							"description": "movie id",
-							"type": "text"
+							"description": "movie id"
 						},
 						{
 							"key": "limit",
-							"value": "50",
-							"type": "text"
+							"value": "50"
 						},
 						{
 							"key": "page",
 							"value": "0",
-							"description": "page index starts at 0",
-							"type": "text"
+							"description": "page index starts at 0"
 						}
 					]
 				}
@@ -240,9 +245,17 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "Movie Reviews?id=123123&limit=50&page=0",
+							"raw": "https://api.cinemate.link/movies/reviews/?id=123123&limit=50&page=0",
+							"protocol": "https",
 							"host": [
-								"Movie Reviews"
+								"api",
+								"cinemate",
+								"link"
+							],
+							"path": [
+								"movies",
+								"reviews",
+								""
 							],
 							"query": [
 								{
