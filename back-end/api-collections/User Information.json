@@ -475,7 +475,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://api.cinemate.link/users/reviews?limit=50&page=0",
+					"raw": "https://api.cinemate.link/users/reviews?id&limit=50&page=0",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -487,6 +487,12 @@
 						"reviews"
 					],
 					"query": [
+						{
+							"key": "id",
+							"value": null,
+							"description": "movie id, if specified will only retrieve this review",
+							"type": "text"
+						},
 						{
 							"key": "limit",
 							"value": "50"
@@ -611,6 +617,74 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Delete Watched Movie",
+			"id": "782c5b31-7840-4d1e-88ec-de5fd1a72c05",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.cinemate.link/users/watch/history?id=12",
+					"protocol": "https",
+					"host": [
+						"api",
+						"cinemate",
+						"link"
+					],
+					"path": [
+						"users",
+						"watch",
+						"history"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "12",
+							"description": "movie id",
+							"type": "text"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Movie from Watch List",
+			"id": "67f74d6f-0158-41ba-9572-796196daae9a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.cinemate.link/users/watch/list?id=129",
+					"protocol": "https",
+					"host": [
+						"api",
+						"cinemate",
+						"link"
+					],
+					"path": [
+						"users",
+						"watch",
+						"list"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "129",
+							"description": "movie id",
+							"type": "text"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
@@ -618,7 +692,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MjMyNzAxfQ.rDyhRUlI4ywiO1Vm62tO4EozSA72mzV25Vq6DbHCMpM",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0Mjk5ODA3fQ.hjyEy9d1JJQk6GavubpNyTbUReFaCxWVcVw6ZUCkZMw",
 				"type": "string"
 			}
 		]
@@ -627,7 +701,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "4d8b7be8-d415-430c-a0af-5b4554ded3cb",
+				"id": "d64a6b39-399c-4251-ab04-572ecc1ac108",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -637,7 +711,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "7e1ea1b9-d5db-41b1-911c-77e468483b02",
+				"id": "61538034-5924-40d2-998c-294e4c55b37e",
 				"type": "text/javascript",
 				"exec": [
 					""
