@@ -198,7 +198,10 @@ def get_user_reviews(event, context, user: User):
     if paginated_reviews == [""]:
         return create_response(200, body={"reviews": []})
 
-    reviews: list[Review] = get_list_reviews(paginated_reviews)
+    reviews: list[Review] = get_list_reviews(paginated_reviews, user.username)
+
+    # Serialize the reviews
+    reviews = [review.__dict__ for review in reviews]
 
     return create_response(200, body={"reviews": reviews})
 
