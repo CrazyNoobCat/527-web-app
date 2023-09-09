@@ -31,7 +31,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://api.cinemate.link/movies?id=&title=finding&year=&genre=Family&limit=50&page=1",
+					"raw": "https://api.cinemate.link/movies?id=&title=Tenacious D&year=&genre=&limit=50&page=1",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -49,7 +49,7 @@
 						},
 						{
 							"key": "title",
-							"value": "finding",
+							"value": "Tenacious D",
 							"description": "optional - string"
 						},
 						{
@@ -59,7 +59,7 @@
 						},
 						{
 							"key": "genre",
-							"value": "Family",
+							"value": "",
 							"description": "optional - string commas seperated values"
 						},
 						{
@@ -207,7 +207,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://api.cinemate.link/movies/reviews/?id=123123&limit=50&page=0",
+					"raw": "https://api.cinemate.link/movies/reviews?id=123123&limit=50&page=0",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -216,8 +216,7 @@
 					],
 					"path": [
 						"movies",
-						"reviews",
-						""
+						"reviews"
 					],
 					"query": [
 						{
@@ -298,7 +297,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MTY0OTgxfQ.UwRC8mx_siY7J6oNBn82WiG32ShL3t_KLNJJ-F8FdN4",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MjMyNzAxfQ.rDyhRUlI4ywiO1Vm62tO4EozSA72mzV25Vq6DbHCMpM",
 				"type": "string"
 			}
 		]
@@ -307,7 +306,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "b694ed7a-11bd-4dce-91ca-f3baa8956e07",
+				"id": "2a8414be-9b54-4832-9497-ac1cdad5d864",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -317,7 +316,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "e7d440dc-f81e-4cf4-b9e8-3d8800b1ebb8",
+				"id": "048c1666-9fb6-4feb-ab52-b9c905376a63",
 				"type": "text/javascript",
 				"exec": [
 					""
