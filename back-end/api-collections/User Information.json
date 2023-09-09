@@ -231,13 +231,13 @@
 			},
 			"response": [
 				{
-					"id": "acebc3f6-ad8a-47fb-8683-caaa3b83dcd8",
+					"id": "5151fe99-b173-4381-905e-53dc4d4190de",
 					"name": "Watch list",
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://api.cinemate.link/users/watch/list?limit=50&page=0",
+							"raw": "https://api.cinemate.link/users/watch/list?limit=2&page=1",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -252,11 +252,11 @@
 							"query": [
 								{
 									"key": "limit",
-									"value": "50"
+									"value": "2"
 								},
 								{
 									"key": "page",
-									"value": "0"
+									"value": "1"
 								}
 							]
 						}
@@ -266,15 +266,36 @@
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
+							"key": "Date",
+							"value": "Sat, 09 Sep 2023 23:10:40 GMT"
+						},
+						{
 							"key": "Content-Type",
-							"name": "Content-Type",
-							"value": "application/json",
-							"description": "",
-							"type": "text"
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1190"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "154143be-22cb-4ccb-879f-f51003f76700"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "LAw5jEaoSwMFyMw="
+						},
+						{
+							"key": "X-Amzn-Trace-Id",
+							"value": "Root=1-64fcfb70-3694789503e4bbf643a649fc;Sampled=0;lineage=3e706d6b:0"
 						}
 					],
 					"cookie": [],
-					"body": "{\r\n    \"movies\": [\r\n        {\r\n            \"genre_names\": \"Action,Science Fiction,Horror\",\r\n            \"id\":\"615656\",\r\n            \"original_language\":\"English\",\r\n            \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\r\n            \"release_date\":\"2/08/2023\",\r\n            \"title\":\"Meg 2: The Trench\",\r\n            \"budget\":\"129000000\",\r\n            \"revenue\":\"352056482\",\r\n            \"runtime\":\"116\"\r\n        },\r\n        {\r\n            \"genre_names\": \"Action,Horror\",\r\n            \"id\":\"615000\",\r\n            \"original_language\":\"English\",\r\n            \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\r\n            \"release_date\":\"2/08/2019\",\r\n            \"title\":\"Meg 1: The Trench\",\r\n            \"budget\":\"129000000\",\r\n            \"revenue\":\"352056482\",\r\n            \"runtime\":\"116\"\r\n        }\r\n    ]\r\n}"
+					"body": "{\n    \"movies\": [\n        {\n            \"id\": \"1168333\",\n            \"title\": \"Home\",\n            \"release_date\": \"6/09/2023\",\n            \"genre\": \"Drama,Crime\",\n            \"summary\": \"Yair, an ultra-Orthodox Yeshiva student, opens an electronics shop in Geula, a neighborhood that is the shopping epicenter for the entire ultra-Orthodox community in Jerusalem. The religious character of the neighborhood is enforced by the Geula Committee and Yair strictly adheres to their rules. His shop is introducing a world of advanced technology that overnight becomes a magnet for every ultra-Orthodox household, but the increasing intrusion of modernity is an affront to the committee, leading to an inevitable conflict that forces Yair into a desperate struggle for survival.\",\n            \"language\": \"Hebrew\",\n            \"budget\": \"1400000\",\n            \"revenue\": \"0\",\n            \"runtime\": \"111\"\n        },\n        {\n            \"id\": \"129\",\n            \"title\": \"Spirited Away\",\n            \"release_date\": \"20/07/2001\",\n            \"genre\": \"Animation,Family,Fantasy\",\n            \"summary\": \"A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.\",\n            \"language\": \"Japanese\",\n            \"budget\": \"19000000\",\n            \"revenue\": \"274925095\",\n            \"runtime\": \"125\"\n        }\n    ]\n}"
 				}
 			]
 		},
@@ -328,13 +349,13 @@
 			},
 			"response": [
 				{
-					"id": "2ac92f6e-d353-4516-b07a-ae2a2773f8de",
+					"id": "3800cfde-5359-4bee-8f8a-c77d5b3ba3cc",
 					"name": "Watch history",
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://api.cinemate.link/users/watch/history?limit=50&page=0",
+							"raw": "https://api.cinemate.link/users/watch/history?limit=50&page=1",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -353,7 +374,7 @@
 								},
 								{
 									"key": "page",
-									"value": "0"
+									"value": "1"
 								}
 							]
 						}
@@ -363,15 +384,36 @@
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
+							"key": "Date",
+							"value": "Sat, 09 Sep 2023 23:10:51 GMT"
+						},
+						{
 							"key": "Content-Type",
-							"name": "Content-Type",
-							"value": "application/json",
-							"description": "",
-							"type": "text"
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "957"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "c4bcb9db-3c5f-4f82-91c9-0b227594e8db"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "LAw7XH6eSwMFdZA="
+						},
+						{
+							"key": "X-Amzn-Trace-Id",
+							"value": "Root=1-64fcfb7b-4a12850c76990518766e7c7e;Sampled=0;lineage=3e706d6b:0"
 						}
 					],
 					"cookie": [],
-					"body": "{\r\n    \"movies\": [\r\n        {\r\n            \"genre_names\": \"Action,Science Fiction,Horror\",\r\n            \"id\":\"615656\",\r\n            \"original_language\":\"English\",\r\n            \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\r\n            \"release_date\":\"2/08/2023\",\r\n            \"title\":\"Meg 2: The Trench\",\r\n            \"budget\":\"129000000\",\r\n            \"revenue\":\"352056482\",\r\n            \"runtime\":\"116\"\r\n        },\r\n        {\r\n            \"genre_names\": \"Action,Horror\",\r\n            \"id\":\"615000\",\r\n            \"original_language\":\"English\",\r\n            \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\r\n            \"release_date\":\"2/08/2019\",\r\n            \"title\":\"Meg 1: The Trench\",\r\n            \"budget\":\"129000000\",\r\n            \"revenue\":\"352056482\",\r\n            \"runtime\":\"116\"\r\n        }\r\n    ]\r\n}"
+					"body": "{\n    \"movies\": [\n        {\n            \"id\": \"12\",\n            \"title\": \"Finding Nemo\",\n            \"release_date\": \"30/05/2003\",\n            \"genre\": \"Animation,Family\",\n            \"summary\": \"Nemo, an adventurous young clownfish, is unexpectedly taken from his Great Barrier Reef home to a dentist's office aquarium. It's up to his worrisome father Marlin and a friendly but forgetful fish Dory to bring Nemo home -- meeting vegetarian sharks, surfer dude turtles, hypnotic jellyfish, hungry seagulls, and more along the way.\",\n            \"language\": \"English\",\n            \"budget\": \"94000000\",\n            \"revenue\": \"940335536\",\n            \"runtime\": \"100\"\n        },\n        {\n            \"id\": \"129\",\n            \"title\": \"Spirited Away\",\n            \"release_date\": \"20/07/2001\",\n            \"genre\": \"Animation,Family,Fantasy\",\n            \"summary\": \"A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.\",\n            \"language\": \"Japanese\",\n            \"budget\": \"19000000\",\n            \"revenue\": \"274925095\",\n            \"runtime\": \"125\"\n        }\n    ]\n}"
 				}
 			]
 		},
@@ -692,7 +734,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0Mjk5ODA3fQ.hjyEy9d1JJQk6GavubpNyTbUReFaCxWVcVw6ZUCkZMw",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MzA0MzUwfQ.wyvlaVHEsZBgfqT_5b-fzAR-L_kBs-7hgBYByhZXVJM",
 				"type": "string"
 			}
 		]
@@ -701,7 +743,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "d64a6b39-399c-4251-ab04-572ecc1ac108",
+				"id": "f879647d-3705-400f-91f2-278656e65c38",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -711,7 +753,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "61538034-5924-40d2-998c-294e4c55b37e",
+				"id": "aafb6428-33f2-4bfb-aca8-07b693a325fc",
 				"type": "text/javascript",
 				"exec": [
 					""
