@@ -9,7 +9,13 @@ from utils.util import (
     retrieve_paginated_list,
     safe_cast,
 )
-from utils.dbHelper import authenticate_user, create_user, get_movie, update_user
+from utils.dbHelper import (
+    authenticate_user,
+    create_user,
+    get_movie,
+    get_review,
+    update_user,
+)
 from utils.auth import generate_auth_token
 from utils.customTypes import Review, User
 
@@ -247,6 +253,15 @@ def get_user_reviews(event, context, user: User):
 
     params = event["queryStringParameters"]
 
+    # Get specific review
+    id = safe_cast(params["id"], int, -1)
+    if id > 0:
+        review = get_review(id)
+        if review is None:
+            return create_response(404, "Review not found")
+        return create_response(200, body={"review": review.__dict__})
+
+    # Get all reviews
     limit = safe_cast(params["limit"], int, 50)
     page = safe_cast(params["page"], int, 1)
 
