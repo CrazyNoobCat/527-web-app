@@ -84,3 +84,21 @@ def retrieve_page_and_limit(dictionary):
         limit = 50
 
     return page, limit
+
+
+def create_search_title(title: str):
+    """Strip special characters from title and conver to lower"""
+    return (
+        title.replace(",", "")
+        .replace(".", "")
+        .replace(":", "")
+        .replace(";", "")
+        .replace("!", "")
+        .replace("?", "")
+        .replace("(", "")
+        .replace(")", "")
+        .replace("'", "")
+        .replace('"', "")
+        .replace("-", "")
+        .lower()
+    )

@@ -1,5 +1,6 @@
 # Handle accessing the DB
 from decimal import Decimal
+
 import boto3
 from .customTypes import Movie, Review, User
 from passlib.hash import bcrypt
@@ -226,7 +227,7 @@ def search_movies(
 ) -> list[Movie]:
     """Search for movies based on title, genre_names, director, and genre"""
     try:
-        filter_expression = Attr("title").contains(title) & Attr(
+        filter_expression = Attr("search_title").contains(title) & Attr(
             "release_date"
         ).contains(year)
 
@@ -366,6 +367,7 @@ def create_movie(
     runtime: int,
 ) -> bool:
     """Create a movie in the DB, return True if successful else False"""
+    from .util import create_search_title
 
     try:
         # Check movie doesn't already exist
@@ -402,6 +404,7 @@ def create_movie(
                 "budget": budget,
                 "revenue": revenue,
                 "runtime": runtime,
+                "search_title": create_search_title(title),
             }
         )
 

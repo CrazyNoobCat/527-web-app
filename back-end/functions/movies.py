@@ -6,7 +6,7 @@ from utils.dbHelper import (
     search_movies,
     create_movie,
 )
-from utils.util import create_response, retrieve_page_and_limit, safe_cast, get_body
+from utils.util import create_response, create_search_title, retrieve_page_and_limit, safe_cast, get_body
 
 
 def get_movie(event, context):
@@ -22,7 +22,9 @@ def get_movie(event, context):
 
     title = safe_cast(params, "title", str, "")
     year = safe_cast(params, "year", str, "")
-    
+
+    title = create_search_title(title)
+
     page, limit = retrieve_page_and_limit(params)
 
     movies: list[Movie] = []
