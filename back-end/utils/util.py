@@ -31,15 +31,6 @@ def create_response(
     }
 
 
-def has_required_fields(body: dict, fields: list[str]) -> bool:
-    """Check if the body has the required fields"""
-    for field in fields:
-        if body.get(field) is None:
-            return False
-
-    return True
-
-
 def retrieve_paginated_list(list: list, limit: int, page: int) -> list:
     """Retrieve a paginated list"""
     start = (limit * page) - limit
@@ -76,8 +67,20 @@ def get_list_reviews(review_ids: list[str], username) -> list[Review]:
     return reviews
 
 
-def safe_cast(val, to_type, default=None):
+def safe_cast(dictionary, key, to_type, default=None):
     try:
-        return to_type(val)
-    except (ValueError, TypeError):
+        return to_type(dictionary[key])
+    except (ValueError, TypeError, KeyError):
         return default
+
+
+def retrieve_page_and_limit(dictionary):
+    """Retrieve page and limit from a dictionary, if the values are invalid or less than 1, set them to 1 and 50 respectively"""
+    page = safe_cast(dictionary, "page", int, 1)
+    limit = safe_cast(dictionary, "limit", int, 50)
+
+    if page < 1 or limit < 1:
+        page = 1
+        limit = 50
+
+    return page, limit

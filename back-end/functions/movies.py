@@ -6,25 +6,24 @@ from utils.dbHelper import (
     search_movies,
     create_movie,
 )
-from utils.util import create_response, safe_cast, get_body
+from utils.util import create_response, retrieve_page_and_limit, safe_cast, get_body
 
 
 def get_movie(event, context):
     params = event["queryStringParameters"]
 
     # Setup defaults as all parameters are options
-    id = safe_cast(params["id"], int, -1)
-    genres = params["genre"].split(",") if params["genre"] is not None else []
+    id = safe_cast(params, "id", int, -1)
+
+    genres = safe_cast(params, "genre", str, "")
+    genres = genres.split(",")
     if genres == [""]:
         genres = []
 
-    title = params["title"] if params["title"] is not None else ""
-    year = params["year"] if params["year"] is not None else ""
-    limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 1)
-
-    if page < 0 or limit < 0:
-        return create_response(400, "Invalid page or limit")
+    title = safe_cast(params, "title", str, "")
+    year = safe_cast(params, "year", str, "")
+    
+    page, limit = retrieve_page_and_limit(params)
 
     movies: list[Movie] = []
 
@@ -50,44 +49,47 @@ def get_movie(event, context):
 def add_movie(event, context):
     body = get_body(event)
 
-    if body is None:
-        return create_response(400, "Missing body")
-
-    if body["title"] is None or body["title"] == "":
+    title = safe_cast(body, "title", str, "")
+    if title == "":
         return create_response(400, "Missing title")
 
-    if body["genre_names"] is None or body["genre_names"] == "":
+    genre_names = safe_cast(body, "genre_names", str, "")
+    if genre_names == "":
         return create_response(400, "Missing genre")
 
-    if body["summary"] is None or body["summary"] == "":
+    summary = safe_cast(body, "summary", str, "")
+    if summary == "":
         return create_response(400, "Missing movie summary")
 
-    if body["runtime"] is None or body["runtime"] == "":
-        return create_response(400, "Missing runtime")
-
-    ## Anything below may be considered non-essential, so no need for them to be checked?
-    # TODO Make design decision on what is required, non requried turn to "" if empty.
-    if body["original_language"] is None or body["original_language"] == "":
+    original_language = safe_cast(body, "original_language", str, "")
+    if original_language == "":
         return create_response(400, "Missing original language")
 
-    if body["release_date"] is None or body["release_date"] == "":
+    release_date = safe_cast(body, "release_date", str, "")
+    if release_date == "":
         return create_response(400, "Missing release date")
 
-    if body["budget"] is None or body["budget"] == "":
+    runtime = safe_cast(body, "runtime", int, 0)
+    if runtime < 1:
+        return create_response(400, "Missing runtime")
+
+    budget = safe_cast(body, "budget", int, 0)
+    if budget < 1:
         return create_response(400, "Missing budget")
 
-    if body["revenue"] is None or body["revenue"] == "":
+    revenue = safe_cast(body, "revenue", int, 0)
+    if revenue < 1:
         return create_response(400, "Missing revenue")
 
     result, message = create_movie(
-        body["title"],
-        body["release_date"],
-        body["genre_names"],
-        body["summary"],
-        body["original_language"],
-        int(body["budget"]),
-        int(body["revenue"]),
-        int(body["runtime"]),
+        title,
+        release_date,
+        genre_names,
+        summary,
+        original_language,
+        budget,
+        revenue,
+        runtime,
     )
 
     if result is False:
@@ -99,17 +101,19 @@ def add_movie(event, context):
 def get_movie_reviews(event, context):
     params = event["queryStringParameters"]
 
-    id = params["id"] if params["id"] else ""
+    id = safe_cast(params, "id", str, "")
 
     if id == "":
         return create_response(400, "Missing id")
 
-    limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 1)
+    page, limit = retrieve_page_and_limit(params)
 
     reviews = get_all_movie_reviews(id, limit, page)
 
     if reviews is None:
         return create_response(404, "Movie or Reviews not found")
+
+    # Serialize the reviews
+    reviews = [review.__dict__ for review in reviews]
 
     return create_response(200, body={"reviews": reviews})

@@ -5,14 +5,13 @@ from utils.util import (
     get_body,
     get_list_movies,
     get_list_reviews,
-    has_required_fields,
+    retrieve_page_and_limit,
     retrieve_paginated_list,
     safe_cast,
 )
 from utils.dbHelper import (
     authenticate_user,
     create_user,
-    get_movie,
     get_review,
     update_user,
 )
@@ -24,11 +23,14 @@ def login(event, context):
     body = get_body(event)
     requiredFields = ["username", "password"]
 
-    if not has_required_fields(body, requiredFields):
+    username = safe_cast(body, "username", str, "")
+    password = safe_cast(body, "password", str, "")
+
+    if username == "" or password == "":
         return create_response(400, "Missing required fields")
 
     # Find matching user
-    user = authenticate_user(body["username"], body["password"])
+    user = authenticate_user(username, password)
 
     if user is None:
         return create_response(401, "Invalid username or password")
@@ -45,14 +47,16 @@ def login(event, context):
 
 
 def register(event, context):
-    # TODO: Add route logs
     body = get_body(event)
-    requiredFields = ["username", "password", "email"]
 
-    if not has_required_fields(body, requiredFields):
+    username = safe_cast(body, "username", str, "")
+    password = safe_cast(body, "password", str, "")
+    email = safe_cast(body, "email", str, "")
+
+    if username == "" or password == "" or email == "":
         return create_response(400, "Missing required fields")
 
-    (success, message) = create_user(body["username"], body["email"], body["password"])
+    (success, message) = create_user(username=username, password=password, email=email)
 
     if not success:
         return create_response(400, message)
@@ -75,14 +79,13 @@ def add_watchlist_movie(event, context, user: User):
 
     body = get_body(event)
 
-    if body is None:
-        return create_response(400, "Missing body")
+    id = safe_cast(body, "id", str, "")
 
-    if body["id"] is None or body["id"] == "":
-        return create_response(400, "Missing id")
+    if id == "":
+        return create_response(400, "Missing valid id")
 
     watchlist = user.watch_list.split(",")
-    watchlist.append(body["id"])
+    watchlist.append(id)
 
     # Ensure no duplicates
     user.watch_list = ",".join(set(watchlist))
@@ -104,11 +107,11 @@ def remove_watchlist_movie(event, context, user: User):
         # Shouldn't be reachable but just in case
         return create_response(404, "User not found")
 
-    body = event["queryStringParameters"]
-    id = body["id"]
+    params = event["queryStringParameters"]
+    id = safe_cast(params, "id", str, "")
 
-    if id is None or id == "":
-        return create_response(400, "Missing id")
+    if id == "":
+        return create_response(400, "Missing valid id")
 
     watchlist = user.watch_list.split(",")
 
@@ -139,8 +142,7 @@ def get_watchlist(event, context, user: User):
 
     params = event["queryStringParameters"]
 
-    limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 1)
+    page, limit = retrieve_page_and_limit(params)
 
     watchlist = user.watch_list.split(",")
 
@@ -164,14 +166,13 @@ def add_watched_movie(event, context, user: User):
 
     body = get_body(event)
 
-    if body is None:
-        return create_response(400, "Missing body")
+    id = safe_cast(body, "id", str, "")
 
-    if body["id"] is None or body["id"] == "":
-        return create_response(400, "Missing id")
+    if id == "":
+        return create_response(400, "Missing valid id")
 
     watch_history = user.watch_history.split(",")
-    watch_history.append(body["id"])
+    watch_history.append(id)
 
     user.watch_history = ",".join(set(watch_history))
 
@@ -192,10 +193,11 @@ def remove_watched_movie(event, context, user: User):
         # Shouldn't be reachable but just in case
         return create_response(404, "User not found")
 
-    body = event["queryStringParameters"]
-    id = body["id"]
+    params = event["queryStringParameters"]
 
-    if id is None or id == "":
+    id = safe_cast(params, "id", str, "")
+
+    if id == "":
         return create_response(400, "Missing id")
 
     history = user.watch_history.split(",")
@@ -227,8 +229,7 @@ def get_watch_history(event, context, user: User):
 
     params = event["queryStringParameters"]
 
-    limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 1)
+    page, limit = retrieve_page_and_limit(params)
 
     history = user.watch_history.split(",")
     paginated_history = retrieve_paginated_list(history, limit, page)
@@ -254,7 +255,7 @@ def get_user_reviews(event, context, user: User):
     params = event["queryStringParameters"]
 
     # Get specific review
-    id = safe_cast(params["id"], int, -1)
+    id = safe_cast(params, "id", int, -1)
     if id > 0:
         review = get_review(id)
         if review is None:
@@ -262,8 +263,7 @@ def get_user_reviews(event, context, user: User):
         return create_response(200, body={"review": review.__dict__})
 
     # Get all reviews
-    limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 1)
+    page, limit = retrieve_page_and_limit(params)
 
     reviews = user.reviews.split(",")
     paginated_reviews = retrieve_paginated_list(reviews, limit, page)
