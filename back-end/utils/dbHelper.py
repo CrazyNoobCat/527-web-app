@@ -65,32 +65,54 @@ def create_user(username: str, email: str, password: str):
 def update_user(user: User):
     """Update a user in the DB, return True if successful else False also a message to return to the user"""
     try:
+        key = {
+            "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+            "username": user.username,
+        }
         # Check if username already exists
-        result: dict = userTable.get_item(
-            Key={
-                "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-                "username": user.username,
-            }
-        )
+        result: dict = userTable.get_item(Key=key)
 
         originalUser: dict = result.get("Item")
 
         if originalUser is None:
             return (False, "User does not exist")
 
-        # TODO: optimising by only updating the fields that have changed
+        # Only update the fields that have changed
+        update_expression = "set "
+        expression_attribute_values = {}
+
+        if user.email != str(originalUser.get("email")):
+            update_expression += "email=:e, "
+            expression_attribute_values[":e"] = user.email
+
+        if user.reviews != str(originalUser.get("reviews")):
+            update_expression += "reviews=:r, "
+            expression_attribute_values[":r"] = user.reviews
+
+        if user.watch_list != str(originalUser.get("watch_list")):
+            update_expression += "watch_list=:w, "
+            expression_attribute_values[":w"] = user.watch_list
+
+        if user.watch_history != str(originalUser.get("watch_history")):
+            update_expression += "watch_history=:h, "
+            expression_attribute_values[":h"] = user.watch_history
+
+        if user.password != str(originalUser.get("password")):
+            update_expression += "password=:p, "
+            expression_attribute_values[
+                ":p"
+            ] = user.password  # We assume the password is already hashed
+
+        if update_expression == "set ":
+            return (True, "Nothing to update")
+
+        update_expression = update_expression[:-2]  # Remove the last comma and space
 
         # Update user in DB
         result = userTable.update_item(
-            Key={"username": user.username},
-            UpdateExpression="set email=:e, reviews=:r, watch_list=:w, watch_history=:h",
-            ExpressionAttributeValues={
-                ":e": user.email,
-                ":r": user.reviews,
-                ":w": user.watch_list,
-                ":h": user.watch_history,
-            },
-            ReturnValues="UPDATED_NEW",
+            Key=key,
+            UpdateExpression=update_expression,
+            ExpressionAttributeValues=expression_attribute_values,
         )
 
         return (True, "User updated successfully")
@@ -147,6 +169,7 @@ def get_user(username) -> User | None:
         if user is not None:
             return User(
                 username=user.get("username"),
+                password=user.get("password"),
                 email=user.get("email"),
                 reviews=user.get("reviews"),
                 watch_list=user.get("watch_list"),
@@ -167,7 +190,7 @@ def get_movie(id: int) -> Movie | None:
 
         key = {
             "pt_key": MOVIE_PARTITION_KEY,  # Only searching for the movie partition
-            "id": id,
+            "id": Decimal(id),
         }
 
         result: dict = movieTable.get_item(Key=key)
@@ -254,6 +277,7 @@ def query_page_movies(
     filter_expression,
     max_results,
     page=1,
+    key_expression=None,
     partition_key=MOVIE_PARTITION_KEY,
 ) -> list[Movie]:
     """
@@ -265,6 +289,9 @@ def query_page_movies(
 
     batch_size = max(500, max_results)
 
+    if key_expression is None:
+        key_expression = Key("pt_key").eq(partition_key)
+
     try:
         for cp in range(page):  # Query till current page count
             results = []
@@ -273,7 +300,7 @@ def query_page_movies(
 
                 if last_evaluated_key is None:
                     response = movieTable.query(
-                        KeyConditionExpression=Key("pt_key").eq(partition_key),
+                        KeyConditionExpression=key_expression,
                         FilterExpression=filter_expression,
                         Select="ALL_ATTRIBUTES",
                         Limit=batch_size,
@@ -281,7 +308,7 @@ def query_page_movies(
 
                 else:
                     response = movieTable.query(
-                        KeyConditionExpression=Key("pt_key").eq(partition_key),
+                        KeyConditionExpression=key_expression,
                         FilterExpression=filter_expression,
                         Select="ALL_ATTRIBUTES",
                         ExclusiveStartKey=last_evaluated_key,
@@ -354,7 +381,7 @@ def create_movie(
         movieTable.put_item(
             Item={
                 "pt_key": MOVIE_PARTITION_KEY,
-                "id": id,
+                "id": Decimal(id),
                 "title": title,
                 "genre": genre,
                 "summary": summary,
@@ -385,18 +412,19 @@ def get_review(id, username) -> Review | None:
         if movie is None:
             return None
 
-        result = movieTable.get_item(
-            Key={
-                "pt_key": REVIEW_PARTITION_KEY,  # Only searching for the review partition
-                "id": id,
-                "username": username,
-            }
+        key_expression = Key("pt_key").eq(REVIEW_PARTITION_KEY) & Key("id").eq(Decimal(id))
+
+        result = query_page_movies(
+            filter_expression=Attr("username").eq(username),
+            max_results=1,
+            page=1,
+            key_expression=key_expression,
         )
 
-        review = result.get("Item")
-
-        if review is None:
+        if len(result) == 0:
             return None
+
+        review = result[0]
 
         return Review(
             movie=movie,
@@ -412,7 +440,7 @@ def get_review(id, username) -> Review | None:
 
 def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
     try:
-        filter_expression = str(Key("id").eq(id))
+        filter_expression = Key("id").eq(Decimal(id))
 
         rawReviews = query_page_movies(
             filter_expression,

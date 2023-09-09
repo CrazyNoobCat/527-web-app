@@ -42,12 +42,12 @@ def has_required_fields(body: dict, fields: list[str]) -> bool:
 
 def retrieve_paginated_list(list: list, limit: int, page: int) -> list:
     """Retrieve a paginated list"""
-    start = limit * page
+    start = (limit * page) - limit
 
     if start >= len(list):
         return []
 
-    end = min(limit * (page + 1), len(list))
+    end = min((limit * (page + 1)) - limit, len(list))
 
     return list[start:end]
 

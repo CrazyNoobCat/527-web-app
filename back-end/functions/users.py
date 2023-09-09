@@ -78,7 +78,12 @@ def add_watchlist_movie(event, context, user: User):
     watchlist = user.watch_list.split(",")
     watchlist.append(body["id"])
 
-    user.watch_list = ",".join(watchlist)
+    # Ensure no duplicates
+    user.watch_list = ",".join(set(watchlist))
+
+    # Remove comma if first element is empty
+    if user.watch_list[0] == ",":
+        user.watch_list = user.watch_list[1:]
 
     result, message = update_user(user)
 
@@ -100,7 +105,7 @@ def get_watchlist(event, context, user: User):
     params = event["queryStringParameters"]
 
     limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 0)
+    page = safe_cast(params["page"], int, 1)
 
     watchlist = user.watch_list.split(",")
 
@@ -110,6 +115,9 @@ def get_watchlist(event, context, user: User):
         return create_response(200, body={"movies": []})
 
     movies = get_list_movies(paginated_watchlist)
+
+    # Serialize the movies
+    movies = [movie.__dict__ for movie in movies]
 
     return create_response(200, body={"movies": movies})
 
@@ -130,7 +138,11 @@ def add_watched_movie(event, context, user: User):
     watch_history = user.watch_history.split(",")
     watch_history.append(body["id"])
 
-    user.watch_history = ",".join(watch_history)
+    user.watch_history = ",".join(set(watch_history))
+
+    # Remove comma if first element is empty
+    if user.watch_history[0] == ",":
+        user.watch_history = user.watch_history[1:]
 
     result, message = update_user(user)
 
@@ -152,17 +164,22 @@ def get_watch_history(event, context, user: User):
     params = event["queryStringParameters"]
 
     limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 0)
+    page = safe_cast(params["page"], int, 1)
 
     history = user.watch_history.split(",")
     paginated_history = retrieve_paginated_list(history, limit, page)
+
+    print("paginated_history: ", paginated_history)
 
     if paginated_history == [""]:
         return create_response(200, body={"movies": []})
 
     movies = get_list_movies(paginated_history)
 
-    return movies
+    # Serialize the movies
+    movies = [movie.__dict__ for movie in movies]
+
+    return create_response(200, body={"movies": movies})
 
 
 def get_user_reviews(event, context, user: User):
@@ -173,7 +190,7 @@ def get_user_reviews(event, context, user: User):
     params = event["queryStringParameters"]
 
     limit = safe_cast(params["limit"], int, 50)
-    page = safe_cast(params["page"], int, 0)
+    page = safe_cast(params["page"], int, 1)
 
     reviews = user.reviews.split(",")
     paginated_reviews = retrieve_paginated_list(reviews, limit, page)
