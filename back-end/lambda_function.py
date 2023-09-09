@@ -10,9 +10,11 @@ from functions.users import (
     get_user_reviews,
     get_watch_history,
     get_watchlist,
+    remove_watchlist_movie,
     login,
     register,
     get_user,
+    remove_watched_movie,
 )
 from functions.movies import get_movie, get_movie_reviews, add_movie
 
@@ -69,6 +71,12 @@ def lambda_handler(event, context):
 
     if method == "POST" and path == "/users/watch/history":
         return add_watched_movie(event, context, user)
+
+    if method == "DELETE" and path == "/users/watch/list":
+        return remove_watchlist_movie(event, context, user)
+
+    if method == "DELETE" and path == "/users/watch/history":
+        return remove_watched_movie(event, context, user)
 
     # Movie Routes
 

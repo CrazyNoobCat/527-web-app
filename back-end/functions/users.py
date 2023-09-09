@@ -93,8 +93,37 @@ def add_watchlist_movie(event, context, user: User):
     return create_response(200, "Watchlist updated")
 
 
-def remove_watchlist_movie(event, context):
-    pass
+def remove_watchlist_movie(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
+
+    body = event["queryStringParameters"]
+    id = body["id"]
+
+    if id is None or id == "":
+        return create_response(400, "Missing id")
+
+    watchlist = user.watch_list.split(",")
+
+    if id in watchlist:
+        watchlist.remove(id)
+    else:
+        return create_response(400, "Movie not in watchlist")
+
+    user.watch_list = ",".join(set(watchlist))
+
+    # Remove comma if first element is empty
+    if len(user.watch_list) != 0:
+        if user.watch_list[0] == ",":
+            user.watch_list = user.watch_list[1:]
+
+    result, message = update_user(user)
+
+    if result is False:
+        return create_response(500, message)
+
+    return create_response(200, "Watchlist updated")
 
 
 def get_watchlist(event, context, user: User):
@@ -152,8 +181,37 @@ def add_watched_movie(event, context, user: User):
     return create_response(200, "Watch history updated")
 
 
-def remove_watched_movie(event, context):
-    pass
+def remove_watched_movie(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
+
+    body = event["queryStringParameters"]
+    id = body["id"]
+
+    if id is None or id == "":
+        return create_response(400, "Missing id")
+
+    history = user.watch_history.split(",")
+
+    if id in history:
+        history.remove(id)
+    else:
+        return create_response(400, "Movie not in history")
+
+    user.watch_history = ",".join(set(history))
+
+    # Remove comma if first element is empty
+    if len(user.watch_history) != 0:
+        if user.watch_history[0] == ",":
+            user.watch_history = user.watch_history[1:]
+
+    result, message = update_user(user)
+
+    if result is False:
+        return create_response(500, message)
+
+    return create_response(200, "History updated")
 
 
 def get_watch_history(event, context, user: User):
