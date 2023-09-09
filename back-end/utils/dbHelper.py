@@ -244,6 +244,7 @@ def search_movies(
             )
 
         return movies
+
     except Exception as e:
         print("search_movies: Error: ", e)
         return []
@@ -330,14 +331,20 @@ def create_movie(
     try:
         # Check movie doesn't already exist
         year = release_date.split("/")[-1]
-        movies = search_movies(title=title, year=year, genre=genre, limit=1, page=1)
+        movies = search_movies(
+            title=title, year=year, genre_names=genre, limit=1, page=1
+        )
 
         # Movie found cannot add duplicate
         if len(movies) > 0:
-            return False
+            return (False, "Movie Exists in database")
 
         # Retrieve the next id
-        response = movieTable.query(ScanIndexForward=False, Limit=1)
+        response = movieTable.query(
+            KeyConditionExpression=Key("pt_key").eq(MOVIE_PARTITION_KEY),
+            ScanIndexForward=False,
+            Limit=1,
+        )
 
         last_item = response["Items"][0]
 
@@ -346,6 +353,7 @@ def create_movie(
         # Create movie in DB
         movieTable.put_item(
             Item={
+                "pt_key": MOVIE_PARTITION_KEY,
                 "id": id,
                 "title": title,
                 "genre": genre,
@@ -358,11 +366,11 @@ def create_movie(
             }
         )
 
-        return True
+        return (True, "Movie created successfully")
 
     except Exception as e:
         print("Error creating movie:", e)
-        return False
+        return (False, "Error creating movie")
 
 
 # Create a movie

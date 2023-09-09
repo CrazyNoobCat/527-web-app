@@ -4,8 +4,9 @@ from utils.dbHelper import (
     get_all_movie_reviews,
     get_movie as db_get_movie,
     search_movies,
+    create_movie,
 )
-from utils.util import create_response, safe_cast
+from utils.util import create_response, safe_cast, get_body
 
 
 def get_movie(event, context):
@@ -47,7 +48,52 @@ def get_movie(event, context):
 
 
 def add_movie(event, context):
-    pass
+    body = get_body(event)
+
+    if body is None:
+        return create_response(400, "Missing body")
+
+    if body["title"] is None or body["title"] == "":
+        return create_response(400, "Missing title")
+
+    if body["genre_names"] is None or body["genre_names"] == "":
+        return create_response(400, "Missing genre")
+
+    if body["summary"] is None or body["summary"] == "":
+        return create_response(400, "Missing movie summary")
+
+    if body["runtime"] is None or body["runtime"] == "":
+        return create_response(400, "Missing runtime")
+
+    ## Anything below may be considered non-essential, so no need for them to be checked?
+    # TODO Make design decision on what is required, non requried turn to "" if empty.
+    if body["original_language"] is None or body["original_language"] == "":
+        return create_response(400, "Missing original language")
+
+    if body["release_date"] is None or body["release_date"] == "":
+        return create_response(400, "Missing release date")
+
+    if body["budget"] is None or body["budget"] == "":
+        return create_response(400, "Missing budget")
+
+    if body["revenue"] is None or body["revenue"] == "":
+        return create_response(400, "Missing revenue")
+
+    result, message = create_movie(
+        body["title"],
+        body["release_date"],
+        body["genre_names"],
+        body["summary"],
+        body["original_language"],
+        int(body["budget"]),
+        int(body["revenue"]),
+        int(body["runtime"]),
+    )
+
+    if result is False:
+        return create_response(500, message)
+
+    return create_response(200, message)
 
 
 def get_movie_reviews(event, context):

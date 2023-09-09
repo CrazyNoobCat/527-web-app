@@ -14,7 +14,7 @@ from functions.users import (
     register,
     get_user,
 )
-from functions.movies import get_movie, get_movie_reviews
+from functions.movies import get_movie, get_movie_reviews, add_movie
 
 
 def lambda_handler(event, context):
@@ -77,5 +77,8 @@ def lambda_handler(event, context):
 
     if method == "GET" and path == "/movies/reviews":
         return get_movie_reviews(event, context)
+
+    if method == "POST" and path == "/movies":
+        return add_movie(event, context)
 
     return create_response(404, "Route not found")
