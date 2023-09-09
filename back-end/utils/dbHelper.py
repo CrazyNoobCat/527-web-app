@@ -288,13 +288,15 @@ def query_page_movies(
     last_evaluated_key = None
 
     batch_size = max(500, max_results)
+    cp = 0
 
     if key_expression is None:
         key_expression = Key("pt_key").eq(partition_key)
 
     try:
-        for cp in range(page):  # Query till current page count
+        while cp < page:  # Query till current page count
             results = []
+            temp = []
             while len(results) < max_results:  # Ensure we have enough results per page
                 response = None
 
@@ -316,14 +318,24 @@ def query_page_movies(
                     )
 
                 results.extend(response["Items"])
+                temp = results
 
-                if len(results) >= max_results:
-                    results = results[:max_results]
-                    # TODO: Perform some fancy logic to prevent needless queries if enough data exists
+                # Perform some smart logic to itterate through retrieved data to reduce DB calls
+                while len(temp) >= max_results:
+                    results = temp[:max_results]
+                    temp = temp[max_results:]
+
+                    cp += 1
+
+                    if cp == page:
+                        break
+
                     last_evaluated_key = {
                         "id": Decimal(results[max_results - 1]["id"]),
                         "pt_key": partition_key,
                     }
+
+                if len(results) == max_results:
                     break
                 else:
                     last_evaluated_key = response.get("LastEvaluatedKey")
@@ -400,11 +412,6 @@ def create_movie(
         return (False, "Error creating movie")
 
 
-# Create a movie
-
-# Update a movie
-
-
 def get_review(id, username) -> Review | None:
     try:
         movie = get_movie(id)
@@ -412,7 +419,9 @@ def get_review(id, username) -> Review | None:
         if movie is None:
             return None
 
-        key_expression = Key("pt_key").eq(REVIEW_PARTITION_KEY) & Key("id").eq(Decimal(id))
+        key_expression = Key("pt_key").eq(REVIEW_PARTITION_KEY) & Key("id").eq(
+            Decimal(id)
+        )
 
         result = query_page_movies(
             filter_expression=Attr("username").eq(username),
