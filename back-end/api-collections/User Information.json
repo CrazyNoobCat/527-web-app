@@ -630,7 +630,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 11,\r\n    \"summary\": \"This is the users review of the movie\",\r\n    \"rating\": 4\r\n}",
+					"raw": "{\r\n    \"id\": 11,\r\n    \"summary\": \"gotta love us some star wars\",\r\n    \"rating\": 4\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -663,7 +663,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "https://api.cinemate.link/users/reviews?id=123123",
+					"raw": "https://api.cinemate.link/users/reviews?id=11",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -677,7 +677,7 @@
 					"query": [
 						{
 							"key": "id",
-							"value": "123123",
+							"value": "11",
 							"description": "movie id"
 						}
 					]
@@ -759,7 +759,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MzM1NTEyfQ.xQaJB39IpNtHZlM0ovtWSU6IRvcyIS33Oc2DE6F82ZE",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MzM2ODQ0fQ.hp8PimEDd0AmKf9pS8ZTcSUCDPSehDuCjaC0KQb-wbw",
 				"type": "string"
 			}
 		]
@@ -768,7 +768,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "c39eadec-8ef6-44d6-94d0-eef9c20f90a7",
+				"id": "df6640db-bd76-4b8a-9d0b-eed9360e1fa3",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -778,7 +778,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "db19f3d1-5d09-4b47-a9ac-7cc39985748b",
+				"id": "9ca7e31e-8fda-4670-9efb-52ab3a04f5c0",
 				"type": "text/javascript",
 				"exec": [
 					""
