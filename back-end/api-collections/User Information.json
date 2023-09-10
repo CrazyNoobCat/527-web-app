@@ -32,7 +32,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"id\": \"129\"\n}",
+					"raw": "{\n\t\"id\": \"1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -446,7 +446,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"bestUser\",\n    \"email\": \"best@bestemail.com\",\n    \"password\": \"password-to-be-hashed\"\n}",
+					"raw": "{\n    \"username\": \"bestUser2\",\n    \"email\": \"best@bestemail.com\",\n    \"password\": \"password-to-be-hashed\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -517,7 +517,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://api.cinemate.link/users/reviews?id&limit=50&page=0",
+					"raw": "https://api.cinemate.link/users/reviews?id=&limit=50&page=0",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -531,9 +531,8 @@
 					"query": [
 						{
 							"key": "id",
-							"value": null,
-							"description": "movie id, if specified will only retrieve this review",
-							"type": "text"
+							"value": "",
+							"description": "movie id, if specified will only retrieve this review"
 						},
 						{
 							"key": "limit",
@@ -548,13 +547,13 @@
 			},
 			"response": [
 				{
-					"id": "009ccd68-143e-4d05-aa9e-9eb1d2a09e7e",
+					"id": "e903a1a1-631a-4812-8baf-8707a3376c8d",
 					"name": "User Reviews",
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://api.cinemate.link/users/reviews?limit=50&page=0",
+							"raw": "https://api.cinemate.link/users/reviews?id=&limit=50&page=0",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -566,6 +565,11 @@
 								"reviews"
 							],
 							"query": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "movie id, if specified will only retrieve this review"
+								},
 								{
 									"key": "limit",
 									"value": "50"
@@ -582,15 +586,36 @@
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
+							"key": "Date",
+							"value": "Sun, 10 Sep 2023 07:45:49 GMT"
+						},
+						{
 							"key": "Content-Type",
-							"name": "Content-Type",
-							"value": "application/json",
-							"description": "",
-							"type": "text"
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1275"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "bfbdf4d8-543c-44c5-a25f-cb2fbf38563a"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "LB8XEFYtywMFdcA="
+						},
+						{
+							"key": "X-Amzn-Trace-Id",
+							"value": "Root=1-64fd742c-4170654169ae4f852bbfc21b;Sampled=0;lineage=3e706d6b:0"
 						}
 					],
 					"cookie": [],
-					"body": "{\r\n    \"reviews\": [\r\n        {\r\n            \"movie\": {\r\n                \"genre_names\": \"Action,Science Fiction,Horror\",\r\n                \"id\":\"615656\",\r\n                \"original_language\":\"English\",\r\n                \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\r\n                \"release_date\":\"2/08/2023\",\r\n                \"title\":\"Meg 2: The Trench\",\r\n                \"budget\":\"129000000\",\r\n                \"revenue\":\"352056482\",\r\n                \"runtime\":\"116\"\r\n            },\r\n            \"summary\": \"The movie overall was fantastic\",\r\n            \"rating\": 3\r\n        },\r\n        {\r\n            \"movie\": {\r\n                \"genre_names\": \"Action,Science Fiction,Horror\",\r\n                \"id\":\"615656\",\r\n                \"original_language\":\"English\",\r\n                \"summary\":\"An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.\",\r\n                \"release_date\":\"2/08/2023\",\r\n                \"title\":\"Meg 2: The Trench\",\r\n                \"budget\":\"129000000\",\r\n                \"revenue\":\"352056482\",\r\n                \"runtime\":\"116\"\r\n            },\r\n            \"summary\": \"The movie overall was fantastic\",\r\n            \"rating\": 3\r\n        }\r\n    ]\r\n}"
+					"body": "{\n    \"reviews\": [\n        {\n            \"movie\": {\n                \"id\": \"12\",\n                \"title\": \"Finding Nemo\",\n                \"release_date\": \"30/05/2003\",\n                \"genre\": \"Animation,Family\",\n                \"summary\": \"Nemo, an adventurous young clownfish, is unexpectedly taken from his Great Barrier Reef home to a dentist's office aquarium. It's up to his worrisome father Marlin and a friendly but forgetful fish Dory to bring Nemo home -- meeting vegetarian sharks, surfer dude turtles, hypnotic jellyfish, hungry seagulls, and more along the way.\",\n                \"language\": \"English\",\n                \"budget\": \"94000000\",\n                \"revenue\": \"940335536\",\n                \"runtime\": \"100\"\n            },\n            \"username\": \"bestUser\",\n            \"summary\": \"This is the users review of the movie\",\n            \"rating\": \"4\"\n        },\n        {\n            \"movie\": {\n                \"id\": \"11\",\n                \"title\": \"Star Wars\",\n                \"release_date\": \"25/05/1977\",\n                \"genre\": \"Adventure,Action,Science Fiction\",\n                \"summary\": \"Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.\",\n                \"language\": \"English\",\n                \"budget\": \"11000000\",\n                \"revenue\": \"775398007\",\n                \"runtime\": \"121\"\n            },\n            \"username\": \"bestUser\",\n            \"summary\": \"This is the users review of the movie\",\n            \"rating\": \"4\"\n        }\n    ]\n}"
 				}
 			]
 		},
@@ -605,7 +630,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 123123,\r\n    \"summary\": \"This is the users review of the movie\",\r\n    \"rating\": 4\r\n}",
+					"raw": "{\r\n    \"id\": 11,\r\n    \"summary\": \"This is the users review of the movie\",\r\n    \"rating\": 4\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -734,7 +759,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MzA3MTAzfQ.iPN-A8C-vrvyjBN1p-_kVIf0FQd8EMqQGCUuR4fl0oc",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MzM1NTEyfQ.xQaJB39IpNtHZlM0ovtWSU6IRvcyIS33Oc2DE6F82ZE",
 				"type": "string"
 			}
 		]
@@ -743,7 +768,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "69dab84b-53bf-45bc-b7e8-ebea415f03a5",
+				"id": "c39eadec-8ef6-44d6-94d0-eef9c20f90a7",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -753,7 +778,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "23bdcc98-fc42-4ed4-b069-6e52a89610ca",
+				"id": "db19f3d1-5d09-4b47-a9ac-7cc39985748b",
 				"type": "text/javascript",
 				"exec": [
 					""

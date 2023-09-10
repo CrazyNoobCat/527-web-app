@@ -224,7 +224,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://api.cinemate.link/movies/reviews?id=123123&limit=50&page=0",
+					"raw": "https://api.cinemate.link/movies/reviews?id=12&limit=50&page=1",
 					"protocol": "https",
 					"host": [
 						"api",
@@ -238,7 +238,7 @@
 					"query": [
 						{
 							"key": "id",
-							"value": "123123",
+							"value": "12",
 							"description": "movie id"
 						},
 						{
@@ -247,21 +247,20 @@
 						},
 						{
 							"key": "page",
-							"value": "0",
-							"description": "page index starts at 0"
+							"value": "1"
 						}
 					]
 				}
 			},
 			"response": [
 				{
-					"id": "2e0adad0-bf2e-4246-aaa7-f431c4bbc080",
+					"id": "74368e7c-06da-48b7-82b6-de124679cd43",
 					"name": "Movie Reviews",
 					"originalRequest": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://api.cinemate.link/movies/reviews/?id=123123&limit=50&page=0",
+							"raw": "https://api.cinemate.link/movies/reviews?id=12&limit=50&page=1",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -270,13 +269,12 @@
 							],
 							"path": [
 								"movies",
-								"reviews",
-								""
+								"reviews"
 							],
 							"query": [
 								{
 									"key": "id",
-									"value": "123123",
+									"value": "12",
 									"description": "movie id"
 								},
 								{
@@ -285,8 +283,7 @@
 								},
 								{
 									"key": "page",
-									"value": "0",
-									"description": "page index starts at 0"
+									"value": "1"
 								}
 							]
 						}
@@ -296,15 +293,36 @@
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
+							"key": "Date",
+							"value": "Sun, 10 Sep 2023 07:46:22 GMT"
+						},
+						{
 							"key": "Content-Type",
-							"name": "Content-Type",
-							"value": "application/json",
-							"description": "",
-							"type": "text"
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "200"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "fde427ee-1e6a-4401-9335-566dbb0b95ed"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "LB8cUEuCywMFj2w="
+						},
+						{
+							"key": "X-Amzn-Trace-Id",
+							"value": "Root=1-64fd744e-3c45e9346a261c7f635c7799;Sampled=0;lineage=3e706d6b:0"
 						}
 					],
 					"cookie": [],
-					"body": "{\r\n    \"reviews\": [\r\n        {\r\n            \"username\": \"bestUser\",\r\n            \"summary\": \"the users reviews\",\r\n            \"rating\": 4\r\n        },\r\n        {\r\n            \"username\": \"another user\",\r\n            \"summary\": \"the users reviews\",\r\n            \"rating\": 2\r\n        }\r\n    ]\r\n}"
+					"body": "{\n    \"reviews\": [\n        {\n            \"username\": \"bestUser\",\n            \"summary\": \"This is the users review of the movie\",\n            \"rating\": \"4\"\n        },\n        {\n            \"username\": \"bestUser2\",\n            \"summary\": \"This is the users review of the movie\",\n            \"rating\": \"4\"\n        }\n    ]\n}"
 				}
 			]
 		}
@@ -314,7 +332,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MzA3MTAzfQ.iPN-A8C-vrvyjBN1p-_kVIf0FQd8EMqQGCUuR4fl0oc",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyMiIsImV4cCI6MTY5NDMzNTE2OX0._oC21-LAJUN0Dz5GyPclYDexERTYgc6y5-KIHwxyDEs",
 				"type": "string"
 			}
 		]
@@ -323,7 +341,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "3fe60120-d388-427c-8e11-aeb7f5268428",
+				"id": "8548ca4f-7a6d-49a2-8be2-dcba2d94e3a2",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -333,7 +351,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "875dfa01-5b1b-47cf-8b7a-c09266eb779c",
+				"id": "ce15ca0f-e845-45fa-bb6f-c457a24b897e",
 				"type": "text/javascript",
 				"exec": [
 					""
