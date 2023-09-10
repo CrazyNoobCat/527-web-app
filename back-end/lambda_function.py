@@ -15,6 +15,7 @@ from functions.users import (
     register,
     get_user,
     remove_watched_movie,
+    create_review,
 )
 from functions.movies import get_movie, get_movie_reviews, add_movie
 
@@ -65,6 +66,9 @@ def lambda_handler(event, context):
 
     if method == "GET" and path == "/users/reviews":
         return get_user_reviews(event, context, user)
+
+    if method == "POST" and path == "/users/reviews":
+        return create_review(event, context, user)
 
     if method == "POST" and path == "/users/watch/list":
         return add_watchlist_movie(event, context, user)

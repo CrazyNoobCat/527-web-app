@@ -14,6 +14,8 @@ from utils.dbHelper import (
     create_user,
     get_review,
     update_user,
+    get_movie,
+    create_user_review,
 )
 from utils.auth import generate_auth_token
 from utils.customTypes import Review, User
@@ -279,8 +281,52 @@ def get_user_reviews(event, context, user: User):
     return create_response(200, body={"reviews": reviews})
 
 
-def create_review(event, context):
-    pass
+def create_review(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
+
+    ## Check params
+    params = get_body(event)
+    id = safe_cast(params, "id", str, "")
+    summary = safe_cast(params, "summary", str, "")
+    rating = safe_cast(params, "rating", str, "")
+
+    if id == "":
+        return create_response(400, "Missing valid id")
+    if summary == "":
+        return create_response(400, "Missing summary")
+    if rating == "":
+        return create_response(400, "Missing rating")
+
+    ## Create a review
+    movie = get_movie(id)
+
+    if movie is None:
+        return create_response(400, "Movie not found.")
+
+    review_list = user.reviews.split(",")
+    review_list.append(id)
+
+    user.reviews = ",".join(set(review_list))
+
+    # Remove comma if first element is empty
+    if user.reviews[0] == ",":
+        user.reviews = user.reviews[1:]
+
+    print("****review: ", review_list)
+    print("****user reviews: ", user.reviews)
+    user_result, user_message = update_user(user)
+
+    if user_result is False:
+        return create_response(500, user_message)
+
+    result, message = create_user_review(movie, user.username, summary, int(rating))
+
+    if result is False:
+        return create_response(500, message)
+
+    return create_response(200, "Successfully created review")
 
 
 def update_review(event, context):

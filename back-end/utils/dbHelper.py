@@ -481,3 +481,44 @@ def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
     except Exception as e:
         print("get_all_movie_reviews: Error:", e)
         return None
+
+
+def create_user_review(
+    _movie: Movie,
+    _username: str,
+    _summary: str,
+    _rating: int,
+) -> bool:
+    """Create a movie in the DB, return True if successful else False"""
+    from .util import create_search_title
+
+    try:
+        key_expression = Key("pt_key").eq(REVIEW_PARTITION_KEY) & Key("id").eq(
+            Decimal(_movie.id)
+        )
+
+        result = query_page_movies(
+            filter_expression=Attr("username").eq(_username),
+            max_results=1,
+            page=1,
+            key_expression=key_expression,
+        )
+
+        if len(result) != 0:
+            return (False, "Review for movie already exists.")
+
+        movieTable.put_item(
+            Item={
+                "pt_key": REVIEW_PARTITION_KEY,
+                "id": Decimal(_movie.id),
+                "username": _username,
+                "summary": _summary,
+                "rating": _rating,
+            }
+        )
+
+        return (True, "Review created successfully.")
+
+    except Exception as e:
+        print("Error creating review:", e)
+        return (False, "Error creating review")
