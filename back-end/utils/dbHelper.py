@@ -511,18 +511,15 @@ def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
 
 
 def create_user_review(
-    _movie: Movie,
-    _username: str,
-    _summary: str,
-    _rating: int,
+    movie: Movie,
+    username: str,
+    summary: str,
+    rating: int,
 ) -> bool:
-    """Create a movie in the DB, return True if successful else False"""
-    from .util import create_search_title
-
     try:
-        id = Decimal(_movie.id)
+        id = Decimal(movie.id)
 
-        key_expression = Key("movie_id").eq(id) & Key("username").eq(_username)
+        key_expression = Key("movie_id").eq(id) & Key("username").eq(username)
 
         result = query_page(
             table=reviewTable,
@@ -537,9 +534,9 @@ def create_user_review(
         reviewTable.put_item(
             Item={
                 "movie_id": id,
-                "username": _username,
-                "summary": _summary,
-                "rating": _rating,
+                "username": username,
+                "summary": summary,
+                "rating": rating,
             }
         )
 
@@ -548,3 +545,36 @@ def create_user_review(
     except Exception as e:
         print("Error creating review:", e)
         return (False, "Error creating review")
+
+
+def remove_user_review(
+    id: int,
+    username: str,
+) -> bool:
+    try:
+        # Find movie by id and username query
+        id = Decimal(id)
+        key_expression = Key("movie_id").eq(id) & Key("username").eq(username)
+
+        result = query_page(
+            table=reviewTable,
+            max_results=1,
+            page=1,
+            key_expression=key_expression,
+        )
+
+        if len(result) == 0:
+            return (False, "Review for movie does not exist.")
+
+        reviewTable.delete_item(
+            Key={
+                "movie_id": id,
+                "username": username,
+            }
+        )
+
+        return (True, "Review removed successfully.")
+
+    except Exception as e:
+        print("Error removing review:", e)
+        return (False, "Error removing review")

@@ -17,6 +17,7 @@ from utils.dbHelper import (
     update_user,
     get_movie,
     create_user_review,
+    remove_user_review,
 )
 from utils.auth import generate_auth_token
 from utils.customTypes import Review, User
@@ -289,7 +290,7 @@ def create_review(event, context, user: User):
         # Shouldn't be reachable but just in case
         return create_response(404, "User not found")
 
-    ## Check params
+    # Check params
     params = get_body(event)
     id = safe_cast(params, "id", str, "")
     summary = safe_cast(params, "summary", str, "")
@@ -302,7 +303,7 @@ def create_review(event, context, user: User):
     if rating == "":
         return create_response(400, "Missing rating")
 
-    ## Create a review
+    # Create a review
     movie = get_movie(id)
 
     if movie is None:
@@ -317,8 +318,6 @@ def create_review(event, context, user: User):
     if user.reviews[0] == ",":
         user.reviews = user.reviews[1:]
 
-    print("****review: ", review_list)
-    print("****user reviews: ", user.reviews)
     user_result, user_message = update_user(user)
 
     if user_result is False:
@@ -336,5 +335,42 @@ def update_review(event, context):
     pass
 
 
-def delete_review(event, context):
-    pass
+def delete_review(event, context, user: User):
+    if user is None:
+        # Shouldn't be reachable but just in case
+        return create_response(404, "User not found")
+
+    params = event["queryStringParameters"]
+
+    id = safe_cast(params, "id", str, "")
+
+    if id == "":
+        return create_response(400, "Missing id")
+
+    # Remove from user
+    review = user.reviews.split(",")
+
+    if id in review:
+        review.remove(id)
+    else:
+        return create_response(400, "Movie does not have review")
+
+    user.reviews = ",".join(set(review))
+
+    # Remove comma if first element is empty
+    if len(user.reviews) != 0:
+        if user.reviews[0] == ",":
+            user.reviews = user.reviews[1:]
+
+    user_result, user_message = update_user(user)
+
+    if user_result is False:
+        return create_response(500, user_message)
+
+    # Remove tie to movie
+    result, message = remove_user_review(id, user.username)
+
+    if result is False:
+        return create_response(500, message)
+
+    return create_response(200, message)
