@@ -605,7 +605,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 11,\r\n    \"summary\": \"starwars\",\r\n    \"rating\": 4\r\n}",
+					"raw": "{\r\n    \"id\": 123123,\r\n    \"summary\": \"This is the users review of the movie\",\r\n    \"rating\": 4\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -734,7 +734,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MzE1NTUzfQ._IQPqNPRk147gFubFNNBgV6lzxBTyN6cGMIRocAoVmc",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlc3RVc2VyIiwiZXhwIjoxNjk0MzA3MTAzfQ.iPN-A8C-vrvyjBN1p-_kVIf0FQd8EMqQGCUuR4fl0oc",
 				"type": "string"
 			}
 		]
@@ -743,7 +743,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "84c7a6f7-22b0-4154-a749-8d5d7c228c49",
+				"id": "69dab84b-53bf-45bc-b7e8-ebea415f03a5",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -753,7 +753,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "35b161f3-7a4c-42f8-9f93-ceaaa3f3a731",
+				"id": "23bdcc98-fc42-4ed4-b069-6e52a89610ca",
 				"type": "text/javascript",
 				"exec": [
 					""
