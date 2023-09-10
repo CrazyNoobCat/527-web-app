@@ -17,6 +17,7 @@ REVIEW_PARTITION_KEY = "review"
 dynamodb = boto3.resource("dynamodb")
 userTable = dynamodb.Table("users")
 movieTable = dynamodb.Table("movies")
+reviewTable = dynamodb.Table("reviews")
 
 
 def create_user(username: str, email: str, password: str):
@@ -243,8 +244,11 @@ def search_movies(
             if genre_filter is not None:
                 filter_expression = filter_expression & (genre_filter)
 
-        rawMovies = query_page_movies(
-            filter_expression=filter_expression, max_results=limit, page=page
+        rawMovies = query_page(
+            table=movieTable,
+            filter_expression=filter_expression,
+            max_results=limit,
+            page=page,
         )
 
         if len(rawMovies) == 0:
@@ -274,9 +278,10 @@ def search_movies(
         return []
 
 
-def query_page_movies(
-    filter_expression,
-    max_results,
+def query_page(
+    table=movieTable,
+    filter_expression=None,
+    max_results=50,
     page=1,
     key_expression=None,
     partition_key=MOVIE_PARTITION_KEY,
@@ -301,18 +306,31 @@ def query_page_movies(
             while len(results) < max_results:  # Ensure we have enough results per page
                 response = None
 
-                if last_evaluated_key is None:
-                    response = movieTable.query(
+                if last_evaluated_key is None and filter_expression is None:
+                    response = table.query(
+                        KeyConditionExpression=key_expression,
+                        Select="ALL_ATTRIBUTES",
+                        Limit=batch_size,
+                    )
+                elif last_evaluated_key is None and filter_expression is not None:
+                    response = table.query(
                         KeyConditionExpression=key_expression,
                         FilterExpression=filter_expression,
                         Select="ALL_ATTRIBUTES",
                         Limit=batch_size,
                     )
 
-                else:
-                    response = movieTable.query(
+                elif filter_expression is not None:
+                    response = table.query(
                         KeyConditionExpression=key_expression,
                         FilterExpression=filter_expression,
+                        Select="ALL_ATTRIBUTES",
+                        ExclusiveStartKey=last_evaluated_key,
+                        Limit=batch_size,
+                    )
+                else:
+                    response = table.query(
+                        KeyConditionExpression=key_expression,
                         Select="ALL_ATTRIBUTES",
                         ExclusiveStartKey=last_evaluated_key,
                         Limit=batch_size,
@@ -331,10 +349,21 @@ def query_page_movies(
                     if cp == page:
                         break
 
-                    last_evaluated_key = {
-                        "id": Decimal(results[max_results - 1]["id"]),
-                        "pt_key": partition_key,
-                    }
+                    if table == movieTable:
+                        last_evaluated_key = {
+                            "id": Decimal(results[max_results - 1]["id"]),
+                            "pt_key": partition_key,
+                        }
+                    elif table == reviewTable:
+                        last_evaluated_key = {
+                            "movie_id": Decimal(results[max_results - 1]["movie_id"]),
+                            "username": results[max_results - 1]["username"],
+                        }
+                    elif table == userTable:
+                        last_evaluated_key = {
+                            "username": results[max_results - 1]["username"],
+                            "pt_key": partition_key,
+                        }
 
                 if len(results) == max_results:
                     break
@@ -351,7 +380,7 @@ def query_page_movies(
         return results
 
     except Exception as e:
-        print("filter_scan_movies: Error:", e)
+        print("query_page: Error:", e)
         return results
 
 
@@ -422,12 +451,10 @@ def get_review(id, username) -> Review | None:
         if movie is None:
             return None
 
-        key_expression = Key("pt_key").eq(REVIEW_PARTITION_KEY) & Key("id").eq(
-            Decimal(id)
-        )
+        key_expression = Key("movie_id").eq(Decimal(id)) & Key("username").eq(username)
 
-        result = query_page_movies(
-            filter_expression=Attr("username").eq(username),
+        result = query_page(
+            table=reviewTable,
             max_results=1,
             page=1,
             key_expression=key_expression,
@@ -442,7 +469,7 @@ def get_review(id, username) -> Review | None:
             movie=movie,
             username=review.get("username"),
             summary=review.get("summary"),
-            rating=review.get("rating"),
+            rating=str(review.get("rating")),
         )
 
     except Exception as e:
@@ -452,19 +479,19 @@ def get_review(id, username) -> Review | None:
 
 def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
     try:
-        filter_expression = Key("id").eq(Decimal(id))
+        key_expression = Key("movie_id").eq(Decimal(id))
 
-        rawReviews = query_page_movies(
-            filter_expression,
+        rawReviews = query_page(
+            table=reviewTable,
+            key_expression=key_expression,
             max_results=limit,
             page=page,
-            partition_key=REVIEW_PARTITION_KEY,
         )
 
         if len(rawReviews) == 0:
             return []
 
-        reviews: list[Movie] = []
+        reviews: list[Review] = []
 
         for review in rawReviews:
             reviews.append(
@@ -472,7 +499,7 @@ def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
                     movie="",
                     username=review.get("username"),
                     summary=review.get("summary"),
-                    rating=review.get("rating"),
+                    rating=str(review.get("rating")),
                 )
             )
 
@@ -493,12 +520,12 @@ def create_user_review(
     from .util import create_search_title
 
     try:
-        key_expression = Key("pt_key").eq(REVIEW_PARTITION_KEY) & Key("id").eq(
-            Decimal(_movie.id)
-        )
+        id = Decimal(_movie.id)
 
-        result = query_page_movies(
-            filter_expression=Attr("username").eq(_username),
+        key_expression = Key("movie_id").eq(id) & Key("username").eq(_username)
+
+        result = query_page(
+            table=reviewTable,
             max_results=1,
             page=1,
             key_expression=key_expression,
@@ -507,10 +534,9 @@ def create_user_review(
         if len(result) != 0:
             return (False, "Review for movie already exists.")
 
-        movieTable.put_item(
+        reviewTable.put_item(
             Item={
-                "pt_key": REVIEW_PARTITION_KEY,
-                "id": Decimal(_movie.id),
+                "movie_id": id,
                 "username": _username,
                 "summary": _summary,
                 "rating": _rating,

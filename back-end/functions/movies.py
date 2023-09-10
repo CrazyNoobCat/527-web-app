@@ -6,7 +6,14 @@ from utils.dbHelper import (
     search_movies,
     create_movie,
 )
-from utils.util import create_response, create_search_title, retrieve_page_and_limit, safe_cast, get_body
+from utils.util import (
+    create_response,
+    create_search_title,
+    retrieve_page_and_limit,
+    safe_cast,
+    get_body,
+    serialize_review,
+)
 
 
 def get_movie(event, context):
@@ -116,6 +123,6 @@ def get_movie_reviews(event, context):
         return create_response(404, "Movie or Reviews not found")
 
     # Serialize the reviews
-    reviews = [review.__dict__ for review in reviews]
+    reviews = serialize_review(reviews)
 
     return create_response(200, body={"reviews": reviews})

@@ -102,3 +102,20 @@ def create_search_title(title: str):
         .replace("-", "")
         .lower()
     )
+
+
+def serialize_review(reviews: list[Review]) -> list[dict]:
+    """Serialize a review"""
+    serialized_reviews = []
+
+    for review in reviews:
+        # Serialize the movie
+        if isinstance(review.movie, Movie):
+            review.movie = review.movie.__dict__
+        else:
+            del review.movie
+
+        review = review.__dict__
+        serialized_reviews.append(review)
+
+    return serialized_reviews

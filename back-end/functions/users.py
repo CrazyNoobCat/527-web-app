@@ -8,6 +8,7 @@ from utils.util import (
     retrieve_page_and_limit,
     retrieve_paginated_list,
     safe_cast,
+    serialize_review,
 )
 from utils.dbHelper import (
     authenticate_user,
@@ -259,10 +260,12 @@ def get_user_reviews(event, context, user: User):
     # Get specific review
     id = safe_cast(params, "id", int, -1)
     if id > 0:
-        review = get_review(id)
+        review = get_review(id, user.username)
         if review is None:
             return create_response(404, "Review not found")
-        return create_response(200, body={"review": review.__dict__})
+
+        review = serialize_review([review])
+        return create_response(200, body={"review": review})
 
     # Get all reviews
     page, limit = retrieve_page_and_limit(params)
@@ -276,7 +279,7 @@ def get_user_reviews(event, context, user: User):
     reviews: list[Review] = get_list_reviews(paginated_reviews, user.username)
 
     # Serialize the reviews
-    reviews = [review.__dict__ for review in reviews]
+    reviews = serialize_review(reviews)
 
     return create_response(200, body={"reviews": reviews})
 
