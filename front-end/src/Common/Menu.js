@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import UserContext from '../UserContext/UserProvider';
 
 function Menu() {
   const location = useLocation();
@@ -38,11 +39,13 @@ function Menu() {
   const checkActive = (path) => {
     return location.pathname === path;
   };
+  const { currentUser } = useContext(UserContext);
+
 
   return (
     <div style={menuStyle}>
       <div style={profilePicStyle}></div>
-      <h2>Welcome, username</h2>
+      {currentUser && <h2>Welcome, {currentUser.username}</h2>}
       <nav>
         <Link to="/" style={checkActive('/') ? activeLinkStyle : linkStyle}>Home</Link><br/>
         <Link to="/future-watchlist" style={checkActive('/future-watchlist') ? activeLinkStyle : linkStyle}>Future Watchlist</Link><br/>
