@@ -1,0 +1,11 @@
+- name: Provision AWS EC2 Instance
+  hosts: localhost
+  roles:
+    - { role: ec2-provision }
+
+## TO RUN 
+# Only deploy ec2
+# ansible-playbook -v -i inventories/hosts  main.yml --tags provision
+
+# Run entire script
+# ansible % ansible-playbook -v -i inventories/hosts  main.yml

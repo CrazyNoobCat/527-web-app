@@ -1,0 +1,37 @@
+- name: Create a security group
+  ec2_group:
+    name: "{{ security_group }}"
+    description: Security group for ec2 instances
+    region: "{{ region }}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: ec2_sec_group
+
+- name: Create EC2 instance
+  command: "aws ec2 run-instances --image-id {{ image }} --count {{ count }} --instance-type {{ instance_type }} --key-name {{ ec2key_secondary }} --security-group-ids {{ ec2_sec_group.group_id }}  --subnet-id {{ subnet_id }}"
+
+- name: Sleep for 60 seconds
+  pause:
+    seconds: 60
+   
+- name: Get IP address of the newly created host so that we can further contact it
+  shell: "aws ec2 describe-instances --query 'Reservations[*].Instances[*].[State.Name,InstanceId,PublicIpAddress]' --output text | grep running | awk '{print $3}'"
+  register: ec2_ips
+
+- name: Get ids address of the newly created host so that we can further contact it
+  shell: "aws ec2 describe-instances --query 'Reservations[*].Instances[*].[State.Name,InstanceId,PublicIpAddress]' --output text | grep 'i-' | awk '{print $2}'"
+  register: ec2_ids

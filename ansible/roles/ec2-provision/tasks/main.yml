@@ -1,0 +1,17 @@
+- name: Create EC2 keypair
+  include_tasks:
+    file: create-keypair.yml
+    apply:
+      tags:
+        - create-keypair
+  tags:
+    - create-keypair
+
+- name: Provision instances
+  include_tasks:
+    file: provision.yml
+    apply:
+      tags:
+        - provision
+  tags:
+    - provision
