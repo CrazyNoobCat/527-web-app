@@ -1,7 +1,7 @@
 ec2_key_name: "527-ec2-key"
-ec2_private_key_dir: "/Users/hannah/Desktop/University2023/COMPX527/.ssh/527-ec2-key.pem"
+ec2_private_key_dir: "./.ssh/527-ec2-key.pem"
 ec2key_secondary: "527-ec2-key-secondary"
-ec2key_priv_secondary_dir: "/Users/hannah/Desktop/University2023/COMPX527/.ssh/527-ec2-key-secondary.pem"
+ec2key_priv_secondary_dir: "./.ssh/527-ec2-key-secondary.pem"
 region: ap-southeast-2
 instance_type: t2.micro
 security_group: "527-project-ansible"
