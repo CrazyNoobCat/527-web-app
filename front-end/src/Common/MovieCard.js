@@ -29,32 +29,23 @@ function MovieDisplay({ movies, hasSearched, onAddMovieClick }) {
 
     // END OF CSS // 
 
-    // Main function of movies display (This is like where the movie cards will show)
-
-    if (!hasSearched) { // initial state of movie search page will show this text 
-        return <div style={messageStyle}>Please search for movies...</div>;
-    }
-
-    if (movies.length === 0 && hasSearched) {
-        return (
-            <div style={messageStyle}>
-                No movie found! 
-                <span 
-                    style={{ color: 'white', textDecoration: 'underline', cursor: 'pointer' }}
-                    onClick={onAddMovieClick}>
-                    Add movie
-                </span>
-            </div>
-        );
-    }
-
       return (
         <div style={moviesStyle}>
             {movies.map((movie, index) => (
                 <div key={index} style={movieCardStyle}>
                     <h3>{movie.title}</h3>
-                    <p>{movie.display.substring(0, 20)}...</p>
-                    <p>Rating: {movie.pgRating}</p>
+                    <p>{movie.summary.substring(0, 100)}...</p>
+                    <p>Runtime: {movie.runtime} mins</p>
+                    <p>
+  Genre:  
+  {
+    movie.genre.split(',').length > 2 
+      ? movie.genre.split(',').slice(0, 2).join(', ') + ' +'
+      : movie.genre
+  }
+</p>
+                    <p>Language: {movie.language}</p>
+                    <p>Release Date: {movie.release_date}</p>
                 </div>
             ))}
         </div>

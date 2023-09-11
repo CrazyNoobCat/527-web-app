@@ -7,6 +7,8 @@ import LoginPage from './Components/Login/LoginPage.js';
 import RegisterBox from './Components/RegisterPage.js';
 import SearchPage from './Components/SearchPage/SearchPage.js';
 import UserProvider, {UserContext} from './UserContext/UserProvider.js';
+import RecentlyWatchedPage from './Components/Watchlist/recentlyWatched.js';
+import FutureWatchlist from './Components/Watchlist/futurewtachlist.js';
 
 import ProtectedRoute  from './UserContext/protectedlinks.js';
 import { BrowserRouter as Router, Route, Routes, redirect} from 'react-router-dom'
@@ -42,6 +44,8 @@ return (
           <Route exact path="/register" element={<RegisterBox />}/>
           <Route path = '/search' element={<ProtectedRoute><SearchPage /></ProtectedRoute>}/>
           <Route path="*" element={currentUser ? <redirect to="/home" /> : <LandingPage />} />
+          <Route exact path="/watchhistory" element={<RecentlyWatchedPage/>}/>
+          <Route exact path="/watchlist" element={<FutureWatchlist/>}/>
           {/* Add more Routes as needed */}
         </Routes>
       </div>
