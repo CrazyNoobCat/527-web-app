@@ -1,31 +1,22 @@
-import { createContext, useContext, useState } from "react";
 
-// Create and provide global context to let access token be used anywhere
-const AppContext = createContext();
-
-const initialState = {};
-
-
-const AppState = ({ children }) => {
-  const [state, setState] = useState(initialState);
-
-  const setAccessToken = (token) => {
-    setState((state) => ({
-      ...state,
-      accessToken: token,
-    }));
-  };
-
-  return (
-    <AppContext.Provider value={{ state, setAccessToken }}>
-      {children}
-    </AppContext.Provider>
-  );
+export const loginFunction = (username, password) => {
+  return fetch("https://api.cinemate.link/users/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username,
+      password
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Login failed");
+    }
+    return response.json();
+  })
+  .then(data => {
+    return data; // Return the whole data object
+  });
 };
-
-// Abstract useContext hook to simplify code in components
-export const useAuth = () => {
-  return useContext(AppContext);
-};
-
-export default AppState;
