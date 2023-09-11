@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Menu from './Common/Menu.js';
 import MainSection from './Components/Homepage/Mainsections.js';
 import SearchAndCategories from './Components/Homepage/Search.js';
 import LandingPage from './Components/LandingPage/Landingpage.js';
 import LoginPage from './Components/Login/LoginPage.js';
-import AppState from "./Components/Login/authentication.js";
 import RegisterBox from './Components/RegisterPage.js';
 import SearchPage from './Components/SearchPage/SearchPage.js';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import UserProvider, {UserContext} from './UserContext/UserProvider.js';
+
+import ProtectedRoute  from './UserContext/protectedlinks.js';
+import { BrowserRouter as Router, Route, Routes, redirect} from 'react-router-dom'
+
 
 function App() {
   const appStyle = {
@@ -15,8 +18,11 @@ function App() {
     flexDirection: 'row',
     height: '100vh',
   };
+
+  const {currentUser} = useContext(UserContext);
   
-function HomePage() { {/* This is just needed because to I created the home page in 3 different sections so this joins them into one on the HomePage  */}
+function HomePage() { {/* Wrap routes with AppState */}
+
   return (
     <div style={{...appStyle, justifyContent: 'space-between', width: '100%'}}>
       <Menu />
@@ -26,20 +32,21 @@ function HomePage() { {/* This is just needed because to I created the home page
   );
 }
 return (
-  <AppState> {/* Wrap routes with AppState */}
+  <UserProvider> {/* Wrap routes with UserProvider */}
     <Router>
       <div>
         <Routes>
           <Route exact path="/landing" element={<LandingPage />} />
-          <Route exact path="/" element={<HomePage />} />
+          <Route exact path = '/home' element={<ProtectedRoute><HomePage /></ProtectedRoute>}/>          
           <Route exact path="/login" element={<LoginPage />} />
           <Route exact path="/register" element={<RegisterBox />}/>
-          <Route exact path='/search' element={<SearchPage />}/>
+          <Route path = '/search' element={<ProtectedRoute><SearchPage /></ProtectedRoute>}/>
+          <Route path="*" element={currentUser ? <redirect to="/home" /> : <LandingPage />} />
           {/* Add more Routes as needed */}
         </Routes>
       </div>
     </Router>
-  </AppState>
+  </UserProvider>
 );
 }
 
