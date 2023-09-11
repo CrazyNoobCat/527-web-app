@@ -24,6 +24,9 @@ def create_response(
     if message != "":
         body["message"] = message
 
+    # Allow requests from any origin
+    header["Access-Control-Allow-Origin"] = "*"
+
     return {
         "statusCode": status_code,
         "headers": header,
