@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function RegisterBox({ handleClose }) {
-  const [name, setName] = useState('');
+  const [username, setName] = useState('');
   const [email, setEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
+  const payload = {
+    username,
+    email,
+    password,
+  };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (email !== confirmEmail) {
       alert('Emails do not match');
@@ -20,11 +29,42 @@ function RegisterBox({ handleClose }) {
       return;
     }
 
-    console.log({
-      name,
-      email,
-      password,
-    });
+    // Fetch logic to talk to UserDB
+
+    try {
+      const response = await axios.post('https://api.cinemate.link/users/register', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = response.data;
+      if (data.error) { 
+        alert(data.error);
+      } else {
+        console.log('Registration successful:', data);
+        navigate('/login');
+        handleClose();
+      }
+    } catch (error) {
+      console.error('There was a problem with the registration:', error.message);
+    }
+  };
+
+
+  const onChangeUsername = (e) => {
+    const username = e.target.value;
+    setName(username);
+  };
+
+  const onChangeEmail = (e) => {
+    const email = e.target.value;
+    setEmail(email);
+  };
+
+  const onChangePassword = (e) => {
+    const password = e.target.value;
+    setPassword(password);
   };
 
   return (
@@ -36,15 +76,15 @@ function RegisterBox({ handleClose }) {
           <input
             required
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={username}
+            onChange={onChangeUsername}
             placeholder="Enter your name"
           />
           <input
             required
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={onChangeEmail}
             placeholder="Enter your email"
           />
           <input
@@ -58,7 +98,7 @@ function RegisterBox({ handleClose }) {
             required
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={onChangePassword}
             placeholder="Enter your password"
           />
           <input
@@ -78,3 +118,4 @@ function RegisterBox({ handleClose }) {
 };
 
 export default RegisterBox;
+
