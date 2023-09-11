@@ -1,14 +1,23 @@
 # Handle accessing the DB
+from decimal import Decimal
+
 import boto3
-from .customTypes import Movie, User
+from .customTypes import Movie, Review, User
 from passlib.hash import bcrypt
 from boto3.dynamodb.conditions import Key, Attr
 
+# User Table
+USER_PARTITION_KEY = "user"
+
+# Movie Table
+MOVIE_PARTITION_KEY = "movie"
+REVIEW_PARTITION_KEY = "review"
 
 # Connect to DB
 dynamodb = boto3.resource("dynamodb")
 userTable = dynamodb.Table("users")
 movieTable = dynamodb.Table("movies")
+reviewTable = dynamodb.Table("reviews")
 
 
 def create_user(username: str, email: str, password: str):
@@ -16,7 +25,12 @@ def create_user(username: str, email: str, password: str):
 
     try:
         # Check if username already exists
-        result: dict = userTable.get_item(Key={"username": username})
+        result: dict = userTable.get_item(
+            Key={
+                "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+                "username": username,
+            }
+        )
 
         user: dict = result.get("Item")
 
@@ -28,33 +42,97 @@ def create_user(username: str, email: str, password: str):
         if len(password) < 8:
             return (False, "Password must be at least 8 characters")
 
-        # TODO: add email validation
-
         # Hash password
         hashed_password = bcrypt.hash(password)
 
+        new_user = {
+            "pt_key": USER_PARTITION_KEY,
+            "username": username,
+            "email": email,
+            "password": hashed_password,
+            "reviews": "",
+            "watch_list": "",
+            "watch_history": "",
+        }
+
         # Create user in DB
-        result = userTable.put_item(
-            Item={
-                "username": username,
-                "email": email,
-                "password": hashed_password,
-            }
-        )
-        # TODO: log creation
+        result = userTable.put_item(Item=new_user)
 
         return (True, "User created successfully")
     except Exception as e:
-        # TODO: log error
-        print("Error creating user:", e)
+        print("create_user: Error:", e)
         return (False, "Error creating user")
 
 
-def find_user(username: str, password: str) -> User | None:
+def update_user(user: User):
+    """Update a user in the DB, return True if successful else False also a message to return to the user"""
+    try:
+        key = {
+            "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+            "username": user.username,
+        }
+        # Check if username already exists
+        result: dict = userTable.get_item(Key=key)
+
+        originalUser: dict = result.get("Item")
+
+        if originalUser is None:
+            return (False, "User does not exist")
+
+        # Only update the fields that have changed
+        update_expression = "set "
+        expression_attribute_values = {}
+
+        if user.email != str(originalUser.get("email")):
+            update_expression += "email=:e, "
+            expression_attribute_values[":e"] = user.email
+
+        if user.reviews != str(originalUser.get("reviews")):
+            update_expression += "reviews=:r, "
+            expression_attribute_values[":r"] = user.reviews
+
+        if user.watch_list != str(originalUser.get("watch_list")):
+            update_expression += "watch_list=:w, "
+            expression_attribute_values[":w"] = user.watch_list
+
+        if user.watch_history != str(originalUser.get("watch_history")):
+            update_expression += "watch_history=:h, "
+            expression_attribute_values[":h"] = user.watch_history
+
+        if user.password != str(originalUser.get("password")):
+            update_expression += "password=:p, "
+            expression_attribute_values[
+                ":p"
+            ] = user.password  # We assume the password is already hashed
+
+        if update_expression == "set ":
+            return (True, "Nothing to update")
+
+        update_expression = update_expression[:-2]  # Remove the last comma and space
+
+        # Update user in DB
+        result = userTable.update_item(
+            Key=key,
+            UpdateExpression=update_expression,
+            ExpressionAttributeValues=expression_attribute_values,
+        )
+
+        return (True, "User updated successfully")
+    except Exception as e:
+        print("update_user: Error:", e)
+        return (False, "Error updating user")
+
+
+def authenticate_user(username: str, password: str) -> User | None:
     """Find a user in the DB, return User object if found else None"""
     try:
         # Query for username
-        result: dict = userTable.get_item(Key={"username": username})
+        result: dict = userTable.get_item(
+            Key={
+                "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+                "username": username,
+            }
+        )
 
         user: dict = result.get("Item")
 
@@ -63,23 +141,27 @@ def find_user(username: str, password: str) -> User | None:
 
         # If username found, check password bcrypt matches
         if bcrypt.verify(password, user.get("password")):
-            return User(
-                username=user.get("username"),
-                email=user.get("email"),
-                password=user.get("password"),
-            )
+            return User(username=user.get("username"), email=user.get("email"))
 
         return None
     except Exception as e:
-        print("find_user: Error:", e)
+        print("authenticate_user: Error:", e)
         return None
 
 
-def get_user_by_username(username) -> User | None:
+def get_user(username) -> User | None:
     """Get a user by username, return User object if found else None"""
     try:
+        if username is None:
+            return None
+
         # Query for username
-        result: dict = userTable.get_item(Key={"username": username})
+        result: dict = userTable.get_item(
+            Key={
+                "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
+                "username": username,
+            }
+        )
         user: dict = result.get("Item")
 
         if user is None:
@@ -89,41 +171,51 @@ def get_user_by_username(username) -> User | None:
         if user is not None:
             return User(
                 username=user.get("username"),
-                email=user.get("email"),
                 password=user.get("password"),
+                email=user.get("email"),
+                reviews=user.get("reviews"),
+                watch_list=user.get("watch_list"),
+                watch_history=user.get("watch_history"),
             )
 
         return None
     except Exception as e:
-        print("get_user_by_username: Error: ", e)
+        print("get_user: Error: ", e)
         return None
 
 
-def get_movie_by_id(id: int) -> Movie | None:
+def get_movie(id: int) -> Movie | None:
     """Get a movie by id, return Movie object if found else None"""
     try:
-        # Query for id
-        result: dict = movieTable.get_item(Key={"id": id})
+        if id is None:
+            return None
+
+        key = {
+            "pt_key": MOVIE_PARTITION_KEY,  # Only searching for the movie partition
+            "id": Decimal(id),
+        }
+
+        result: dict = movieTable.get_item(Key=key)
         movie: dict = result.get("Item")
 
         # If id found, return movie object
         if movie is not None:
             return Movie(
-                id=movie.get("id"),
+                id=str(movie.get("id")),
                 title=movie.get("title"),
-                release_date=movie.get("release_date"),
+                release_date=str(movie.get("release_date")),
                 genre=movie.get("genre_names"),
                 summary=movie.get("summary"),
                 language=movie.get("original_language"),
-                budget=movie.get("budget"),
-                revenue=movie.get("revenue"),
-                runtime=movie.get("runtime"),
+                budget=str(movie.get("budget")),
+                revenue=str(movie.get("revenue")),
+                runtime=str(movie.get("runtime")),
             )
 
-        return None
+        return movie
 
     except Exception as e:
-        print("get_movie_by_id: Error: ", e)
+        print("get_movie: Error: ", e)
         return None
 
 
@@ -131,122 +223,171 @@ def search_movies(
     title: str = "",
     genre_names: list[str] = [],
     year: str = "",
-    batch_size: int = 50,
-    page_index: int = 0,
+    limit: int = 50,
+    page: int = 1,
 ) -> list[Movie]:
     """Search for movies based on title, genre_names, director, and genre"""
-
     try:
-        current_page = 0
-        last_evaluated_key = None
+        filter_expression = Attr("search_title").contains(title) & Attr(
+            "release_date"
+        ).contains(year)
 
         # genre filter expression
-        genre_filter = ""
-        if genre_names != []:
+        if genre_names is not []:
+            genre_filter = None
             for genre in genre_names:
-                if genre == genre_names[0]:
-                    genre_filter = " AND "
-                genre_filter += Attr("genre").contains(genre)
-                if genre != genre_names[-1]:
-                    genre_filter += " OR "
+                if genre_filter is None:
+                    genre_filter = Attr("genre_names").contains(genre)
+                else:
+                    genre_filter = genre_filter | Attr("genre_names").contains(genre)
 
-        filter_expression = (
-            Attr("title").contains(title)
-            + " AND "
-            + Attr("release_date").contains(year)
-            + genre_filter
+            if genre_filter is not None:
+                filter_expression = filter_expression & (genre_filter)
+
+        rawMovies = query_page(
+            table=movieTable,
+            filter_expression=filter_expression,
+            max_results=limit,
+            page=page,
         )
 
-        print("search_movies: Filter expression: " + filter_expression)
+        if len(rawMovies) == 0:
+            return []
 
-        # Keep querying until we have skipped enough items or there are no more items to query
-        while current_page < page_index:
-            _, last_evaluated_key = filter_scan_movies(
-                filter_expression,
-                max_results=batch_size,
-                last_evaluated_key=last_evaluated_key,
-            )
-
-            current_page += 1
-
-            print("search_movies: Current page: " + str(current_page))
-
-            # If there are no more items to query, return an empty list
-            if last_evaluated_key is None:
-                print("search_movies: no more movies to query")
-                return []
-
-        rawMovies, last_evaluated_key = filter_scan_movies(
-            filter_expression,
-            max_results=batch_size,
-            last_evaluated_key=last_evaluated_key,
-        )
-
-        movies = list[Movie]
+        movies: list[Movie] = []
 
         for movie in rawMovies:
             movies.append(
                 Movie(
-                    id=movie.get("id"),
+                    id=str(movie.get("id")),
                     title=movie.get("title"),
-                    release_date=movie.get("release_date"),
+                    release_date=str(movie.get("release_date")),
                     genre=movie.get("genre_names"),
                     summary=movie.get("summary"),
                     language=movie.get("original_language"),
-                    budget=movie.get("budget"),
-                    revenue=movie.get("revenue"),
-                    runtime=movie.get("runtime"),
+                    budget=str(movie.get("budget")),
+                    revenue=str(movie.get("revenue")),
+                    runtime=str(movie.get("runtime")),
                 )
             )
 
         return movies
+
     except Exception as e:
         print("search_movies: Error: ", e)
         return []
 
 
-def filter_scan_movies(
-    filter_expression, max_results, batch_size=50, last_evaluated_key=None
-):
+def query_page(
+    table=movieTable,
+    filter_expression=None,
+    max_results=50,
+    page=1,
+    key_expression=None,
+    partition_key=MOVIE_PARTITION_KEY,
+) -> list[Movie]:
+    """
+    Scan the movies table with a filter expression, return the results and the last evaluated key
+    :param partition_key the partition key to search for on the movie table
+    """
     results = []
+    last_evaluated_key = None
+
+    batch_size = max(500, max_results)
+    cp = 0
+
+    if key_expression is None:
+        key_expression = Key("pt_key").eq(partition_key)
 
     try:
-        while len(results) < max_results:
-            batch_size = min(batch_size, max_results - len(results))
+        while cp < page:  # Query till current page count
+            results = []
+            temp = []
+            while len(results) < max_results:  # Ensure we have enough results per page
+                response = None
 
-            print("filter_scan_movies: batch_size: " + str(batch_size))
+                if last_evaluated_key is None and filter_expression is None:
+                    response = table.query(
+                        KeyConditionExpression=key_expression,
+                        Select="ALL_ATTRIBUTES",
+                        Limit=batch_size,
+                    )
+                elif last_evaluated_key is None and filter_expression is not None:
+                    response = table.query(
+                        KeyConditionExpression=key_expression,
+                        FilterExpression=filter_expression,
+                        Select="ALL_ATTRIBUTES",
+                        Limit=batch_size,
+                    )
 
-            response = movieTable.scan(
-                KeyExpression=Key("pt_key").eq(
-                    "movie"
-                ),  # Only searching for the movie partition
-                FilterExpression=filter_expression,
-                Select="ALL_ATTRIBUTES",
-                ExclusiveStartKey=last_evaluated_key,
-                Limit=batch_size,
-            )
+                elif filter_expression is not None:
+                    response = table.query(
+                        KeyConditionExpression=key_expression,
+                        FilterExpression=filter_expression,
+                        Select="ALL_ATTRIBUTES",
+                        ExclusiveStartKey=last_evaluated_key,
+                        Limit=batch_size,
+                    )
+                else:
+                    response = table.query(
+                        KeyConditionExpression=key_expression,
+                        Select="ALL_ATTRIBUTES",
+                        ExclusiveStartKey=last_evaluated_key,
+                        Limit=batch_size,
+                    )
 
-            results.extend(response["Items"])
+                results.extend(response["Items"])
+                temp = results
 
-            print("filter_scan_movies: results length: " + str(len(results)))
+                # Perform some smart logic to itterate through retrieved data to reduce DB calls
+                while len(temp) >= max_results:
+                    results = temp[:max_results]
+                    temp = temp[max_results:]
 
-            last_evaluated_key = response.get("LastEvaluatedKey")
+                    cp += 1
 
-            # Check if there are no more items to query
-            if last_evaluated_key is None:
-                break
+                    if cp == page:
+                        break
 
-        return (results, last_evaluated_key)
+                    if table == movieTable:
+                        last_evaluated_key = {
+                            "id": Decimal(results[max_results - 1]["id"]),
+                            "pt_key": partition_key,
+                        }
+                    elif table == reviewTable:
+                        last_evaluated_key = {
+                            "movie_id": Decimal(results[max_results - 1]["movie_id"]),
+                            "username": results[max_results - 1]["username"],
+                        }
+                    elif table == userTable:
+                        last_evaluated_key = {
+                            "username": results[max_results - 1]["username"],
+                            "pt_key": partition_key,
+                        }
+
+                if len(results) == max_results:
+                    break
+                else:
+                    last_evaluated_key = response.get("LastEvaluatedKey")
+
+                # Check if there are no more items to query
+                if last_evaluated_key is None:
+                    if cp + 1 != page:
+                        return []
+
+                    return results
+
+        return results
 
     except Exception as e:
-        print("filter_scan_movies: Error:", e)
-        return (results, last_evaluated_key)
+        print("query_page: Error:", e)
+        return results
 
 
 # TODO: CHANGE THE VARIABLES
 def create_movie(
     title: str,
-    release_date: int,
+    release_date: str,
     genre: str,
     summary: str,
     language: str,
@@ -255,17 +396,25 @@ def create_movie(
     runtime: int,
 ) -> bool:
     """Create a movie in the DB, return True if successful else False"""
+    from .util import create_search_title
 
     try:
         # Check movie doesn't already exist
-        movies = search_movies(title=title, year=year, director=director, genre=genre)
+        year = release_date.split("/")[-1]
+        movies = search_movies(
+            title=title, year=year, genre_names=genre, limit=1, page=1
+        )
 
-        # TODO: this movies list could actually have a partial match, e.g. same director, genre, year but the title for the movie we are making is part of another title
+        # Movie found cannot add duplicate
         if len(movies) > 0:
-            return False
+            return (False, "Movie Exists in database")
 
         # Retrieve the next id
-        response = movieTable.query(ScanIndexForward=False, Limit=1)
+        response = movieTable.query(
+            KeyConditionExpression=Key("pt_key").eq(MOVIE_PARTITION_KEY),
+            ScanIndexForward=False,
+            Limit=1,
+        )
 
         last_item = response["Items"][0]
 
@@ -274,20 +423,158 @@ def create_movie(
         # Create movie in DB
         movieTable.put_item(
             Item={
-                "id": id,
+                "pt_key": MOVIE_PARTITION_KEY,
+                "id": Decimal(id),
                 "title": title,
                 "genre": genre,
                 "summary": summary,
+                "release_date": release_date,
+                "original_language": language,
+                "budget": budget,
+                "revenue": revenue,
+                "runtime": runtime,
+                "search_title": create_search_title(title),
             }
         )
 
-        return True
+        return (True, "Movie created successfully")
 
     except Exception as e:
         print("Error creating movie:", e)
-        return False
+        return (False, "Error creating movie")
 
 
-# Create a movie
+def get_review(id, username) -> Review | None:
+    try:
+        movie = get_movie(id)
 
-# Update a movie
+        if movie is None:
+            return None
+
+        key_expression = Key("movie_id").eq(Decimal(id)) & Key("username").eq(username)
+
+        result = query_page(
+            table=reviewTable,
+            max_results=1,
+            page=1,
+            key_expression=key_expression,
+        )
+
+        if len(result) == 0:
+            return None
+
+        review = result[0]
+
+        return Review(
+            movie=movie,
+            username=review.get("username"),
+            summary=review.get("summary"),
+            rating=str(review.get("rating")),
+        )
+
+    except Exception as e:
+        print("get_review: Error:", e)
+        return None
+
+
+def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
+    try:
+        key_expression = Key("movie_id").eq(Decimal(id))
+
+        rawReviews = query_page(
+            table=reviewTable,
+            key_expression=key_expression,
+            max_results=limit,
+            page=page,
+        )
+
+        if len(rawReviews) == 0:
+            return []
+
+        reviews: list[Review] = []
+
+        for review in rawReviews:
+            reviews.append(
+                Review(
+                    movie="",
+                    username=review.get("username"),
+                    summary=review.get("summary"),
+                    rating=str(review.get("rating")),
+                )
+            )
+
+        return reviews
+
+    except Exception as e:
+        print("get_all_movie_reviews: Error:", e)
+        return None
+
+
+def create_user_review(
+    movie: Movie,
+    username: str,
+    summary: str,
+    rating: int,
+) -> bool:
+    try:
+        id = Decimal(movie.id)
+
+        key_expression = Key("movie_id").eq(id) & Key("username").eq(username)
+
+        result = query_page(
+            table=reviewTable,
+            max_results=1,
+            page=1,
+            key_expression=key_expression,
+        )
+
+        if len(result) != 0:
+            return (False, "Review for movie already exists.")
+
+        reviewTable.put_item(
+            Item={
+                "movie_id": id,
+                "username": username,
+                "summary": summary,
+                "rating": rating,
+            }
+        )
+
+        return (True, "Review created successfully.")
+
+    except Exception as e:
+        print("Error creating review:", e)
+        return (False, "Error creating review")
+
+
+def remove_user_review(
+    id: int,
+    username: str,
+) -> bool:
+    try:
+        # Find movie by id and username query
+        id = Decimal(id)
+        key_expression = Key("movie_id").eq(id) & Key("username").eq(username)
+
+        result = query_page(
+            table=reviewTable,
+            max_results=1,
+            page=1,
+            key_expression=key_expression,
+        )
+
+        if len(result) == 0:
+            return (False, "Review for movie does not exist.")
+
+        reviewTable.delete_item(
+            Key={
+                "movie_id": id,
+                "username": username,
+            }
+        )
+
+        return (True, "Review removed successfully.")
+
+    except Exception as e:
+        print("Error removing review:", e)
+        return (False, "Error removing review")

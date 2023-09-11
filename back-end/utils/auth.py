@@ -2,7 +2,7 @@ import datetime
 import jwt
 import boto3
 import json
-from .dbHelper import get_user_by_username
+from .dbHelper import get_user
 
 TOKEN_EXPIRATION_TIME = 1  # hours
 
@@ -26,11 +26,11 @@ def generate_auth_token(username: str):
             + datetime.timedelta(hours=TOKEN_EXPIRATION_TIME),
         }
 
-        token = {"authToken": jwt.encode(payload, get_secret(), algorithms=["HS256"])}
+        token = {"authToken": jwt.encode(payload, get_secret())}
 
         return token
     except Exception as e:
-        # TODO: log error
+        print("generate_auth_token: error: ", e)
         return None
 
 
@@ -46,7 +46,7 @@ def decode_auth_token(auth_token: str):
         if datetime.datetime.utcnow() > datetime.datetime.fromtimestamp(payload["exp"]):
             return (False, "Token expired")
 
-        user = get_user_by_username(payload["username"])
+        user = get_user(payload["username"])
 
         if user is None:
             return (False, "User not found")

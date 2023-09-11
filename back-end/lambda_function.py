@@ -1,11 +1,24 @@
 # Import utils
 from utils.util import create_response
-from utils.auth import decode_auth_token, has_role
-from utils.customTypes import Roles, User
+from utils.auth import decode_auth_token
+from utils.customTypes import User
 
 # Import routes
-from functions.users import login, register
-from functions.movies import get_movie
+from functions.users import (
+    add_watched_movie,
+    add_watchlist_movie,
+    get_user_reviews,
+    get_watch_history,
+    get_watchlist,
+    remove_watchlist_movie,
+    login,
+    register,
+    get_user,
+    remove_watched_movie,
+    create_review,
+    delete_review,
+)
+from functions.movies import get_movie, get_movie_reviews, add_movie
 
 
 def lambda_handler(event, context):
@@ -32,23 +45,56 @@ def lambda_handler(event, context):
         return create_response(401, "Authorization header missing")
 
     # Verify token
-    (success, data) = decode_auth_token(authToken)
+    (success, data) = decode_auth_token(
+        authToken
+    )  # data is a User object with all details
 
     if not success:
         return create_response(401, data)
 
-    user: User = data
-
-    if has_role(user, Roles.AWAITING_EMAIL_VERIFICATION):
-        # TODO: add email verification
-        return create_response(401, "Email not verified")
+    user: User = data  # All details of the user
 
     # User Routes
 
-    # TODO: add user routes
+    if method == "GET" and path == "/users":
+        return get_user(event, context, user)
+
+    if method == "GET" and path == "/users/watch/list":
+        return get_watchlist(event, context, user)
+
+    if method == "GET" and path == "/users/watch/history":
+        return get_watch_history(event, context, user)
+
+    if method == "GET" and path == "/users/reviews":
+        return get_user_reviews(event, context, user)
+
+    if method == "POST" and path == "/users/reviews":
+        return create_review(event, context, user)
+
+    if method == "POST" and path == "/users/watch/list":
+        return add_watchlist_movie(event, context, user)
+
+    if method == "POST" and path == "/users/watch/history":
+        return add_watched_movie(event, context, user)
+
+    if method == "DELETE" and path == "/users/watch/list":
+        return remove_watchlist_movie(event, context, user)
+
+    if method == "DELETE" and path == "/users/watch/history":
+        return remove_watched_movie(event, context, user)
+
+    if method == "DELETE" and path == "/users/reviews":
+        return delete_review(event, context, user)
 
     # Movie Routes
 
-    # TODO: add movie routes
+    if method == "GET" and path == "/movies":
+        return get_movie(event, context)
+
+    if method == "GET" and path == "/movies/reviews":
+        return get_movie_reviews(event, context)
+
+    if method == "POST" and path == "/movies":
+        return add_movie(event, context)
 
     return create_response(404, "Route not found")
