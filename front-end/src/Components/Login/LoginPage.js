@@ -1,38 +1,31 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./authentication.js";
+import { UserContext } from "../../UserContext/UserProvider.js";
 import '../../App.css';
-
-const requestLogin = (username, password) => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve("12345"), 100);
-  });
-};
 
 const Login = ({ handleClose }) => { // Added handleClose as a prop
   const navigate = useNavigate();
-  const { setAccessToken } = useAuth();
+  const {Login} = useContext(UserContext);
+  const { setAccessToken } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (username !== "" && password !== "") {
-      requestLogin(username, password)
-        .then((token) => {
-          setAccessToken(token);
-          navigate("/"); // Navigate to home page
-        })
-        .catch((error) => {
+      try {
+        await Login(username, password);
+        navigate("/");
+      } catch (error) {
           // Handle login failure
           console.log(error);
-        });
+        };
     }
   };
 
   return (
     <div className="login-box">
-      <button className="close-button" onClick={handleClose}>X</button> 
+      <button className="close-button" onClick={handleClose}>X</button> {/* Added close button */}
       <form onSubmit={handleSubmit}>
         <h1>Login</h1>
         <div className="inputs">
@@ -60,7 +53,4 @@ const Login = ({ handleClose }) => { // Added handleClose as a prop
 };
 
 export default Login;
-
-
-
 

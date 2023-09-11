@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import SearchBar from './SearchBar';
 import MovieDisplay from './MovieDisplay';
 import Menu from '../../Common/Menu';
-import AddMoviePopup from '../AddMovie/AddMoviePopup';
+import AddMoviePopup from '../Addmovie/AddMoviePopup';
 
 function SearchPage() {
   const [movies, setMovies] = useState([]);
