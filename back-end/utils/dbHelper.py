@@ -24,6 +24,14 @@ def create_user(username: str, email: str, password: str):
     """Create a user in the DB, return True if successful else False"""
 
     try:
+        # Ensure username doesn't have spaces
+        if " " in username:
+            return (False, "Username cannot contain spaces")
+        
+        # Ensure username is not empty
+        if username == "":
+            return (False, "Username cannot be empty")
+
         # Check if username already exists
         result: dict = userTable.get_item(
             Key={
@@ -38,9 +46,12 @@ def create_user(username: str, email: str, password: str):
             return (False, "Username already exists")
 
         # Check password length
-        # TODO: add more password requirements?
         if len(password) < 8:
             return (False, "Password must be at least 8 characters")
+        
+        # Check email is valid
+        if "@" not in email:
+            return (False, "Email is not valid")
 
         # Hash password
         hashed_password = bcrypt.hash(password)
@@ -48,7 +59,8 @@ def create_user(username: str, email: str, password: str):
         new_user = {
             "pt_key": USER_PARTITION_KEY,
             "username": username,
-            "email": email,
+            "username_lower": username.lower(),
+            "email": email.lower(),
             "password": hashed_password,
             "reviews": "",
             "watch_list": "",
@@ -69,7 +81,7 @@ def update_user(user: User):
     try:
         key = {
             "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-            "username": user.username,
+            "username_lower": user.username.lower(),
         }
         # Check if username already exists
         result: dict = userTable.get_item(Key=key)
@@ -84,8 +96,10 @@ def update_user(user: User):
         expression_attribute_values = {}
 
         if user.email != str(originalUser.get("email")):
+            if "@" not in user.email:
+                return (False, "Email is not valid")
             update_expression += "email=:e, "
-            expression_attribute_values[":e"] = user.email
+            expression_attribute_values[":e"] = user.email.lower()
 
         if user.reviews != str(originalUser.get("reviews")):
             update_expression += "reviews=:r, "
@@ -100,6 +114,8 @@ def update_user(user: User):
             expression_attribute_values[":h"] = user.watch_history
 
         if user.password != str(originalUser.get("password")):
+            if len(user.password) < 8:
+                return (False, "Password must be at least 8 characters")
             update_expression += "password=:p, "
             expression_attribute_values[
                 ":p"
@@ -130,7 +146,7 @@ def authenticate_user(username: str, password: str) -> User | None:
         result: dict = userTable.get_item(
             Key={
                 "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-                "username": username,
+                "username_lower": username.lower(),
             }
         )
 
@@ -159,7 +175,7 @@ def get_user(username) -> User | None:
         result: dict = userTable.get_item(
             Key={
                 "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-                "username": username,
+                "username_lower": username.lower(),
             }
         )
         user: dict = result.get("Item")
