@@ -44,8 +44,8 @@ return (
           <Route exact path="/register" element={<RegisterBox />}/>
           <Route path = '/search' element={<ProtectedRoute><SearchPage /></ProtectedRoute>}/>
           <Route path="*" element={currentUser ? <redirect to="/home" /> : <LandingPage />} />
-          <Route exact path="/watchhistory" element={<ProtectedRoute><RecentlyWatchedPage/></ProtectedRoute>}/>
-          <Route exact path="/watchlist" element={<ProtectedRoute><FutureWatchlist/></ProtectedRoute>}/>
+          <Route path="/watchhistory" element={<ProtectedRoute><RecentlyWatchedPage/></ProtectedRoute>}/>
+          <Route path="/watchlist" element={<ProtectedRoute><FutureWatchlist/></ProtectedRoute>}/>
           {/* Add more Routes as needed */}
         </Routes>
       </div>

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import UserContext from '../UserContext/UserProvider';
 
 function Menu() {
   const location = useLocation();
@@ -39,14 +40,16 @@ function Menu() {
     return location.pathname === path;
   };
 
+  const {user} = useContext(UserContext);
+
   return (
     <div style={menuStyle}>
       <div style={profilePicStyle}></div>
-      <h2>Welcome, username</h2>
+      <h2>Welcome, {user.username}</h2>
       <nav>
         <Link to="/" style={checkActive('/') ? activeLinkStyle : linkStyle}>Home</Link><br/>
-        <Link to="/future-watchlist" style={checkActive('/future-watchlist') ? activeLinkStyle : linkStyle}>Future Watchlist</Link><br/>
-        <Link to="/previously-watched" style={checkActive('/previously-watched') ? activeLinkStyle : linkStyle}>Previously Watched</Link><br/>
+        <Link to="/watchlist" style={checkActive('/watchlist') ? activeLinkStyle : linkStyle}>Future Watchlist</Link><br/>
+        <Link to="/watchhistory" style={checkActive('/watchhistory') ? activeLinkStyle : linkStyle}>Previously Watched</Link><br/>
         <Link to="/search" style={checkActive('/search') ? activeLinkStyle : linkStyle}>Search</Link>
       </nav>
     </div>
