@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../UserContext/UserProvider.js";
+
 import '../../App.css';
 
 const Login = ({ handleClose }) => { // Added handleClose as a prop
   const navigate = useNavigate();
-  const {Login} = useContext(UserContext);
-  const { setAccessToken } = useContext(UserContext);
+  const {login} = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,14 +14,20 @@ const Login = ({ handleClose }) => { // Added handleClose as a prop
     e.preventDefault();
     if (username !== "" && password !== "") {
       try {
-        await Login(username, password);
-        navigate("/");
+        await login(username, password);
+        navigate("/home");
       } catch (error) {
-          // Handle login failure
-          console.log(error);
-        };
+        if (error.response && error.response.data) {
+          console.error(error.response.data.error || error.message);
+        } else {
+          console.error("Login failed:", error.message);
+        }
+      }
+    } else {
+      console.error("Username or password cannot be empty.");
     }
   };
+  
 
   return (
     <div className="login-box">

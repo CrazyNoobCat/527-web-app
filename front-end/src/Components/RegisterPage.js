@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterBox({ handleClose }) {
-  const [name, setName] = useState('');
+  const [username, setName] = useState('');
   const [email, setEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
   
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (email !== confirmEmail) {
       alert('Emails do not match');
@@ -19,12 +22,38 @@ function RegisterBox({ handleClose }) {
       alert('Passwords do not match');
       return;
     }
-
-    console.log({
-      name,
+    const userData = {
+      username,
       email,
       password,
-    });
+    };
+
+    console.log(userData);
+
+    try {
+      // Serialize userData to a JSON string
+      const jsonUserData = JSON.stringify(userData);
+    
+      // Make a POST request
+      const response = await axios.post('https://api.cinemate.link/users/register', jsonUserData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log(response.data);
+      // Handle the response from the backend.
+      if (response.status >= 200 && response.status < 300) {
+        alert('Registration successful!');
+        navigate('/login');
+      } else {
+        alert('Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('There was an error registering the user:', error);
+      console.error('Error data:', error.response.data);
+      alert('Registration failed. Please try again.');
+    }
+
   };
 
   return (
@@ -36,7 +65,7 @@ function RegisterBox({ handleClose }) {
           <input
             required
             type="text"
-            value={name}
+            value={username}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter your name"
           />
