@@ -26,8 +26,8 @@ http {
     include /etc/nginx/conf.d/*.conf;
 
     server {
-        listen       {{ port }};
-        listen       [::]:{{ port }};
+        listen       {{ http_port }};
+        listen       [::]:{{ http_port }};
         server_name  {{ server_name }};
         root         /usr/share/nginx/html;
 

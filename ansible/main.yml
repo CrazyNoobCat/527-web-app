@@ -11,6 +11,11 @@
   hosts: webservers
   roles:
     - { role: setup }
+
+- name: Complete local build requriements
+  hosts: localhost
+  roles:
+    - { role: local }
   
 - name: Complete git requriements
   remote_user: ec2-user

@@ -6,20 +6,7 @@
   pause:
     seconds: 30
 
-- name: Install project packages based on package.json.
-  community.general.npm:
-    path: ./source_code/front-end/
-
-- name: Run build
-  shell: |
-    npm run build
-  args:
-  #   executable: /bin/bash
-    chdir: ./source_code/front-end/
-  become: yes
-  become_user: root
-
-- name: Run build
+- name: Move build to nginx content
   shell: |
     cp -r ./source_code/front-end/build/. /usr/share/nginx/html
   become: yes

@@ -24,6 +24,38 @@
   tags:
     - deploy
 
+- name: Copy over build file to the ec2 instance
+  ansible.builtin.copy:
+    src: ../files/build
+    dest: ./source_code/front-end/
+    mode: '0644'
+  tags:
+    - start
+
+- name: Delete the build from host device
+  ansible.builtin.file:
+    path: ./roles/deploy/files/build
+    state: absent
+  tags:
+    - start
+
+- name: Install project packages based on package.json.
+  community.general.npm:
+    path: ./source_code/front-end/
+  tags:
+    - deploy
+
+- name: Run build
+  shell: |
+    npm run build
+  args:
+  #   executable: /bin/bash
+    chdir: ./source_code/front-end/
+  become: yes
+  become_user: root
+  tags:
+    - deploy
+
 - name: Start Ngninx and install required packages
   include_tasks:
     file: nginx_npm.yml
