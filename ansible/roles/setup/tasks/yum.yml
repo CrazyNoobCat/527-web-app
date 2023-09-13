@@ -1,0 +1,13 @@
+- name: Install the latest version of python
+  ansible.builtin.yum:
+    name: python3
+    state: latest
+
+- name: Install a list of packages for the ec2 instances
+  ansible.builtin.yum:
+    name:
+      - nginx
+      - git
+      - nodejs
+      - npm
+    state: present

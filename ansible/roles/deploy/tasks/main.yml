@@ -1,0 +1,36 @@
+- name: Copy git key with 500 permissions
+  ansible.builtin.copy:
+    src: "{{ ssh_private_key }}"
+    dest: ~/
+    mode: '0500'
+  tags:
+    - deploy
+
+- name: Enable ssh-agent
+  shell: | 
+    eval "$(ssh-agent -s)"
+    ssh-add ~/{{ ssh_private_key }}
+    ssh-add -l
+  tags:
+    - deploy
+
+- name: Deploy site files from Github repository
+  git:
+    repo: git@github.com:CrazyNoobCat/527-web-app.git
+    dest: ./source_code
+    key_file: ~/{{ ssh_private_key }}
+    accept_hostkey: yes
+    force: yes
+  tags:
+    - deploy
+
+- name: Start Ngninx and install required packages
+  include_tasks:
+    file: nginx_npm.yml
+    apply:
+      tags:
+        - deploy
+        - start
+  tags:
+    - deploy
+    - start

@@ -3,9 +3,19 @@
   roles:
     - { role: ec2-provision }
 
-## TO RUN 
-# Only deploy ec2
-# ansible-playbook -v -i inventories/hosts  main.yml --tags provision
-
-# Run entire script
-# ansible % ansible-playbook -v -i inventories/hosts  main.yml
+- name: Update and install instance requirements
+  remote_user: ec2-user
+  become: yes
+  vars:
+    ansible_ssh_private_key_file:  "{{ ec2key_priv_secondary_dir }}"
+  hosts: webservers
+  roles:
+    - { role: setup }
+  
+- name: Complete git requriements
+  remote_user: ec2-user
+  vars:
+    ansible_ssh_private_key_file:  "{{ ec2key_priv_secondary_dir }}"
+  hosts: webservers
+  roles:
+    - { role: deploy }

@@ -2,11 +2,5 @@ ec2_key_name: "527-ec2-key"
 ec2_private_key_dir: "/Users/hannah/Desktop/University2023/COMPX527/527-web-app/ansible/527-ec2-key.pem"
 ec2key_secondary: "527-ec2-key-secondary"
 ec2key_priv_secondary_dir: "/Users/hannah/Desktop/University2023/COMPX527/527-web-app/ansible/527-ec2-key-secondary.pem"
-region: ap-southeast-2
-instance_type: t2.micro
-security_group: "527-project-ansible"
-subnet_id: subnet-0b0e3767dae2ae9b4
-image: ami-02379310976710422
-count: 1
 
 # I know the key locations are insecure we are coping with that for now.
