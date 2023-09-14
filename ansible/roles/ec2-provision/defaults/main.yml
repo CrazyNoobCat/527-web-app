@@ -7,6 +7,6 @@ instance_type: t2.micro
 security_group: "527-project-ansible"
 subnet_id: subnet-0b0e3767dae2ae9b4
 image: ami-02379310976710422
-count: 1
+count: 2
 
 # I know the key locations are insecure we are coping with that for now.

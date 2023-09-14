@@ -7,11 +7,6 @@
   tags:
     - local
 
-- name: find where ****
-  command: pwd
-  tags:
-    - local
-
 - name: Pull site files from Github repository
   git:
     repo: git@github.com:CrazyNoobCat/527-web-app.git

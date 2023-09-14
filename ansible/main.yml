@@ -1,3 +1,4 @@
+# ## EC2 Instance Setup
 - name: Provision AWS EC2 Instance
   hosts: localhost
   roles:
@@ -24,3 +25,17 @@
   hosts: webservers
   roles:
     - { role: deploy }
+
+- name: Delete npm build after ec2 setup
+  ansible.builtin.file:
+    path: ./roles/deploy/files/build
+    state: absent
+  tags:
+    - local
+
+## Elastic Load Balencer Setup
+- name: Setup Load Balencer
+  hosts: localhost
+  gather_facts: true
+  roles:
+    - { role: load_balencer }
