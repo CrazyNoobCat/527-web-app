@@ -4,6 +4,8 @@ import MovieDisplay1 from './MovieDisplay';
 import Menu from '../../Common/Menu';
 import AddMoviePopup from '../Addmovie/AddMoviePopup';
 // import { addMovieToWatchlist } from './addHistory';
+import { Link } from "react-router-dom";
+
 
 function SearchPage() {
   const [movies, setMovies] = useState([]);

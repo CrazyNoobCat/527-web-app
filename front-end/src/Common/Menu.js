@@ -40,12 +40,12 @@ function Menu() {
     return location.pathname === path;
   };
 
-  const {user} = useContext(UserContext);
 
+  
   return (
     <div style={menuStyle}>
       <div style={profilePicStyle}></div>
-      <h2>Welcome, {user.username}</h2>
+      <h2>Welcome</h2>
       <nav>
         <Link to="/" style={checkActive('/') ? activeLinkStyle : linkStyle}>Home</Link><br/>
         <Link to="/watchlist" style={checkActive('/watchlist') ? activeLinkStyle : linkStyle}>Future Watchlist</Link><br/>
