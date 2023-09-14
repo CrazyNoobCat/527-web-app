@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from 'axios';
 import React, { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../../UserContext/UserProvider';
+import addToWatchList from '../../Common/addtowatchlist';
+import addToWatchHistory from '../../Common/addHistory';
 
 
 // import { addMovieToWatchlist } from './addHistory';
@@ -39,6 +41,7 @@ function MovieDetails() {
     const [isLoading, setIsLoading] = useState(true);
     const { accessToken } = useContext(UserContext);
     const [userReviews, setUserReviews] = useState([]);
+
     
     useEffect(() => {
         async function fetchUserReviews() {
@@ -72,6 +75,19 @@ function MovieDetails() {
         fetchData();
     }, [movieId, accessToken]); 
 
+    const handleWatchListChange = (event) => {
+        if (event.target.checked) {
+            addToWatchList(movieId, accessToken);
+        }
+    };
+
+    const handleWatchedChange = (event) => {
+        if (event.target.checked) {
+            addToWatchHistory(movieId, accessToken);
+        }
+    };
+
+
     const appStyle = {
       display: 'flex',
       flexDirection: 'row',
@@ -99,11 +115,17 @@ function MovieDetails() {
         marginBottom: '1.5rem'
       };
       
-      const checkBoxStyle = {
+      const checkBoxContainerStyle = {
         display: 'flex',
         alignItems: 'center',
         marginBottom: '1rem'
-      };
+    };
+    
+    const checkBoxStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        marginRight: '2rem'  // to give some space between the checkboxes
+    };
       
       const checkBoxLabelStyle = {
         marginLeft: '0.5rem'
@@ -136,7 +158,7 @@ function MovieDetails() {
     if (!movieDetails) {
         return <div>Error fetching movie details. Please try again later.</div>;
     }
-    return (
+   return (
         <div style={appStyle}>
             <Menu />
             <div style={mainContentStyle}>
@@ -158,7 +180,17 @@ function MovieDetails() {
                         <p>Revenue: {movieDetails.revenue}</p>
                     </div>
                 </div>
-    
+                <div style={checkBoxContainerStyle}>
+                    <div style={checkBoxStyle}>
+                        <input type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
+                        <label style={checkBoxLabelStyle} htmlFor="watchList">Add to Watch List</label>
+                    </div>
+                    <div style={checkBoxStyle}>
+                        <input type="checkbox" id="watched" name="watched" onChange={handleWatchedChange} />
+                        <label style={checkBoxLabelStyle} htmlFor="watched">Mark as Watched</label>
+                    </div>
+                </div>
+
                 {/* Reviews Card */}
                 <div style={cardStyle}>
                     <h2>User Reviews</h2>

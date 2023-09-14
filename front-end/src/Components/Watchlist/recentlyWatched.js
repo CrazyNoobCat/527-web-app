@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';  // <-- Import axios
 import MovieDisplay from '../../Common/MovieCard';
 import Menu from '../../Common/Menu';
-
+import { UserContext } from '../../UserContext/UserProvider';
 
 function RecentlyWatchedPage() {
     
@@ -11,19 +11,24 @@ function RecentlyWatchedPage() {
   const [apiError, setApiError] = useState(null);
 
 
+  const { accessToken } = useContext(UserContext);
+
   useEffect(() => {
     const fetchRecentlyWatchedMovies = async () => {
-      try {
-        const response = await axios.get('https://api.cinemate.link/users/watch/list?limit=2&page=1');
-        setMovies(response.data.movies); // adjust if the response structure is different
-      } catch (error) {
-         setApiError(error.message);
-      }
-     };
+        try {
+            const response = await axios.get(`https://api.cinemate.link/users/watch/history`, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+            setMovies(response.data.movies); // adjust if the response structure is different
+        } catch (error) {
+            setApiError(error.message);
+        }
+    };
 
     fetchRecentlyWatchedMovies();
-  }, []);
-
+}, []);
   const appStyle = {
     display: 'flex',
     flexDirection: 'row',
