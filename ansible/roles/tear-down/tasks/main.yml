@@ -1,0 +1,20 @@
+- name: Terminate every instance in the project security group
+  amazon.aws.ec2_instance:
+    state: absent
+    filters:
+      network-interface.group-name: "{{ security_group_name }}"
+  tags: remove
+
+
+- name: Terminate project load balencer
+  amazon.aws.elb_application_lb:
+    name: "{{ elb_name }}"
+    state: absent
+  tags: remove
+
+
+- name: Delete project target group
+  community.aws.elb_target_group:
+    name: "{{ target_group_name }}"
+    state: absent
+  tags: remove

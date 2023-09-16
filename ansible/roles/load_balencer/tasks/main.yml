@@ -1,0 +1,91 @@
+- name: Delete npm build after ec2 setup
+  ansible.builtin.file:
+    path: ./roles/deploy/files/build
+    state: absent
+  tags:
+    - local
+
+# Create the target group
+- name: Get IP address of the newly created host so that we can further contact it
+  amazon.aws.ec2_instance_info:
+    filters:
+      instance-state-name: [ "running" ]
+  register: ec2_info
+  tags:
+    - elb
+
+- name: Create a target group with IP address targets
+  community.aws.elb_target_group:
+    name: "{{ target_group_name }}"
+    protocol: http
+    port: "{{ http_port }}"
+    vpc_id: "{{ vcp_id }}"
+    health_check_protocol: http
+    health_check_path: /
+    successful_response_codes: "200,250-260"
+    target_type: ip
+    targets:
+      - Id: "{{ ec2_info.instances[1].private_ip_address }}"
+        Port: "{{ http_port }}"
+      - Id: "{{ ec2_info.instances[0].private_ip_address }}"
+        Port: "{{ http_port }}"
+    state: present
+  tags:
+    - elb
+
+# Create a load balencer with ssl certifications
+- amazon.aws.elb_application_lb:
+    name: "{{ elb_name }}"
+    state: present
+    security_groups: 
+      - "{{ security_group_ids }}"
+    scheme: internet-facing
+    subnets:
+      - "{{ subnet_id_1 }}"
+      - "{{ subnet_id_2 }}"
+    listeners:
+      - Protocol: HTTP
+        Port: "{{ http_port }}"
+        DefaultActions:
+        - Type: redirect
+          RedirectConfig:
+            Host: "#{host}"
+            Path: "/#{path}"
+            Port: "#{port}"
+            Protocol: "HTTPS"
+            Query: "#{query}"
+            StatusCode: "HTTP_302" # or HTTP_301
+      - Protocol: HTTPS
+        Port: "{{ https_port }}"
+        DefaultActions:
+        - Type: forward
+          TargetGroupName: "{{ target_group_name }}"
+        Certificates:
+          - CertificateArn: "{{ certificate_arn }}"
+        SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
+  tags:
+    - elb
+
+
+# must assume that there is only one elb
+- name: Gather information about the ELB
+  amazon.aws.elb_application_lb_info:
+    names: "{{ elb_name }}"
+    region: "{{ zone_id }}"
+  register: elb_info
+  tags:
+    - elb
+
+
+- name: Add an alias record that points to the ELB
+  amazon.aws.route53:
+    state: present
+    zone: "{{ server_name }}"
+    record: "{{ server_name }}"
+    type: A
+    value: "{{ elb_info.load_balancers[0].dns_name }}"
+    alias: True
+    alias_hosted_zone_id: "{{ elb_info.load_balancers[0].canonical_hosted_zone_id }}"
+    overwrite: true
+  tags:
+    - elb
