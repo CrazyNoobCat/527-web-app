@@ -8,6 +8,7 @@
   remote_user: ec2-user
   become: yes
   vars:
+    ANSIBLE_HOST_KEY_CHECKING: false
     ansible_ssh_private_key_file:  "{{ ec2key_priv_secondary_dir }}"
   hosts: webservers
   roles:
@@ -21,17 +22,11 @@
 - name: Complete git requriements
   remote_user: ec2-user
   vars:
+    ANSIBLE_HOST_KEY_CHECKING: false
     ansible_ssh_private_key_file:  "{{ ec2key_priv_secondary_dir }}"
   hosts: webservers
   roles:
     - { role: deploy }
-
-- name: Delete npm build after ec2 setup
-  ansible.builtin.file:
-    path: ./roles/deploy/files/build
-    state: absent
-  tags:
-    - local
 
 ## Elastic Load Balencer Setup
 - name: Setup Load Balencer
@@ -39,3 +34,12 @@
   gather_facts: true
   roles:
     - { role: load_balencer }
+
+# Tear down services: Procede with cautionn
+- name: Tear down values
+  hosts: localhost
+  gather_facts: true
+  vars:
+    ANSIBLE_HOST_KEY_CHECKING: false
+  roles:
+    - { role: tear-down }

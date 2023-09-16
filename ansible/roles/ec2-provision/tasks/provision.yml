@@ -43,11 +43,6 @@
     insertafter: "[webservers]"
     line: "{{ ec2_ips.stdout }}"
 
-# NEEDS MORE TESTING
-- name: Wait for SSH to come up
-  wait_for:
-    hosts: "{{ item }}"
-    port: 22
-    state: started
-    exclude_hosts: localhost
-  with_items: "{{ groups['webservers'] }}"
+- name: Sleep for 30 seconds for ssh
+  pause:
+    seconds: 30

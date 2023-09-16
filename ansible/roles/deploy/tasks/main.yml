@@ -51,7 +51,7 @@
   args:
   #   executable: /bin/bash
     chdir: ./source_code/front-end/
-  become: yes
+  become: true
   become_user: root
   tags:
     - deploy

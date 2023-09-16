@@ -6,7 +6,7 @@ Each command can be run independantly or sequentially.
 Run commmands from same folder as this readme.md is contained in, (i.e ~/ansible)
 
 ### Conjoint Ansible Steps from a bash script
-./automate_movie_rater.sh
+sudo ./automate_movie_rater.sh
 
 ### Individual Ansible Steps
 
@@ -29,3 +29,16 @@ ansible-playbook -v -i inventories/hosts main.yml --tags start
 ansible-playbook -v -i inventories/hosts main.yml --tags elb
 
 Can combine tags 2,3,4,5. (either 3a or 3b not both)
+
+
+#### In order to tear down the created services
+ansible-playbook -v -i inventories/hosts main.yml -t remove
+- Note: Old host names must be manually removed from ansible/inventories/hosts
+
+
+## The absolute paths found in the following file must be updated:
+1. ansible/roles/deploy/defaults/main.yml
+2. ansible/roles/ec2-provision/defaults/main.yml
+3. ansible/roles/load_balencer/defaults/main.yml
+4. ansible/roles/local/defaults/main.yml
+5. ansible/roles/setup/defaults/main.yml
