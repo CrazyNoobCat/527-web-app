@@ -4,14 +4,14 @@ import axios from 'axios';  // <-- Import axios
 import MovieDisplay from '../../Common/MovieCard';
 import Menu from '../../Common/Menu';
 import { UserContext } from '../../UserContext/UserProvider';
+import useMovieActions from './useMovieActions';
 
 function RecentlyWatchedPage() {
     
-  const [movies, setMovies] = useState([]);
   const [apiError, setApiError] = useState(null);
-
-
+  const { movies, handleDeleteFromWatchHistory, setMovieList} = useMovieActions();
   const { accessToken } = useContext(UserContext);
+
 
   useEffect(() => {
     const fetchRecentlyWatchedMovies = async () => {
@@ -21,14 +21,15 @@ function RecentlyWatchedPage() {
                     'Authorization': `Bearer ${accessToken}`
                 }
             });
-            setMovies(response.data.movies); // adjust if the response structure is different
+            setMovieList(response.data.movies);
         } catch (error) {
-            setApiError(error.message);
+            console.error("Error fetching watch list:", error);
         }
     };
 
     fetchRecentlyWatchedMovies();
-}, []);
+  }, [accessToken, setMovieList]);
+
   const appStyle = {
     display: 'flex',
     flexDirection: 'row',
@@ -56,7 +57,10 @@ function RecentlyWatchedPage() {
         <h1>Watch History</h1>
         <div style={moviesContainerStyle}>
           {movies.length > 0 ? (
-            <MovieDisplay movies={movies} />
+            <MovieDisplay movies={movies} 
+            onDeleteFromWatchHistory={(movieId) => handleDeleteFromWatchHistory(movieId, accessToken)}
+            displayType="watchHistory" 
+            checked={false}/>
           ) : (
             <div>
               <h2>You haven't watched any movies recently.</h2>

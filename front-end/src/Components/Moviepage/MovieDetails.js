@@ -6,8 +6,6 @@ import { UserContext } from '../../UserContext/UserProvider';
 import addToWatchList from '../../Common/addtowatchlist';
 import addToWatchHistory from '../../Common/addHistory';
 
-
-// import { addMovieToWatchlist } from './addHistory';
 async function fetchMovieDetailsById(id, accessToken) {
     // Prepare the request configuration
     const requestConfig = {
@@ -18,16 +16,12 @@ async function fetchMovieDetailsById(id, accessToken) {
             id: id
         }
     };
-
-    // Log the request configuration to the console
-    console.log("Sending request with configuration:", requestConfig);
-
     try {
       const response = await axios.get('https://api.cinemate.link/movies', requestConfig);
-      console.log("Received response:", response);  // Log the entire response
-const data = response.data;
-console.log("Extracted data:", data);  // Log just the data from the response
-return data;
+ 
+        const data = response.data;
+
+        return data;
 
     } catch (error) {
       console.error("Error fetching movie details by ID:", error);
@@ -41,6 +35,8 @@ function MovieDetails() {
     const [isLoading, setIsLoading] = useState(true);
     const { accessToken } = useContext(UserContext);
     const [userReviews, setUserReviews] = useState([]);
+    const [reviewText, setReviewText] = useState('');
+    const [reviewRating, setReviewRating] = useState(0);
 
     
     useEffect(() => {
@@ -51,10 +47,11 @@ function MovieDetails() {
                         'Authorization': `Bearer ${accessToken}`
                     }
                 });
+                console.log("Response data:", response.data);
                 
                 if (response.data && Array.isArray(response.data.reviews)) {
-                    setUserReviews(response.data.reviews);  // Corrected from userReviews to reviews based on the context
-                    console.log("Movie details after setting state:", userReviews);
+                    setUserReviews(response.data.reviews);
+                    
                 }
             } catch (error) {
                 console.error("Error fetching user reviews:", error);
@@ -87,6 +84,49 @@ function MovieDetails() {
         }
     };
 
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        console.log("Submitting review for movieId:", movieId);
+        
+        try {
+            await axios.post('https://api.cinemate.link/users/reviews', 
+                { 
+                    id: movieId, 
+                    summary: reviewText,
+                    rating: reviewRating
+                }, 
+                { headers: { 'Authorization': `Bearer ${accessToken}` } }
+            );
+    
+            // After successful submission, clear the review text and rating
+            setReviewText('');
+            setReviewRating(0);
+    
+            // Fetch the username for the current user
+            const userResponse = await axios.get('https://api.cinemate.link/users', {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+    
+            const currentUsername = userResponse.data.username;  
+    
+            // Update the local state with the new review
+            const newReview = {
+                summary: reviewText,
+                rating: reviewRating,
+                username: currentUsername,
+                
+            };
+            
+    
+            setUserReviews(prevReviews => [...prevReviews, newReview]);
+        } catch (error) {
+            console.error("Error submitting the review:", error);
+        }
+    };
+
+    // STYLING ////
 
     const appStyle = {
       display: 'flex',
@@ -124,7 +164,7 @@ function MovieDetails() {
     const checkBoxStyle = {
         display: 'flex',
         alignItems: 'center',
-        marginRight: '2rem'  // to give some space between the checkboxes
+        marginRight: '2rem' 
     };
       
       const checkBoxLabelStyle = {
@@ -136,6 +176,19 @@ function MovieDetails() {
         flexDirection: 'column',
         marginBottom: '1rem'
       };
+      const movieinfo = {
+        display: 'flex',
+        flexWrap: 'wrap'
+      }
+      const movieInfoItemStyle = {
+        width: '33%',
+        fontWeight: 'bold'
+    };
+    
+    const movieInfoValueStyle = {
+        fontWeight: 'normal'
+    };
+    
 
       const cardStyle = {
         padding: '1rem',
@@ -150,7 +203,8 @@ function MovieDetails() {
         ...cardStyle,
         padding: '0.5rem'
     };
-  
+  // END OF STYLYING //////////
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -158,7 +212,8 @@ function MovieDetails() {
     if (!movieDetails) {
         return <div>Error fetching movie details. Please try again later.</div>;
     }
-   return (
+
+    return (
         <div style={appStyle}>
             <Menu />
             <div style={mainContentStyle}>
@@ -171,15 +226,16 @@ function MovieDetails() {
     
                 {/* Smaller Info Card */}
                 <div style={smallerCardStyle}>
-                    <div style={movieInfoStyle}>
-                        <p>Release Date: {movieDetails.release_date}</p>
-                        <p>Genres: {movieDetails.genre}</p>
-                        <p>Budget: {movieDetails.budget}</p>
-                        <p>Runtime: {movieDetails.runtime} mins</p>
-                        <p>Language: {movieDetails.language}</p>
-                        <p>Revenue: {movieDetails.revenue}</p>
+                    <div style={movieinfo}>
+                        <p style={movieInfoItemStyle}>Release Date: <span style={movieInfoValueStyle}>{movieDetails.release_date}</span></p>
+                        <p style={movieInfoItemStyle}>Genres: <span style={movieInfoValueStyle}>{movieDetails.genre}</span></p>
+                        <p style={movieInfoItemStyle}>Budget: <span style={movieInfoValueStyle}>{movieDetails.budget}</span></p>
+                        <p style={movieInfoItemStyle}>Runtime: <span style={movieInfoValueStyle}>{movieDetails.runtime} mins</span></p>
+                        <p style={movieInfoItemStyle}>Language: <span style={movieInfoValueStyle}>{movieDetails.language}</span></p>
+                        <p style={movieInfoItemStyle}>Revenue: <span style={movieInfoValueStyle}>{movieDetails.revenue}</span></p>
                     </div>
                 </div>
+    
                 <div style={checkBoxContainerStyle}>
                     <div style={checkBoxStyle}>
                         <input type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
@@ -190,25 +246,63 @@ function MovieDetails() {
                         <label style={checkBoxLabelStyle} htmlFor="watched">Mark as Watched</label>
                     </div>
                 </div>
-
+    
+                {/* Add Review Form */}
+                <div style={cardStyle}>
+                    <h2>Leave a Review</h2>
+                    <form onSubmit={handleReviewSubmit}>
+                        <textarea 
+                            value={reviewText} 
+                            onChange={e => setReviewText(e.target.value)} 
+                            placeholder="Write your review here..."
+                            style={{ width: '100%', minHeight: '100px', padding: '10px' }}
+                        />
+                        <div>
+                            <label>Rating:</label>
+                            <select 
+                                value={reviewRating} 
+                                onChange={e => setReviewRating(parseInt(e.target.value, 10))}  // Parsing as integer
+                            >
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <button type="submit">Submit Review</button>
+                    </form>
+                </div>
+    
                 {/* Reviews Card */}
                 <div style={cardStyle}>
                     <h2>User Reviews</h2>
-                    {userReviews.length ? (
-                        userReviews.map(review => (
-                            <div key={review.id}>
-                                <p>{review.text}</p>
-                                <hr />
-                            </div>
-                        ))
-                    ) : (
-                        <p>No users have left a review.</p>
-                    )}
+                    <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
+                        {userReviews.length > 0 ? (
+                            userReviews.map(review => {
+                                let dateParts = review.date.split("/");
+                                let formattedDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+
+                                return (
+                                    <div key={review.id}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div>
+                                                <p><strong>{review.username}</strong> on {formattedDate.toLocaleDateString()}</p>
+                                                <p>{review.summary ? (review.summary.length > 100 ? review.summary.substring(0, 100) + "..." : review.summary) : ''}</p>
+                                            </div>
+                                            <span style={{ fontWeight: 'bold', fontSize: '1.2rem', marginLeft: '1rem' }}>{review.rating}</span>
+                                        </div>
+                                        <hr />
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <p>No users have left a review.</p>
+                        )}
+                    </div>
                 </div>
-                
             </div>
         </div>
     );
-}
-
+}  
 export default MovieDetails;

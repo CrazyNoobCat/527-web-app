@@ -4,12 +4,12 @@ import axios from 'axios';  // <-- Import axios
 import MovieDisplay from '../../Common/MovieCard';
 import Menu from '../../Common/Menu';
 import { UserContext } from '../../UserContext/UserProvider';
-import useDeleteMovie from '../../Common/deletewatchlist';
+import useMovieActions from './useMovieActions';
 
 
 function FutureWatchlist() {
   const { accessToken } = useContext(UserContext);
-  const { movies, deleteMovie, setMovieList } = useDeleteMovie();
+  const { movies, handleMarkAsWatched, handleAddToWatchHistory, handleRemoveFromWatchlist, setMovieList } = useMovieActions();
 
   useEffect(() => {
       const fetchRecentlyWatchedMovies = async () => {
@@ -27,10 +27,6 @@ function FutureWatchlist() {
 
       fetchRecentlyWatchedMovies();
   }, [accessToken, setMovieList]);
-
-  const onDelete = (movieId) => {
-      deleteMovie(movieId, accessToken);
-  };
 
 
   const appStyle = {
@@ -55,22 +51,29 @@ function FutureWatchlist() {
 
   return (
     <div style={appStyle}>
-      <Menu />
-      <div style={mainContentStyle}>
-        <h1>Your Watch List</h1>
-        <div style={moviesContainerStyle}>
-          {movies.length > 0 ? (
-            <MovieDisplay movies={movies} onDeleteClick={onDelete} displayType="futureWatchlist"/>         
-             ) : (
-            <div>
-              <h2>You haven't watched any movies recently.</h2>
-              <Link to="/search">Search for movies</Link>
+        <Menu />
+        <div style={mainContentStyle}>
+            <h1>Your Watch List</h1>
+            <div style={moviesContainerStyle}>
+                {movies.length > 0 ? (
+                    <MovieDisplay 
+                        movies={movies} 
+                        onMarkAsWatched={(movieId) => handleMarkAsWatched(movieId, accessToken)}
+                        onAddToWatchHistory={(movieId) => handleAddToWatchHistory(movieId, accessToken)}
+                        onDeleteClick={(movieId) => handleRemoveFromWatchlist(movieId, accessToken)} 
+                        displayType="futureWatchlist"
+                    />         
+                ) : (
+                    <div>
+                        <h2>You haven't watched any movies recently.</h2>
+                        <Link to="/search">Search for movies</Link>
+                    </div>
+                )}
             </div>
-          )}
         </div>
-      </div>
     </div>
-  );
+);
 }
+
 
 export default FutureWatchlist;

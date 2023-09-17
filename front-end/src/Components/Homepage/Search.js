@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function SearchAndCategories() {
   const searchAndCategoriesStyle = {
@@ -14,11 +16,12 @@ function SearchAndCategories() {
   };
 
   const categories = [
-    'Action/Adventure', 'Animation', 'Crime', 'Comedy', 'Drama', 'Documentary', 'Family',
+    'Action', 'Animation', 'Crime', 'Comedy', 'Drama', 'Documentary', 'Family',
     'Fantasy', 'Historical', 'Horror', 'Romance', 'Science Fiction', 'Thriller'
   ];
 
   const categoryStyle = {
+    display: 'block',
     padding: '10px',
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     marginBottom: '30px',
@@ -27,18 +30,39 @@ function SearchAndCategories() {
     overflowY: 'scroll'
   };
   
+  const [inputValue, setInputValue] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    navigate(`/search?query=${inputValue}`);
+  }
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  }
+
+
 
   return (
-    <div className='sideSearch' style={searchAndCategoriesStyle}>
-      <input type="text" placeholder="Search" style={searchBarStyle} />
+      <div className='sideSearch' style={searchAndCategoriesStyle}>
+      <input 
+        type="text" 
+        placeholder="Search"
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+        style={searchBarStyle} 
+      />
       <h2> Browse by Categories</h2>
-      <div>
-        {categories.map((category, index) => (
-          <div key={index} style={categoryStyle}>
+      {categories.map((category, index) => (
+        <Link 
+            key={index} 
+            to={`/search?genre=${category}`} 
+            style={{...categoryStyle, textDecoration: 'none', color: 'inherit'}}
+ >
             {category}
-          </div>
+        </Link>
         ))}
-      </div>
     </div>
   );
 }
