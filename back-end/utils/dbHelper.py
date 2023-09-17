@@ -1,4 +1,5 @@
 # Handle accessing the DB
+from datetime import date
 from decimal import Decimal
 
 import boto3
@@ -285,6 +286,7 @@ def query_page(
     page=1,
     key_expression=None,
     partition_key=MOVIE_PARTITION_KEY,
+    scan_forwards=True,
 ) -> list[Movie]:
     """
     Scan the movies table with a filter expression, return the results and the last evaluated key
@@ -311,6 +313,7 @@ def query_page(
                         KeyConditionExpression=key_expression,
                         Select="ALL_ATTRIBUTES",
                         Limit=batch_size,
+                        ScanIndexForward=scan_forwards,
                     )
                 elif last_evaluated_key is None and filter_expression is not None:
                     response = table.query(
@@ -318,6 +321,7 @@ def query_page(
                         FilterExpression=filter_expression,
                         Select="ALL_ATTRIBUTES",
                         Limit=batch_size,
+                        ScanIndexForward=scan_forwards,
                     )
 
                 elif filter_expression is not None:
@@ -327,6 +331,7 @@ def query_page(
                         Select="ALL_ATTRIBUTES",
                         ExclusiveStartKey=last_evaluated_key,
                         Limit=batch_size,
+                        ScanIndexForward=scan_forwards,
                     )
                 else:
                     response = table.query(
@@ -334,6 +339,7 @@ def query_page(
                         Select="ALL_ATTRIBUTES",
                         ExclusiveStartKey=last_evaluated_key,
                         Limit=batch_size,
+                        ScanIndexForward=scan_forwards,
                     )
 
                 results.extend(response["Items"])
@@ -470,6 +476,7 @@ def get_review(id, username) -> Review | None:
             username=review.get("username"),
             summary=review.get("summary"),
             rating=str(review.get("rating")),
+            date=review.get("date"),
         )
 
     except Exception as e:
@@ -481,11 +488,13 @@ def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
     try:
         key_expression = Key("movie_id").eq(Decimal(id))
 
+        # Ensure to retrieve reviews from oldest to newest
         rawReviews = query_page(
             table=reviewTable,
             key_expression=key_expression,
             max_results=limit,
             page=page,
+            scan_forwards=False,
         )
 
         if len(rawReviews) == 0:
@@ -500,6 +509,7 @@ def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
                     username=review.get("username"),
                     summary=review.get("summary"),
                     rating=str(review.get("rating")),
+                    date=review.get("date"),
                 )
             )
 
@@ -537,6 +547,7 @@ def create_user_review(
                 "username": username,
                 "summary": summary,
                 "rating": rating,
+                "date": date.today().strftime("%d/%m/%Y"),
             }
         )
 
