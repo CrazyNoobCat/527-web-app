@@ -28,7 +28,7 @@ def create_user(username: str, email: str, password: str):
         # Ensure username doesn't have spaces
         if " " in username:
             return (False, "Username cannot contain spaces")
-        
+
         # Ensure username is not empty
         if username == "":
             return (False, "Username cannot be empty")
@@ -49,7 +49,7 @@ def create_user(username: str, email: str, password: str):
         # Check password length
         if len(password) < 8:
             return (False, "Password must be at least 8 characters")
-        
+
         # Check email is valid
         if "@" not in email:
             return (False, "Email is not valid")
@@ -166,7 +166,7 @@ def authenticate_user(username: str, password: str) -> User | None:
         return None
 
 
-def get_user(username:str) -> User | None:
+def get_user(username: str) -> User | None:
     """Get a user by username, return User object if found else None"""
     try:
         if username is None:
@@ -383,7 +383,9 @@ def query_page(
                         }
                     elif table == userTable:
                         last_evaluated_key = {
-                            "username_lower": results[max_results - 1]["username_lower"],
+                            "username_lower": results[max_results - 1][
+                                "username_lower"
+                            ],
                             "pt_key": partition_key,
                         }
 
@@ -510,7 +512,7 @@ def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
             key_expression=key_expression,
             max_results=limit,
             page=page,
-            scan_forwards=False,
+            scan_forwards=True,
         )
 
         if len(rawReviews) == 0:
