@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
-function MovieDisplay({ movies, hasSearched, onAddMovieClick }) { 
+
+function MovieDisplay({ movies, displayType, onDeleteClick }) { 
 
     // CSS // 
     const moviesStyle = {
@@ -11,7 +13,7 @@ function MovieDisplay({ movies, hasSearched, onAddMovieClick }) {
     };
 
     const movieCardStyle = {
-        width: '20%',
+        width: '30%',
         boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
         margin: '1rem',
         padding: '1rem',
@@ -27,25 +29,56 @@ function MovieDisplay({ movies, hasSearched, onAddMovieClick }) {
         marginTop: '2rem'
     };
 
-    // END OF CSS // 
+    const renderCheckBox = (movie) => {
+        switch (displayType) {
+            case 'futureWatchlist':
+                return (
+                    <>
+                      <button onClick={() => onDeleteClick(movie.id)}>Delete from Watchlist</button>
 
-      return (
+                      
+                      {/* Checkbox to mark as watched */}
+                      <div>
+                        <input type="checkbox" id={`watched-${movie.id}`} name={`watched-${movie.id}`} />
+                        <label htmlFor={`watched-${movie.id}`}>Mark as Watched</label>
+                      </div>
+                    </>
+                  );
+            case 'watchHistory':
+                return (
+                    <>
+                        
+                        {/* Checkbox to mark as watched */}
+                        <div>
+                        <input type="checkbox" id={`watched-${movie.id}`} name={`watched-${movie.id}`} />
+                        <label htmlFor={`watched-${movie.id}`}>Mark as Watched</label>
+                        </div>
+                  </>
+                );
+        }
+    }
+
+    // END OF CSS // 
+    return (
         <div style={moviesStyle}>
             {movies.map((movie, index) => (
-                <div key={index} style={movieCardStyle}>
-                    <h3>{movie.title}</h3>
+                <div style={movieCardStyle} key={index}>
+                    <h3>
+                        <Link to={`/movie/${movie.id}`}>{movie.title}</Link> {/* Only the title is a link now */}
+                    </h3>
                     <p>{movie.summary.substring(0, 100)}...</p>
                     <p>Runtime: {movie.runtime} mins</p>
                     <p>
-  Genre:  
-  {
-    movie.genre.split(',').length > 2 
-      ? movie.genre.split(',').slice(0, 2).join(', ') + ' +'
-      : movie.genre
-  }
-</p>
+                        Genre:  
+                        {
+                            movie.genre.split(',').length > 2 
+                            ? movie.genre.split(',').slice(0, 2).join(', ') + ' +'
+                            : movie.genre
+                        }
+                    </p>
                     <p>Language: {movie.language}</p>
                     <p>Release Date: {movie.release_date}</p>
+                    {renderCheckBox(movie)}
                 </div>
             ))}
         </div>

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Axios from 'axios';
+import { UserContext } from '../../UserContext/UserProvider';
 
 
 function SearchBar({ onSearch }) {
@@ -22,40 +23,63 @@ function SearchBar({ onSearch }) {
     // End of css //
   
     //Main functioning of search bar//
-
+    const {accessToken} = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(false); // For loading state
+    const [error, setError] = useState(null); // For error state
+    const API_ENDPOINT = "https://api.cinemate.link/movies";
 
     const fetchMovies = (term) => {
-      console.log("Fetching movies with term:", term); // Was for me to debug
-      Axios.get(`YOUR_API_ENDPOINT?search=${term}`) // NEEDS UPDATE OF ACTUAL API
-          .then(response => {
-              onSearch(response.data);
-          })
-          .catch(error => {
-              console.error("Error fetching movies:", error);
-          });
-  };
+            if (!accessToken) {
+                setError("Authentication failed.");
+                return;
+            }
 
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            fetchMovies(searchTerm);
-        }
-    }
+            setLoading(true); // Set loading state before API call
+            setError(null); // Reset error state before new API call
 
+            Axios.get(API_ENDPOINT, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                },
+                params: {
+                    title: term,
+                    limit: 10,    
+                    page: 1       
+                }
+            })
+            .then(response => {
+                onSearch(response.data);
+                setLoading(false); // Reset loading state after successful API call
+            })
+            .catch(error => {
+                console.error("Error fetching movies:", error);
+                setError("Error fetching movies."); // Set a user-friendly error message
+                setLoading(false); // Reset loading state after failed API call
+            });
+        };
 
-  return (
-    <div style={container}>
-        <input 
-            style={searchBarStyle}
-            type="text" 
-            placeholder="Search for movies..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            onKeyPress={handleKeyPress} 
-        />
-        <button onClick={() => fetchMovies(searchTerm)}>Search</button>
-    </div>
-);
+        const handleKeyPress = (event) => {
+          if (event.key === 'Enter') {
+              fetchMovies(searchTerm);
+          }
+      }
+
+      return (
+        <div style={container}>
+            <input 
+                style={searchBarStyle}
+                type="text"
+                placeholder="Search for movies..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                onKeyPress={handleKeyPress}
+            />
+            <button onClick={() => fetchMovies(searchTerm)}>Search</button>
+            {loading && <p>Loading...</p>}
+            {error && <p>{error}</p>}
+        </div>
+    );
 }
-
+  
 export default SearchBar;

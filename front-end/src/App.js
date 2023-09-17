@@ -9,9 +9,10 @@ import SearchPage from './Components/SearchPage/SearchPage.js';
 import UserProvider, {UserContext} from './UserContext/UserProvider.js';
 import RecentlyWatchedPage from './Components/Watchlist/recentlyWatched.js';
 import FutureWatchlist from './Components/Watchlist/futurewtachlist.js';
+import MovieDetails from './Components/Moviepage/MovieDetails.js';
 
 import ProtectedRoute  from './UserContext/protectedlinks.js';
-import { BrowserRouter as Router, Route, Routes, redirect} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, redirect, Navigate} from 'react-router-dom'
 
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
 
   const {currentUser} = useContext(UserContext);
   
-function HomePage() { {/* Wrap routes with AppState */}
+function HomePage() { 
 
   return (
     <div style={{...appStyle, justifyContent: 'space-between', width: '100%'}}>
@@ -43,9 +44,10 @@ return (
           <Route exact path="/login" element={<LoginPage />} />
           <Route exact path="/register" element={<RegisterBox />}/>
           <Route path = '/search' element={<ProtectedRoute><SearchPage /></ProtectedRoute>}/>
-          <Route path="*" element={currentUser ? <redirect to="/home" /> : <LandingPage />} />
-          <Route exact path="/watchhistory" element={<RecentlyWatchedPage/>}/>
-          <Route exact path="/watchlist" element={<FutureWatchlist/>}/>
+          <Route path="*" element={currentUser ? <Navigate to="/home" /> : <LandingPage />} />
+          <Route path="/watchhistory" element={<ProtectedRoute><RecentlyWatchedPage/></ProtectedRoute>}/>
+          <Route path="/watchlist" element={<ProtectedRoute><FutureWatchlist/></ProtectedRoute>}/>
+          <Route path="/movie/:movieId" element={<ProtectedRoute><MovieDetails/></ProtectedRoute>} />
           {/* Add more Routes as needed */}
         </Routes>
       </div>

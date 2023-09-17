@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { UserContext } from './UserProvider';
 
-const ProtectedRoute = (children) => {
+const ProtectedRoute = ({children}) => {
     const {currentUser, accessToken } = useContext(UserContext);
     const location = useLocation(); 
     if (!currentUser && !accessToken) {

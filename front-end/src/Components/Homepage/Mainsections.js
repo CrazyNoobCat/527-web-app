@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios'; 
+import { UserContext } from '../../UserContext/UserProvider';
 
 function MainSection() {
 
@@ -57,69 +58,62 @@ function MainSection() {
 
   const [futureMovies, setFutureMovies] = useState([]); // This is to get the users actua data
   const [recentMovies, setRecentMovies] = useState([]); // This is to get the users data
+  const { accessToken } = useContext(UserContext);
+  const [error, setError] = useState(null);
 
-  //Fake movies for now
-  const movies = [
-    { title: 'Movie 1', bio: 'This is the bio for Movie 1', date: '10th August' },
-    { title: 'Movie 2', bio: 'This is the bio for Movie 2', date: '13th August' },
-    { title: 'Movie 3', bio: 'This is the bio for Movie 3' },
-  ];
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const futureRes = await axios.get(); //URL TO DATABASE
-        const recentRes = await axios.get(); //URL TO DATABASE
-        
-        setFutureMovies(futureRes.data);
-        setRecentMovies(recentRes.data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
+  async function fetchWatchlist() {
+    try {
+        const response = await axios.get(`https://api.cinemate.link/users/watch/list?limit=3`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        setFutureMovies(response.data.movies);
+        console.log("API Response:", response.data);
+    } catch (err) {
+        setError(err.message); // set error in case the fetch fails
+        console.error("Error fetching watchlist data:", err);
     }
-    
-    fetchData();
+ }
+  useEffect(() => {
+    fetchWatchlist();
   }, []);
 
-return (
-  <div style={outerBoxStyle}>
-    <div style={mainSectionStyle}>
-      {/* Future Watchlist */}
-      <div style={boxStyle}>
-        Future Watchlist
-        {futureMovies.length === 0 ? (
-          <div style = {noDataStyle}>No future watchlist! Add movies</div>
-        ) : (
-          futureMovies.map((movie, index) => (
-            <div key={index} style={futuremovieRow}>
-              <strong>{movie.title}</strong>
-              <p>{movie.bio.substring(0, 20)}...</p>
-            </div>
-          ))
-        )}
-      </div>
-      {/* Recently Watched */}
-      <div style={boxStyle}>
-        Recently Watched
-        {recentMovies.length === 0 ? (
-          <div style = {noDataStyle}>No previously watched movies! Search for movies to watch</div>
-        ) : (
-          recentMovies.map((movie, index) => (
-            <div key={index} style={recentMovieRow}>
-              <strong>{movie.title}</strong>
-              <p>{movie.bio.substring(0, 20)}...</p>
-              {movie.date && <span style={dateStyle}>{movie.date}</span>}
-            </div>
-          ))
-        )}
+
+  return (
+    <div style={outerBoxStyle}>
+      <div style={mainSectionStyle}>
+        {/* Future Watchlist */}
+        <div style={boxStyle}>
+          Future Watchlist
+          {futureMovies.length === 0 ? (
+            <div style = {noDataStyle}>No future watchlist! Add movies</div>
+          ) : (
+            futureMovies.map((movie, index) => ( // Use slice to get the top 3 movies
+              <div key={index} style={futuremovieRow}>
+                <strong>{movie.title}</strong>
+                <p>{movie.summary.substring(0, 20)}...</p>
+              </div>
+            ))
+          )}
+        </div>
+        {/* Recently Watched */}
+        <div style={boxStyle}>
+          Recently Watched
+          {recentMovies.length === 0 ? (
+            <div style = {noDataStyle}>No previously watched movies! Search for movies to watch</div>
+          ) : (
+            recentMovies.map((movie, index) => (
+              <div key={index} style={recentMovieRow}>
+                <strong>{movie.title}</strong>
+                <p>{movie.summary.substring(0, 20)}...</p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
-
-
-
-
+  );
 
 }
 

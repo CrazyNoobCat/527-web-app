@@ -9,8 +9,8 @@ function UserProvider({ children }) {
   const login = useCallback(async (username, password) => {
     const user = await loginFunction(username, password); // This should also return accessToken
     setCurrentUser(user);
-    if(user && user.token) { 
-        setAccessToken(user.token);
+    if(user && user.authToken) { 
+        setAccessToken(user.authToken);
     }
   }, []);
 
