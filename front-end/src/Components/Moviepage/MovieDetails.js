@@ -140,7 +140,7 @@ function MovieDetails() {
       const cardStyle = {
         padding: '1rem',
         marginBottom: '1rem',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
         borderRadius: '8px',
         backgroundColor: '#E2D0FD08',
         backgroundColor: '#ff',

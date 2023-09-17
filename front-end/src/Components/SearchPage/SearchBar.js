@@ -31,12 +31,9 @@ function SearchBar({ onSearch }) {
 
     const fetchMovies = (term) => {
             if (!accessToken) {
-                console.error("No access token available");
                 setError("Authentication failed.");
                 return;
             }
-
-            console.log("Fetching movies with term:", term);
 
             setLoading(true); // Set loading state before API call
             setError(null); // Reset error state before new API call

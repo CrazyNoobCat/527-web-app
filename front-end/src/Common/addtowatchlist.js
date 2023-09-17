@@ -3,6 +3,7 @@ import axios from "axios";
 
 async function addToWatchList(movieId, accessToken) {
 
+    console.log("Access Token:", accessToken); 
     // Check if movieId exists and is valid.
     if (!movieId) {
         console.error("Invalid movieId:", movieId);

@@ -1,9 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
 import UserContext from '../UserContext/UserProvider';
+import logo from "../Common/Cinematelogo.png"
 
 function Menu() {
   const location = useLocation();
+  
+
   const menuStyle = {
     width: '15%',
     backgroundColor: '#E2D0FD50', // Replace with your chosen color
@@ -44,10 +48,10 @@ function Menu() {
   
   return (
     <div style={menuStyle}>
-      <div style={profilePicStyle}></div>
+      <img src={logo} alt="Profile Logo" style={{ width: '80%', height: '18%' }} />
       <h2>Welcome</h2>
       <nav>
-        <Link to="/" style={checkActive('/') ? activeLinkStyle : linkStyle}>Home</Link><br/>
+        <Link to="/home" style={checkActive('/') ? activeLinkStyle : linkStyle}>Home</Link><br/>
         <Link to="/watchlist" style={checkActive('/watchlist') ? activeLinkStyle : linkStyle}>Future Watchlist</Link><br/>
         <Link to="/watchhistory" style={checkActive('/watchhistory') ? activeLinkStyle : linkStyle}>Previously Watched</Link><br/>
         <Link to="/search" style={checkActive('/search') ? activeLinkStyle : linkStyle}>Search</Link>

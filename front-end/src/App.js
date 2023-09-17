@@ -24,7 +24,7 @@ function App() {
 
   const {currentUser} = useContext(UserContext);
   
-function HomePage() { {/* Wrap routes with AppState */}
+function HomePage() { 
 
   return (
     <div style={{...appStyle, justifyContent: 'space-between', width: '100%'}}>

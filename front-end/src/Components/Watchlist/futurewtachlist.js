@@ -4,30 +4,34 @@ import axios from 'axios';  // <-- Import axios
 import MovieDisplay from '../../Common/MovieCard';
 import Menu from '../../Common/Menu';
 import { UserContext } from '../../UserContext/UserProvider';
+import useDeleteMovie from '../../Common/deletewatchlist';
 
 
 function FutureWatchlist() {
-    
-  const [movies, setMovies] = useState([]);
-  const [apiError, setApiError] = useState(null);
   const { accessToken } = useContext(UserContext);
+  const { movies, deleteMovie, setMovieList } = useDeleteMovie();
 
   useEffect(() => {
-    const fetchRecentlyWatchedMovies = async () => {
-        try {
-            const response = await axios.get(`https://api.cinemate.link/users/watch/list`, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-            setMovies(response.data.movies); // adjust if the response structure is different
-        } catch (error) {
-            setApiError(error.message);
-        }
-    };
+      const fetchRecentlyWatchedMovies = async () => {
+          try {
+              const response = await axios.get(`https://api.cinemate.link/users/watch/list`, {
+                  headers: {
+                      'Authorization': `Bearer ${accessToken}`
+                  }
+              });
+              setMovieList(response.data.movies);
+          } catch (error) {
+              console.error("Error fetching watch list:", error);
+          }
+      };
 
-    fetchRecentlyWatchedMovies();
-}, []);
+      fetchRecentlyWatchedMovies();
+  }, [accessToken, setMovieList]);
+
+  const onDelete = (movieId) => {
+      deleteMovie(movieId, accessToken);
+  };
+
 
   const appStyle = {
     display: 'flex',
@@ -56,8 +60,8 @@ function FutureWatchlist() {
         <h1>Your Watch List</h1>
         <div style={moviesContainerStyle}>
           {movies.length > 0 ? (
-            <MovieDisplay movies={movies} />
-          ) : (
+            <MovieDisplay movies={movies} onDeleteClick={onDelete} displayType="futureWatchlist"/>         
+             ) : (
             <div>
               <h2>You haven't watched any movies recently.</h2>
               <Link to="/search">Search for movies</Link>
