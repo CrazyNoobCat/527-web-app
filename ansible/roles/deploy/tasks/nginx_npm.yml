@@ -1,0 +1,28 @@
+# Sudo added here as the git can nginx concurreny wont work due permissions
+- name: Start up nginx servers
+  command: "sudo service nginx start"
+
+- name: Sleep for 30 seconds
+  pause:
+    seconds: 30
+
+- name: Move build to nginx content
+  shell: |
+    cp -r ./source_code/front-end/build/. /usr/share/nginx/html
+  become: yes
+  become_user: root
+
+- name: Start up nginx servers
+  command: "sudo systemctl stop nginx"
+
+  ## jinja template nginx.conf
+- name: Template a file to /etc/nginx.conf
+  ansible.builtin.template:
+    src: ../templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    mode: '0644'
+  become: yes
+  become_user: root
+
+- name: Start up nginx servers
+  command: "sudo service nginx start"

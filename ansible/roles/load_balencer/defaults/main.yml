@@ -1,0 +1,14 @@
+server_name: "cinemate.link"
+security_group_name: "527-project-ansible"
+subnet_id: subnet-0b0e3767dae2ae9b4
+http_port: 80
+https_port: 443
+security_group_ids: "sg-0221a2b1de607cdec"
+subnet_id_1: subnet-0b0e3767dae2ae9b4
+subnet_id_2: subnet-0b391d8cf0f90a6d9
+target_group_name: "ec2-project"
+certificate_arn: "arn:aws:acm:ap-southeast-2:471346212545:certificate/8cb0c23e-9afd-4827-928b-37c2a02f1a5a"
+elb_name: "527-project-load-balencer"
+zone_id: ap-southeast-2
+vcp_id: vpc-093af5fa79be2e3a5
+ec2_info:

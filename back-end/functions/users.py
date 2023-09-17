@@ -150,6 +150,9 @@ def get_watchlist(event, context, user: User):
 
     watchlist = user.watch_list.split(",")
 
+    # Reverse watchlist so that the newest movies are first
+    watchlist.reverse()
+    
     paginated_watchlist = retrieve_paginated_list(watchlist, limit, page)
 
     if paginated_watchlist == [""]:
@@ -236,6 +239,9 @@ def get_watch_history(event, context, user: User):
     page, limit = retrieve_page_and_limit(params)
 
     history = user.watch_history.split(",")
+    # Reverse history so that the newest movies are first
+    history.reverse()
+    
     paginated_history = retrieve_paginated_list(history, limit, page)
 
     print("paginated_history: ", paginated_history)
@@ -251,7 +257,7 @@ def get_watch_history(event, context, user: User):
     return create_response(200, body={"movies": movies})
 
 
-def get_user_reviews(event, context, user: User):
+def get_user_reviews(event, context, user: User):    
     if user is None:
         # Shouldn't be reachable but just in case
         return create_response(404, "User not found")
@@ -272,6 +278,10 @@ def get_user_reviews(event, context, user: User):
     page, limit = retrieve_page_and_limit(params)
 
     reviews = user.reviews.split(",")
+
+    # Order reviews from newest to oldest
+    reviews.reverse()
+
     paginated_reviews = retrieve_paginated_list(reviews, limit, page)
 
     if paginated_reviews == [""]:

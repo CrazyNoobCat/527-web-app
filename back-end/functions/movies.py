@@ -117,6 +117,7 @@ def get_movie_reviews(event, context):
 
     page, limit = retrieve_page_and_limit(params)
 
+    # Returns the newest to oldest review
     reviews = get_all_movie_reviews(id, limit, page)
 
     if reviews is None:

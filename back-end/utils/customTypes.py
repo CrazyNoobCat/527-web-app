@@ -66,6 +66,7 @@ class Review:
     username: str
     summary: str
     rating: int
+    date: str
 
     def __init__(
         self,
@@ -73,8 +74,10 @@ class Review:
         username: str = "",
         summary: str = "",
         rating: int = "",
+        date: str = "",
     ) -> None:
         self.movie = movie
         self.username = username
         self.summary = summary
         self.rating = rating
+        self.date = date
