@@ -31,3 +31,4 @@ function useDeleteMovie() {
 }
 
 export default useDeleteMovie;
+export {deleteMovieFromWatchlist};

@@ -3,8 +3,8 @@ import SearchBar from './SearchBar';
 import MovieDisplay1 from './MovieDisplay';
 import Menu from '../../Common/Menu';
 import AddMoviePopup from '../Addmovie/AddMoviePopup';
-// import { addMovieToWatchlist } from './addHistory';
-import { Link } from "react-router-dom";
+//import { addMovieToWatchlist } from './addHistory';
+import { useNavigate } from "react-router-dom";
 
 
 function SearchPage() {
@@ -12,12 +12,16 @@ function SearchPage() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isAddMoviePopupVisible, setAddMoviePopupVisible] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const navigate = useNavigate();
 
 
-  const handleSearch = (searchedMovies, error = null) => {
+
+  const handleSearch = (term, searchedMovies, error = null) => {
+    console.log('searchTerm:', term);
     setMovies(searchedMovies.movies || []);
     setHasSearched(true); // set hasSearched to true when a search happens
     setApiError(error);   // store any error that occurs
+    navigate(`/search?query=${term}`);
   }
 
     const appStyle = {

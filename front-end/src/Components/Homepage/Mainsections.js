@@ -78,6 +78,24 @@ function MainSection() {
   useEffect(() => {
     fetchWatchlist();
   }, []);
+  
+  async function fetchWatchhistory() {
+    try {
+        const response = await axios.get(`https://api.cinemate.link/users/watch/history?limit=3`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        setRecentMovies(response.data.movies);
+        console.log("API Response:", response.data);
+    } catch (err) {
+        setError(err.message); // set error in case the fetch fails
+        console.error("Error fetching watchlist data:", err);
+    }
+ }
+  useEffect(() => {
+    fetchWatchhistory();
+  }, []);
 
 
   return (
