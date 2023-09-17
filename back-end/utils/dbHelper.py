@@ -37,7 +37,7 @@ def create_user(username: str, email: str, password: str):
         result: dict = userTable.get_item(
             Key={
                 "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-                "username": username,
+                "username_lower": username.lower(),
             }
         )
 
@@ -166,7 +166,7 @@ def authenticate_user(username: str, password: str) -> User | None:
         return None
 
 
-def get_user(username) -> User | None:
+def get_user(username:str) -> User | None:
     """Get a user by username, return User object if found else None"""
     try:
         if username is None:
@@ -383,7 +383,7 @@ def query_page(
                         }
                     elif table == userTable:
                         last_evaluated_key = {
-                            "username": results[max_results - 1]["username"],
+                            "username_lower": results[max_results - 1]["username_lower"],
                             "pt_key": partition_key,
                         }
 
