@@ -1,22 +1,28 @@
+import axios from 'axios';
 
-export const loginFunction = (username, password) => {
-  return fetch("https://api.cinemate.link/users/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      username,
-      password
-    })
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Login failed");
-    }
-    return response.json();
-  })
-  .then(data => {
-    return data; // Return the whole data object
-  });
+
+export const loginFunction = async (username, password) => {
+  
+
+  const userData = {
+    username,
+    password,
+  };
+
+  const jsonUserData = JSON.stringify(userData);
+  try {
+    const response = await axios.post('https://api.cinemate.link/users/login', jsonUserData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log("login response", response.data)
+    // Axios will automatically throw an error for response statuses outside the 200-299 range.
+    // So, we only check the data of the response here.
+    return response.data;
+    
+  } catch (error) {
+    console.error("Login failed:", error.response.data);
+    throw new Error("Login failed");
+  }
 };

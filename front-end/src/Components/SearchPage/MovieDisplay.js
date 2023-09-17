@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
-function MovieDisplay({ movies, hasSearched, onAddMovieClick }) { 
+
+function MovieDisplay1({ movies, hasSearched, onAddMovieClick }) { 
 
     // CSS // 
     const moviesStyle = {
@@ -47,18 +49,31 @@ function MovieDisplay({ movies, hasSearched, onAddMovieClick }) {
             </div>
         );
     }
-
-      return (
+    console.log("Movies:", movies);
+    return (
         <div style={moviesStyle}>
-            {movies.map((movie, index) => (
-                <div key={index} style={movieCardStyle}>
-                    <h3>{movie.title}</h3>
-                    <p>{movie.display.substring(0, 20)}...</p>
-                    <p>Rating: {movie.pgRating}</p>
+            {movies.map((movie) => (
+                <div key={movie.id} style={movieCardStyle}>
+                    <Link to={`/movie/${movie.id}`}>
+                        <h3>{movie.title}</h3>
+                        <p>{movie.summary.substring(0, 100)}...</p>
+                        <p>Runtime: {movie.runtime} mins</p>
+                        <p>
+                            Genre:  
+                            {
+                                movie.genre.split(',').length > 2 
+                                ? movie.genre.split(',').slice(0, 2).join(', ') + ' +'
+                                : movie.genre
+                            }
+                        </p>
+                        <p>Language: {movie.language}</p>
+                        <p>Release Date: {movie.release_date}</p>
+                    </Link>
                 </div>
             ))}
         </div>
     );
 }
     
-export default MovieDisplay;
+    
+export default MovieDisplay1;

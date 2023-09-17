@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import SearchBar from './SearchBar';
-import MovieDisplay from './MovieDisplay';
+import MovieDisplay1 from './MovieDisplay';
 import Menu from '../../Common/Menu';
 import AddMoviePopup from '../Addmovie/AddMoviePopup';
 // import { addMovieToWatchlist } from './addHistory';
+import { Link } from "react-router-dom";
+
 
 function SearchPage() {
   const [movies, setMovies] = useState([]);
@@ -13,7 +15,7 @@ function SearchPage() {
 
 
   const handleSearch = (searchedMovies, error = null) => {
-    setMovies(searchedMovies);
+    setMovies(searchedMovies.movies || []);
     setHasSearched(true); // set hasSearched to true when a search happens
     setApiError(error);   // store any error that occurs
   }
@@ -50,7 +52,7 @@ function SearchPage() {
                   <SearchBar onSearch={handleSearch} />
               </div>
               <div style={moviesContainerStyle}>
-                 <MovieDisplay movies={movies} hasSearched={hasSearched} onAddMovieClick={() => setAddMoviePopupVisible(true)} />
+                 <MovieDisplay1 movies={movies} hasSearched={hasSearched} onAddMovieClick={() => setAddMoviePopupVisible(true)} />
                   {isAddMoviePopupVisible && <AddMoviePopup onClose={() => setAddMoviePopupVisible(false)} />}
               </div>
           </div>
