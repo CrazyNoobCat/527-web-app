@@ -49,6 +49,7 @@ function RegisterBox({ handleClose }) {
       console.log(response.data);
       // Handle the response from the backend.
       if (response.status >= 200 && response.status < 300) {
+        handleClose();
         navigate('/landing');
       } else {
         alert('Registration failed. Please try again.');
