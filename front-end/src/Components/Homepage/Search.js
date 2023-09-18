@@ -16,8 +16,8 @@ function SearchAndCategories() {
   };
 
   const categories = [
-    'Action', 'Animation', 'Crime', 'Comedy', 'Drama', 'Documentary', 'Family',
-    'Fantasy', 'Historical', 'Horror', 'Romance', 'Science Fiction', 'Thriller'
+    'Action', 'Adventure', 'Animation', 'Crime', 'Comedy', 'Drama', 'Documentary', 'Family',
+    'Fantasy', 'History', 'Horror', 'Romance', 'Science Fiction', 'Thriller', 'TV Movie', 'War', "Western"
   ];
 
   const categoryStyle = {

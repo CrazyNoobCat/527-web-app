@@ -6,6 +6,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function SearchBar({ onSearch }) {
     console.log("SearchBar rendered");
@@ -68,11 +71,13 @@ function SearchBar({ onSearch }) {
         setError(null);
     
         let params = {};
+        let finalSearchTerm = searchTerm;
     
         if (searchType === 'title') {
             params.title = searchTerm;
         } else if (searchType === 'genre') {
-            params.genre = searchTerm;
+            finalSearchTerm = capitalizeFirstLetter(searchTerm);
+            params.genre = finalSearchTerm;
         }
     
         params.limit = 8;

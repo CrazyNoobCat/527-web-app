@@ -2,6 +2,10 @@ import React, { useContext, useState } from 'react';
 import Axios from 'axios';
 import { UserContext } from '../../UserContext/UserProvider';
 
+function capitalizeWords(input) {
+    return input.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+}
+
 function AddMoviePopup({ onClose }) {
     const [title, setTitle] = useState('');
     const [genreNames, setGenreNames] = useState('');
@@ -9,14 +13,18 @@ function AddMoviePopup({ onClose }) {
     const [summary, setSummary] = useState('');
     const [runTime, setRunTime] = useState('');
     const {accessToken} = useContext(UserContext);
+    const titleCapitalized = capitalizeWords(title);
+    const genresCapitalized = genreNames.split(',').map(genre => capitalizeWords(genre.trim())).join(',');
+
+    const originalLanguageCapitalized = capitalizeWords(originalLanguage);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const movieData = {
-            title,
-            genre_names: genreNames,
-            original_language: originalLanguage,
+            title: titleCapitalized,
+            genre_names: genresCapitalized,
+            original_language: originalLanguageCapitalized,
             summary,
             release_date: "Unknown",
             budget: "1",
