@@ -10,10 +10,12 @@ const Login = ({ handleClose }) => { // Added handleClose as a prop
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    e.preventDefault();
+  
+  
     if (username !== "" && password !== "") {
         setIsLoading(true); // Set loading to true when starting login
         try {
@@ -55,9 +57,10 @@ const Login = ({ handleClose }) => { // Added handleClose as a prop
             placeholder="Enter your password"
           />
         </div>
-        <button className="button-style" type="submit">{isLoading ? 'Logging in...' : 'Login'}
+        <button className="button-style" type="submit">Login
         </button>
         {isLoading && <p>Loading...</p>}
+        {errorMessage && <p className="error-text">{errorMessage}</p>}
       </form>
     </div>
   );
