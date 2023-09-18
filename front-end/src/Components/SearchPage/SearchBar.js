@@ -29,10 +29,21 @@ function SearchBar({ onSearch }) {
       boxSizing: 'border-box',
     };
 
+    const searchBarButton = {
+        width: '100%',  // Full width
+        height: '100%',
+        fontSize: '20px',  // Bigger font
+        //backgroundColor: 'black',  // Black background
+        color: 'black',  // White text
+        alignItems: 'center',
+      };
+
+    /*
     const container = { // for button to sit in with search box 
       display: 'flex',
       alignItems: 'center'
     }
+    */
     // End of css //
   
     //Main functioning of search bar//
@@ -116,23 +127,27 @@ function SearchBar({ onSearch }) {
         }
     };
 
-    return (
-        <div style={container}>
-            <select value={searchType} onChange={e => setSearchType(e.target.value)}>
-                <option value="title">By Title</option>
-                <option value="genre">By Genre</option>
-            </select>
-
-            <input 
-                style={searchBarStyle}
-                type="text"
-                placeholder={`Search for movies by ${searchType}...`}
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                onKeyPress={handleKeyPress}
-            />
-            <button onClick={fetchMovies}>Search</button>
-
+      return (
+        <div className='row'>
+            <div className='col-2'>
+                <select value={searchType} onChange={e => setSearchType(e.target.value)}>
+                    <option value="title">By Title</option>
+                    <option value="genre">By Genre</option>
+                </select>
+            </div>
+            <div className='col-8'>
+                <input 
+                    style={searchBarStyle}
+                    type="text"
+                    placeholder={`Search for movies by ${searchType}...`}
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                />
+            </div>
+            <div className='col-2'>
+                <button style={searchBarButton} className = 'col-12' onClick={fetchMovies}>Search</button>
+        </div>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
             {currentPage > 1 && <button onClick={handlePrevPage}>Previous</button>}

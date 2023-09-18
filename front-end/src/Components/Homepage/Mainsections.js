@@ -8,7 +8,7 @@ function MainSection() {
     display: 'flex',
     width: '55%',
     justifyContent: 'space-between',
-    backgroundColor: '#E2D0FD08', 
+    //backgroundColor: '#E2D0FD08', 
     padding: '1rem' 
 
   }
@@ -99,7 +99,7 @@ function MainSection() {
 
 
   return (
-    <div style={outerBoxStyle}>
+    <div className = 'backingColors' style={outerBoxStyle}>
       <div style={mainSectionStyle}>
         {/* Future Watchlist */}
         <div style={boxStyle}>

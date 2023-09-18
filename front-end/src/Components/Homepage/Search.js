@@ -53,7 +53,9 @@ function SearchAndCategories() {
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         style={searchBarStyle} 
       />
-      <h2> Browse by Categories</h2>
+      <div><p></p></div>
+      <h2> Browse by Category</h2>
+      <div><p></p></div>
       {categories.map((category, index) => (
         <Link 
             key={index} 
