@@ -38,7 +38,7 @@ function FutureWatchlist() {
   const moviesContainerStyle = {
     flex: 1, 
     padding: '0.5rem',
-    backgroundColor: '#E2D0FD08',
+    //backgroundColor: '#E2D0FD08',
   };
 
   const mainContentStyle = {
@@ -50,7 +50,7 @@ function FutureWatchlist() {
   };
 
   return (
-    <div style={appStyle}>
+    <div className='futureWatchlistBG' style={appStyle}>
         <Menu />
         <div style={mainContentStyle}>
             <h1>Your Watch List</h1>
@@ -66,6 +66,7 @@ function FutureWatchlist() {
                 ) : (
                     <div>
                         <h2>You haven't watched any movies recently.</h2>
+                        <div><p></p></div>
                         <Link to="/search">Search for movies</Link>
                     </div>
                 )}

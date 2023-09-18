@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import useMovieActions from '../Components/Watchlist/useMovieActions';
 
-
-
 function MovieDisplay({ movies, displayType, onDeleteClick,onMarkAsWatched, onAddToWatchHistory, onDeleteFromWatchHistory }) { 
 
     // CSS // 
@@ -41,23 +39,27 @@ function MovieDisplay({ movies, displayType, onDeleteClick,onMarkAsWatched, onAd
             case 'futureWatchlist':
                 return (
                     <>
-                      <button onClick={()=> onDeleteClick(movie.id)}>Delete from Watchlist</button>
-                      
-                      {/* Checkbox to mark as watched */}
-                      <div>
-                        <input type="checkbox" id={`watched-${movie.id}`} name={`watched-${movie.id} `} onChange={() => handleMarkAsWatched(movie.id)} />
-                        <label htmlFor={`watched-${movie.id}`}>Mark as Watched</label>
-                      </div>
+                    <div className='row'>
+                        <div className='col-12'>
+                            <button className='col-12' onClick={()=> onDeleteClick(movie.id)}>Delete from Watchlist</button>
+                        </div>
+                    </div>
+                    <div><p></p></div>
+                    <div className='`row'>
+                        <div className='col-12'>
+                            <button className='col-12' onClick={()=> handleMarkAsWatched(movie.id)}>Mark as Watched</button>
+                        </div>
+                    </div>
                     </>
                   );
             case 'watchHistory':
                 return (
                     <>
-                        {/* Checkbox to mark as watched */}
-                        <div >
-                        <input type="checkbox" id={`delete-${movie.id}`} name={`delete-${movie.id}`} onChange={() => onDeleteFromWatchHistory(movie.id)} />
-                        <label htmlFor={`delete-${movie.id}`}>Delete from Watch History</label>
+                    <div className='row'>
+                        <div className='col-12'>
+                            <button className = 'col-12' onClick={()=> onDeleteFromWatchHistory(movie.id)}>Delete from History</button>
                         </div>
+                    </div>
                   </>
                 );
         }
@@ -69,7 +71,7 @@ function MovieDisplay({ movies, displayType, onDeleteClick,onMarkAsWatched, onAd
             {movies.map((movie, index) => {
                 if (!movie) return null;
                 return (
-                    <div style={movieCardStyle} key={index}>
+                    <div className = 'movieShadowBoxes'style={movieCardStyle} key={index}>
                         <h3>
                             <Link to={`/movie/${movie.id}`}>{movie.title}</Link>
                         </h3>

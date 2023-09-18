@@ -9,7 +9,8 @@ function MovieDisplay1({ movies, hasSearched, onAddMovieClick }) {
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around', 
+        backgroundColor:' #f2d6ff'
     };
 
     const movieCardStyle = {
@@ -17,7 +18,7 @@ function MovieDisplay1({ movies, hasSearched, onAddMovieClick }) {
         boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
         margin: '1rem',
         padding: '1rem',
-        backgroundColor: '#E2D0FD08',
+        backgroundColor: '#ffffff85',
         backgroundColor: '#ff',
         borderRadius: '5px'
     };
@@ -51,9 +52,9 @@ function MovieDisplay1({ movies, hasSearched, onAddMovieClick }) {
     }
     console.log("Movies:", movies);
     return (
-        <div style={moviesStyle}>
+        <div className = 'movieDisplayBG' style={moviesStyle}>
             {movies.map((movie) => (
-                <div key={movie.id} style={movieCardStyle}>
+                <div key={movie.id} className='movieShadowBoxes' style={movieCardStyle}>
                     <Link to={`/movie/${movie.id}`}>
                         <h3>{movie.title}</h3>
                         <p>{movie.summary.substring(0, 100)}...</p>

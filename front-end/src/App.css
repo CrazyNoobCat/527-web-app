@@ -176,3 +176,32 @@ button {
 .searchBarBG {
   background-color: #f2d6ff !important;
 }
+
+.movieHistoryBG {
+  background-color: #f2d6ff !important;
+}
+
+.futureWatchlistBG {
+  background-color: #f2d6ff !important;
+}
+
+.movieShadowBoxes {
+  background-color: #ffffff85 !important;
+}
+
+.centeringRandom {
+  display: flex;
+  justify-content: center;
+}
+
+.userProfileBG {
+  background-color: #f2d6ff !important;
+}
+
+.movieDetailsBG {
+  background-color: #f2d6ff !important;
+}
+
+.movieDisplayBG {
+  background-color: #f2d6ff !important;
+}

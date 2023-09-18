@@ -227,18 +227,18 @@ function MovieDetails() {
     }
 
     return (
-        <div style={appStyle}>
+        <div className='movieDetailsBG' style={appStyle}>
             <Menu />
             <div style={mainContentStyle}>
                 
                 {/* Main Movie Info Card */}
-                <div style={{ ...cardStyle, ...movieDetailsStyle }}>
+                <div className='movieShadowBoxes' style={{ ...cardStyle, ...movieDetailsStyle }}>
                     <h1 style={movieTitleStyle}>{movieDetails.title}</h1>
                     <p style={movieSummaryStyle}>{movieDetails.summary}</p>
                 </div>
     
                 {/* Smaller Info Card */}
-                <div style={smallerCardStyle}>
+                <div className='movieShadowBoxes' style={smallerCardStyle}>
                     <div style={movieinfo}>
                         <p style={movieInfoItemStyle}>Release Date: <span style={movieInfoValueStyle}>{movieDetails.release_date}</span></p>
                         <p style={movieInfoItemStyle}>Genres: <span style={movieInfoValueStyle}>{movieDetails.genre}</span></p>
@@ -265,7 +265,7 @@ function MovieDetails() {
                 </div>
     
                 {/* Add Review Form */}
-                <div style={cardStyle}>
+                <div className='movieShadowBoxes' style={cardStyle}>
                     <h2>Leave a Review</h2>
                     <form onSubmit={handleReviewSubmit}>
                         <textarea 
@@ -295,7 +295,7 @@ function MovieDetails() {
                 </div>
     
                 {/* Reviews Card */}
-                <div style={cardStyle}>
+                <div className='movieShadowBoxes' style={cardStyle}>
                     <h2>User Reviews</h2>
                     <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
                         {userReviews.length > 0 ? (

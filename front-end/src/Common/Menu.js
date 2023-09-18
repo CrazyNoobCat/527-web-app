@@ -16,6 +16,10 @@ function Menu() {
     navigate('/landing'); 
   };
 
+  const goHome = () => {
+    navigate('/home');
+  };
+
 
   useEffect(() => {
     
@@ -63,7 +67,7 @@ function Menu() {
 
   return (
     <div className='menuColor' style={menuStyle}>
-      <img src={logo} alt="Profile Logo" style={{ width: '100%', height: '20%', objectFit: 'contain' }} />
+      <img src={logo} alt="Profile Logo" style={{ width: '100%', height: '20%', objectFit: 'contain' }} onClick = {goHome}/>
       <h2>Welcome, <Link to ="/userProfile">{userData && userData.username}</Link>!</h2>
       <div><br></br></div>
       <nav>

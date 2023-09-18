@@ -3,6 +3,9 @@ import {UserContext} from '../../UserContext/UserProvider';
 import axios from 'axios';
 import Menu from '../../Common/Menu';
 
+import '../../App.css';
+
+
 function UserProfile() {
     const [userReviews, setUserReviews] = useState({reviews: []});
     const [userWatchlist, setUserWatchlist] = useState([]);
@@ -96,16 +99,16 @@ function UserProfile() {
     
     
       return (
-        <div style={appStyle}>
+        <div className='userProfileBG' style={appStyle}>
             <Menu />
-            <div style={mainContentStyle}>
-              <div style={{ borderBottom: '2px solid #ddd', paddingBottom: '10px' }}>
+            <div className='userProfileBG' style={mainContentStyle}>
+              <div style={{ borderBottom: '2px solid #ddd', paddingBottom: '10px', borderColor: '#ca7bee' }}>
                 <h2>User Details</h2>
                 <p><strong>Username:</strong> {userData && userData.username}</p>
                 <p><strong>Email:</strong> {userData && userData.email}</p>
               </div>
         
-              <div style={{ marginTop: '20px', borderBottom: '2px solid #ddd', paddingBottom: '10px', position: 'relative' }}>
+              <div style={{ marginTop: '20px', borderBottom: '2px solid #ddd', paddingBottom: '10px', position: 'relative', borderColor: '#ca7bee' }}>
                 <h2>Your Reviews</h2>
                 <span style={{ position: 'absolute', right: '10px', top: '5px', fontWeight: 'normal' }}>
                   Total reviews: {userReviews && userReviews.reviews ? userReviews.reviews.length : 0}
@@ -131,11 +134,11 @@ function UserProfile() {
               </div>
         
               <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ width: '48%', padding: '10px', backgroundColor: '#E2D0FD50', textAlign: 'center' }}>
+                <div style={{ width: '48%', padding: '10px', backgroundColor: '#ca7bee85', textAlign: 'center' }}>
                   <h3>Total Movies Watched:</h3>
                   <p>{userWatchHistory && userWatchHistory.movies? userWatchHistory.movies.length :0 }</p>
                 </div>
-                <div style={{ width: '48%', padding: '10px', backgroundColor: '#E2D0FD50', textAlign: 'center' }}>
+                <div style={{ width: '48%', padding: '10px', backgroundColor: '#ca7bee85', textAlign: 'center' }}>
                   <h3>Total Movies To Watch:</h3>
                   <p>{userWatchlist && userWatchlist.movies? userWatchlist.movies.length: 0}</p>
                 </div>
