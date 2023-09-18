@@ -118,9 +118,10 @@ function SearchBar({ onSearch }) {
         setCurrentPage(pageFromURL);
     }, []);
     useEffect(() => {
-        fetchMovies(); 
-   }, [currentPage]); 
-
+        if (initialSearchTerm && initialSearchTerm !== "null") {
+            fetchMovies();  // this will use the state values, which we have set based on URL params
+        }
+    }, []);
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             fetchMovies();
