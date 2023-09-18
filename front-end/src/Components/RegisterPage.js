@@ -73,35 +73,35 @@ function RegisterBox({ handleClose }) {
             type="text"
             value={username}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your username"
+            placeholder="username"
           />
           <input
             required
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
+            placeholder="email"
           />
           <input
             required
             type="email"
             value={confirmEmail}
             onChange={(e) => setConfirmEmail(e.target.value)}
-            placeholder="Confirm your email"
+            placeholder="confirm email"
           />
           <input
             required
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
+            placeholder="password"
           />
           <input
             required
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm your password"
+            placeholder="confirm password"
           />
         </div>
         <button className="button-style" type="submit">
