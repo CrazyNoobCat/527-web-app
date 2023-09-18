@@ -280,7 +280,8 @@ function MovieDetails() {
                     <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
                         {userReviews.length > 0 ? (
                             userReviews.map(review => {
-                                let dateParts = review.date.split("/");
+                                console.log('Review Date:', review.date);
+                                let dateParts = review.date?.split("/") ?? [];
                                 let formattedDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 
                                 return (

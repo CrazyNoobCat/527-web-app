@@ -1,11 +1,41 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext,  } from 'react';
 import axios from 'axios';
-import { Link, useLocation } from 'react-router-dom';
-import UserContext from '../UserContext/UserProvider';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {UserContext} from '../UserContext/UserProvider';
 import logo from "../Common/Cinematelogo.png"
 
 function Menu() {
   const location = useLocation();
+
+  const [userData, setUserData] = useState(null);
+  const {currentUser, accessToken, logout} = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout(); 
+    navigate('/landing'); 
+  };
+
+
+  useEffect(() => {
+    
+    async function fetchUserData() {
+      try {
+        const response = await axios.get('https://api.cinemate.link/users', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}` 
+          }
+        });
+        setUserData(response.data);
+        
+      } catch (error) {
+        console.error('Failed to fetch user data:', error.message);
+      }
+    }
+    fetchUserData();
+  }, [currentUser]);
+
+
   
 
   const menuStyle = {
@@ -15,19 +45,10 @@ function Menu() {
     textAlign: 'center',
   };
 
-  const profilePicStyle = {
-    borderRadius: '50%',
-    width: '100px',
-    height: '100px',
-    marginBottom: '1rem',
-    marginTop: '3rem',
-    background: 'gray', 
-    margin: 'auto'
-  };
 
   const linkStyle = {
-    padding: '10px 0',  // Add padding around each link
-    display: 'block',  // Make each link occupy its own line
+    padding: '10px 0',  
+    display: 'block',  
     color: '#FFF',
   };
 
@@ -49,12 +70,13 @@ function Menu() {
   return (
     <div style={menuStyle}>
       <img src={logo} alt="Profile Logo" style={{ width: '80%', height: '18%' }} />
-      <h2>Welcome</h2>
+      <h2>Welcome <Link to ="/userProfile">{userData && userData.username}</Link></h2>
       <nav>
         <Link to="/home" style={checkActive('/') ? activeLinkStyle : linkStyle}>Home</Link><br/>
         <Link to="/watchlist" style={checkActive('/watchlist') ? activeLinkStyle : linkStyle}>Future Watchlist</Link><br/>
         <Link to="/watchhistory" style={checkActive('/watchhistory') ? activeLinkStyle : linkStyle}>Previously Watched</Link><br/>
         <Link to="/search" style={checkActive('/search') ? activeLinkStyle : linkStyle}>Search</Link>
+        <span onClick={handleLogout} style={linkStyle}>Logout</span> 
       </nav>
     </div>
   );
