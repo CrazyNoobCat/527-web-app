@@ -1,28 +1,31 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import SearchBar from './SearchBar';
 import MovieDisplay1 from './MovieDisplay';
 import Menu from '../../Common/Menu';
 import AddMoviePopup from '../Addmovie/AddMoviePopup';
-//import { addMovieToWatchlist } from './addHistory';
 import { useNavigate } from "react-router-dom";
 
-
 function SearchPage() {
-  const [movies, setMovies] = useState([]);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [isAddMoviePopupVisible, setAddMoviePopupVisible] = useState(false);
-  const [apiError, setApiError] = useState(null);
-  const navigate = useNavigate();
+    const [movies, setMovies] = useState([]);
+    const [hasSearched, setHasSearched] = useState(false);
+    const [isAddMoviePopupVisible, setAddMoviePopupVisible] = useState(false);
+    const [apiError, setApiError] = useState(null);
+    const navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasNextPage, setHasNextPage] = useState(true); 
 
+    const handleSearch = (term, type, searchedMovies, error = null) => {
+        console.log('searchTerm:', term);
+        setMovies(searchedMovies.movies || []);
+        setHasSearched(true);
+        setApiError(error);
 
-
-  const handleSearch = (term, searchedMovies, error = null) => {
-    console.log('searchTerm:', term);
-    setMovies(searchedMovies.movies || []);
-    setHasSearched(true); // set hasSearched to true when a search happens
-    setApiError(error);   // store any error that occurs
-    navigate(`/search?query=${term}`);
-  }
+        if (type === 'title') {
+            navigate(`/search?query=${term}`);
+        } else if (type === 'genre') {
+            navigate(`/search?genre=${term}`);
+        }
+    }
 
     const appStyle = {
       display: 'flex',
