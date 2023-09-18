@@ -5,6 +5,7 @@ from utils.util import (
     get_body,
     get_list_movies,
     get_list_reviews,
+    ordered_set,
     retrieve_page_and_limit,
     retrieve_paginated_list,
     safe_cast,
@@ -92,7 +93,7 @@ def add_watchlist_movie(event, context, user: User):
     watchlist.append(id)
 
     # Ensure no duplicates
-    user.watch_list = ",".join(set(watchlist))
+    user.watch_list = ",".join(ordered_set(watchlist))
 
     # Remove comma if first element is empty
     if user.watch_list[0] == ",":
@@ -124,7 +125,7 @@ def remove_watchlist_movie(event, context, user: User):
     else:
         return create_response(400, "Movie not in watchlist")
 
-    user.watch_list = ",".join(set(watchlist))
+    user.watch_list = ",".join(ordered_set(watchlist))
 
     # Remove comma if first element is empty
     if len(user.watch_list) != 0:
@@ -149,6 +150,9 @@ def get_watchlist(event, context, user: User):
     page, limit = retrieve_page_and_limit(params)
 
     watchlist = user.watch_list.split(",")
+
+    # Order from newest to oldest
+    watchlist.reverse()
 
     paginated_watchlist = retrieve_paginated_list(watchlist, limit, page)
 
@@ -178,7 +182,7 @@ def add_watched_movie(event, context, user: User):
     watch_history = user.watch_history.split(",")
     watch_history.append(id)
 
-    user.watch_history = ",".join(set(watch_history))
+    user.watch_history = ",".join(ordered_set(watch_history))
 
     # Remove comma if first element is empty
     if user.watch_history[0] == ",":
@@ -211,7 +215,7 @@ def remove_watched_movie(event, context, user: User):
     else:
         return create_response(400, "Movie not in history")
 
-    user.watch_history = ",".join(set(history))
+    user.watch_history = ",".join(ordered_set(history))
 
     # Remove comma if first element is empty
     if len(user.watch_history) != 0:
@@ -236,6 +240,10 @@ def get_watch_history(event, context, user: User):
     page, limit = retrieve_page_and_limit(params)
 
     history = user.watch_history.split(",")
+
+    # Order from newest to oldest
+    history.reverse()
+
     paginated_history = retrieve_paginated_list(history, limit, page)
 
     print("paginated_history: ", paginated_history)
@@ -272,6 +280,10 @@ def get_user_reviews(event, context, user: User):
     page, limit = retrieve_page_and_limit(params)
 
     reviews = user.reviews.split(",")
+
+    # Reverse the reviews
+    reviews.reverse()
+
     paginated_reviews = retrieve_paginated_list(reviews, limit, page)
 
     if paginated_reviews == [""]:
@@ -312,7 +324,7 @@ def create_review(event, context, user: User):
     review_list = user.reviews.split(",")
     review_list.append(id)
 
-    user.reviews = ",".join(set(review_list))
+    user.reviews = ",".join(ordered_set(review_list))
 
     # Remove comma if first element is empty
     if user.reviews[0] == ",":
@@ -355,7 +367,7 @@ def delete_review(event, context, user: User):
     else:
         return create_response(400, "Movie does not have review")
 
-    user.reviews = ",".join(set(review))
+    user.reviews = ",".join(ordered_set(review))
 
     # Remove comma if first element is empty
     if len(user.reviews) != 0:

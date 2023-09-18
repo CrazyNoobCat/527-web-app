@@ -1,0 +1,8 @@
+- name: Update yum packages
+  include_tasks:
+    file: yum.yml
+    apply:
+      tags:
+        - setup
+  tags:
+    - setup

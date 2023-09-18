@@ -1,4 +1,5 @@
 # Handle accessing the DB
+from datetime import date
 from decimal import Decimal
 
 import boto3
@@ -24,11 +25,19 @@ def create_user(username: str, email: str, password: str):
     """Create a user in the DB, return True if successful else False"""
 
     try:
+        # Ensure username doesn't have spaces
+        if " " in username:
+            return (False, "Username cannot contain spaces")
+
+        # Ensure username is not empty
+        if username == "":
+            return (False, "Username cannot be empty")
+
         # Check if username already exists
         result: dict = userTable.get_item(
             Key={
                 "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-                "username": username,
+                "username_lower": username.lower(),
             }
         )
 
@@ -38,9 +47,12 @@ def create_user(username: str, email: str, password: str):
             return (False, "Username already exists")
 
         # Check password length
-        # TODO: add more password requirements?
         if len(password) < 8:
             return (False, "Password must be at least 8 characters")
+
+        # Check email is valid
+        if "@" not in email:
+            return (False, "Email is not valid")
 
         # Hash password
         hashed_password = bcrypt.hash(password)
@@ -48,7 +60,8 @@ def create_user(username: str, email: str, password: str):
         new_user = {
             "pt_key": USER_PARTITION_KEY,
             "username": username,
-            "email": email,
+            "username_lower": username.lower(),
+            "email": email.lower(),
             "password": hashed_password,
             "reviews": "",
             "watch_list": "",
@@ -69,7 +82,7 @@ def update_user(user: User):
     try:
         key = {
             "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-            "username": user.username,
+            "username_lower": user.username.lower(),
         }
         # Check if username already exists
         result: dict = userTable.get_item(Key=key)
@@ -84,8 +97,10 @@ def update_user(user: User):
         expression_attribute_values = {}
 
         if user.email != str(originalUser.get("email")):
+            if "@" not in user.email:
+                return (False, "Email is not valid")
             update_expression += "email=:e, "
-            expression_attribute_values[":e"] = user.email
+            expression_attribute_values[":e"] = user.email.lower()
 
         if user.reviews != str(originalUser.get("reviews")):
             update_expression += "reviews=:r, "
@@ -100,6 +115,8 @@ def update_user(user: User):
             expression_attribute_values[":h"] = user.watch_history
 
         if user.password != str(originalUser.get("password")):
+            if len(user.password) < 8:
+                return (False, "Password must be at least 8 characters")
             update_expression += "password=:p, "
             expression_attribute_values[
                 ":p"
@@ -130,7 +147,7 @@ def authenticate_user(username: str, password: str) -> User | None:
         result: dict = userTable.get_item(
             Key={
                 "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-                "username": username,
+                "username_lower": username.lower(),
             }
         )
 
@@ -149,7 +166,7 @@ def authenticate_user(username: str, password: str) -> User | None:
         return None
 
 
-def get_user(username) -> User | None:
+def get_user(username: str) -> User | None:
     """Get a user by username, return User object if found else None"""
     try:
         if username is None:
@@ -159,7 +176,7 @@ def get_user(username) -> User | None:
         result: dict = userTable.get_item(
             Key={
                 "pt_key": USER_PARTITION_KEY,  # Only searching for the user partition
-                "username": username,
+                "username_lower": username.lower(),
             }
         )
         user: dict = result.get("Item")
@@ -285,6 +302,7 @@ def query_page(
     page=1,
     key_expression=None,
     partition_key=MOVIE_PARTITION_KEY,
+    scan_forwards=True,
 ) -> list[Movie]:
     """
     Scan the movies table with a filter expression, return the results and the last evaluated key
@@ -311,6 +329,7 @@ def query_page(
                         KeyConditionExpression=key_expression,
                         Select="ALL_ATTRIBUTES",
                         Limit=batch_size,
+                        ScanIndexForward=scan_forwards,
                     )
                 elif last_evaluated_key is None and filter_expression is not None:
                     response = table.query(
@@ -318,6 +337,7 @@ def query_page(
                         FilterExpression=filter_expression,
                         Select="ALL_ATTRIBUTES",
                         Limit=batch_size,
+                        ScanIndexForward=scan_forwards,
                     )
 
                 elif filter_expression is not None:
@@ -327,6 +347,7 @@ def query_page(
                         Select="ALL_ATTRIBUTES",
                         ExclusiveStartKey=last_evaluated_key,
                         Limit=batch_size,
+                        ScanIndexForward=scan_forwards,
                     )
                 else:
                     response = table.query(
@@ -334,6 +355,7 @@ def query_page(
                         Select="ALL_ATTRIBUTES",
                         ExclusiveStartKey=last_evaluated_key,
                         Limit=batch_size,
+                        ScanIndexForward=scan_forwards,
                     )
 
                 results.extend(response["Items"])
@@ -361,7 +383,9 @@ def query_page(
                         }
                     elif table == userTable:
                         last_evaluated_key = {
-                            "username": results[max_results - 1]["username"],
+                            "username_lower": results[max_results - 1][
+                                "username_lower"
+                            ],
                             "pt_key": partition_key,
                         }
 
@@ -470,6 +494,7 @@ def get_review(id, username) -> Review | None:
             username=review.get("username"),
             summary=review.get("summary"),
             rating=str(review.get("rating")),
+            date=review.get("date"),
         )
 
     except Exception as e:
@@ -481,11 +506,13 @@ def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
     try:
         key_expression = Key("movie_id").eq(Decimal(id))
 
+        # Ensure to retrieve reviews from oldest to newest
         rawReviews = query_page(
             table=reviewTable,
             key_expression=key_expression,
             max_results=limit,
             page=page,
+            scan_forwards=True,
         )
 
         if len(rawReviews) == 0:
@@ -500,6 +527,7 @@ def get_all_movie_reviews(id, limit: int = 50, page: int = 1) -> list[Review]:
                     username=review.get("username"),
                     summary=review.get("summary"),
                     rating=str(review.get("rating")),
+                    date=review.get("date"),
                 )
             )
 
@@ -537,6 +565,7 @@ def create_user_review(
                 "username": username,
                 "summary": summary,
                 "rating": rating,
+                "date": date.today().strftime("%d/%m/%Y"),
             }
         )
 

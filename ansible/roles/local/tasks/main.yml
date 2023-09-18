@@ -1,0 +1,44 @@
+
+- name: Enable ssh-agent
+  shell: | 
+    eval "$(ssh-agent -s)"
+    ssh-add {{ ssh_private_key }}
+    ssh-add -l
+  tags:
+    - local
+
+- name: Pull site files from Github repository
+  git:
+    repo: git@github.com:CrazyNoobCat/527-web-app.git
+    dest: ./roles/local/tasks/source_code
+    key_file: "{{ ssh_private_key }}"
+    accept_hostkey: yes
+    force: yes
+  tags:
+    - local
+
+- name: Install project packages based on package.json
+  community.general.npm:
+    path: ./roles/local/tasks/source_code/front-end/
+  tags:
+    - local
+
+- name: Run build
+  shell: |
+    npm run build
+  args:
+    chdir: ./roles/local/tasks/source_code/front-end/
+  tags:
+    - local
+
+- name: Move build folder for reference later
+  shell: "mv ./roles/local/tasks/source_code/front-end/build ./roles/deploy/files"
+  tags:
+    - local
+
+- name: Delete the git repo from host device
+  ansible.builtin.file:
+    path: ./roles/local/tasks/source_code
+    state: absent
+  tags:
+    - local

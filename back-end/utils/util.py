@@ -24,6 +24,9 @@ def create_response(
     if message != "":
         body["message"] = message
 
+    # Allow requests from any origin
+    header["Access-Control-Allow-Origin"] = "*"
+
     return {
         "statusCode": status_code,
         "headers": header,
@@ -119,3 +122,13 @@ def serialize_review(reviews: list[Review]) -> list[dict]:
         serialized_reviews.append(review)
 
     return serialized_reviews
+
+
+def ordered_set(list: list):
+    # Perserve order
+    new_list = []
+    for item in list:
+        if item not in new_list:
+            new_list.append(item)
+
+    return new_list

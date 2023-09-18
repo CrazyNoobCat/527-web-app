@@ -1,0 +1,2 @@
+ssh_private_key: "/Users/hannah/Desktop/University2023/COMPX527/527-web-app/ansible/roles/local/files/id_ed25519"
+ssh_private_key_name: "id_ed25519"
