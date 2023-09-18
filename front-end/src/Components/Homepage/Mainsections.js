@@ -15,13 +15,13 @@ function MainSection() {
   const mainSectionStyle = {
     width: '100%',
     padding: '0.5rem',
-    backgroundColor: '#E2D0FD08'
+    backgroundColor: '#E2D0FD20'
 
   };
 
   const boxStyle = {
     flex: 1, // Take up equal space
-    backgroundColor: '#E2D0FD08', 
+    backgroundColor: '#E2D0FD20', 
     margin: '0.5rem', // 1 rem spacing between the two boxes
     height: '45%',
     padding: '1rem'
@@ -37,13 +37,13 @@ function MainSection() {
 
   const futuremovieRow = {
 
-    backgroundColor:"#E2D0FD08",
+    backgroundColor:"#E2D0FD20",
     padding:'0.5rem',
     marginBottom: '0.5rem'
 
   };
   const recentMovieRow = {
-    backgroundColor: "#E2D0FD08",
+    backgroundColor: "#E2D0FD20",
     padding: '0.5rem',
     marginBottom: '0.5rem',
     position: 'relative'  // Enable absolute positioning for children
@@ -103,26 +103,30 @@ function MainSection() {
       <div style={mainSectionStyle}>
         {/* Future Watchlist */}
         <div style={boxStyle}>
-          Future Watchlist
+          <p className='miniTitles'>Future Watchlist</p>
+          <div><p></p></div>
           {futureMovies.length === 0 ? (
-            <div style = {noDataStyle}>No future watchlist! Add movies</div>
+            <div className='miniTitles' style = {noDataStyle}>No future watchlist! Add movies</div>
           ) : (
             futureMovies.map((movie, index) => ( // Use slice to get the top 3 movies
-              <div key={index} style={futuremovieRow}>
+              <div className='miniTitles' key={index} style={futuremovieRow}>
                 <strong>{movie.title}</strong>
                 <p>{movie.summary.substring(0, 20)}...</p>
               </div>
             ))
           )}
         </div>
+        <div><p><br></br></p></div>
+        <div><p> </p></div>
         {/* Recently Watched */}
         <div style={boxStyle}>
-          Recently Watched
+          <p className='miniTitles'>Recently Watched</p>
+          <div><p></p></div>
           {recentMovies.length === 0 ? (
-            <div style = {noDataStyle}>No previously watched movies! Search for movies to watch</div>
+            <div className='miniTitles' style = {noDataStyle}>No previously watched movies! Search for movies to watch</div>
           ) : (
             recentMovies.map((movie, index) => (
-              <div key={index} style={recentMovieRow}>
+              <div className='miniTitles' key={index} style={recentMovieRow}>
                 <strong>{movie.title}</strong>
                 <p>{movie.summary.substring(0, 20)}...</p>
               </div>

@@ -16,17 +16,16 @@ function SearchBar({ onSearch }) {
     const [hasNextPage, setHasNextPage] = useState(true); 
     const navigate = useNavigate();
 
-
-
   // CSS //
     const searchBarStyle = {
       width: '100%',  // Full width
       height: '100%',
       padding: '10px 10px',  // Padding for larger text area
       fontSize: '20px',  // Bigger font
-      backgroundColor: 'black',  // Black background
-      color: 'white',  // White text
-      boxSizing: 'border-box',
+      //backgroundColor: 'black',  // Black background
+      color: 'black',  // White text
+      //boxSizing: 'border-box',
+      //borderColor: 'black',
     };
 
     const searchBarButton = {
@@ -34,9 +33,14 @@ function SearchBar({ onSearch }) {
         height: '100%',
         fontSize: '20px',  // Bigger font
         //backgroundColor: 'black',  // Black background
-        color: 'black',  // White text
+        color: 'black', 
         alignItems: 'center',
       };
+
+      const searchTypeStyle = {
+        height: '100%',
+        width: '100%',
+    }
 
     /*
     const container = { // for button to sit in with search box 
@@ -129,9 +133,9 @@ function SearchBar({ onSearch }) {
     };
 
       return (
-        <div className='row'>
+        <div className='row searchBarBG'>
             <div className='col-2'>
-                <select value={searchType} onChange={e => setSearchType(e.target.value)}>
+                <select style = {searchTypeStyle} value={searchType} onChange={e => setSearchType(e.target.value)}>
                     <option value="title">By Title</option>
                     <option value="genre">By Genre</option>
                 </select>
@@ -148,11 +152,18 @@ function SearchBar({ onSearch }) {
             </div>
             <div className='col-2'>
                 <button style={searchBarButton} className = 'col-12' onClick={fetchMovies}>Search</button>
-        </div>
+            </div>
+            <div><p></p></div>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
-            {currentPage > 1 && <button onClick={handlePrevPage}>Previous</button>}
-            {hasNextPage && <button onClick={handleNextPage}>Next</button>} 
+            <div className='row' style={searchTypeStyle}>
+                <div className='col-6'>
+                    {currentPage > 1 && <button className='col-12' onClick={handlePrevPage}>Previous</button>}
+                </div>
+                <div className='col-6'>
+                    {hasNextPage && <button className='col-12' onClick={handleNextPage}>Next</button>} 
+                </div>
+            </div>
         </div>
     );
 }

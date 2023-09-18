@@ -35,30 +35,29 @@ const Login = ({ handleClose }) => { // Added handleClose as a prop
     }
   };
   
-
   return (
     <div className="login-box">
       <button className="close-button" onClick={handleClose}>X</button>
       <form onSubmit={handleSubmit}>
         <h1>Login</h1>
+        <div><p></p></div>
         <div className="inputs">
           <input
             required
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter your username"
+            placeholder="username"
           />
           <input
             required
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
+            placeholder="password"
           />
         </div>
-        <button className="button-style" type="submit">Login
-        </button>
+        <button className="button-style" type="submit">Login</button>
         {isLoading && <p>Loading...</p>}
         {errorMessage && <p className="error-text">{errorMessage}</p>}
       </form>
@@ -67,4 +66,3 @@ const Login = ({ handleClose }) => { // Added handleClose as a prop
 };
 
 export default Login;
-

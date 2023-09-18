@@ -23,12 +23,14 @@ function SearchAndCategories() {
   const categoryStyle = {
     display: 'block',
     padding: '10px',
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    marginBottom: '30px',
+    backgroundColor: '#FFFFFF50',
+    color: '#000',
+    //backgroundColor: 'rgba(0, 0, 0, 0.07)',
+    marginBottom: '32px',
     borderRadius: '15px',
     textAlign: 'center', 
     overflowY: 'scroll'
-  };
+    };
   
   const [inputValue, setInputValue] = useState('');
   const navigate = useNavigate();
@@ -40,8 +42,6 @@ function SearchAndCategories() {
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   }
-
-
 
   return (
       <div className='sideSearch' style={searchAndCategoriesStyle}>
@@ -55,13 +55,13 @@ function SearchAndCategories() {
       />
       <div><p></p></div>
       <h2> Browse by Category</h2>
-      <div><p></p></div>
+      <div><br/></div>
       {categories.map((category, index) => (
         <Link 
             key={index} 
             to={`/search?genre=${category}`} 
             style={{...categoryStyle, textDecoration: 'none', color: 'inherit'}}
- >
+          >
             {category}
         </Link>
         ))}

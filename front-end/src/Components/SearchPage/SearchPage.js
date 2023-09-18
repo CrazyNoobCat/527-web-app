@@ -52,7 +52,7 @@ function SearchPage() {
     };
 
     return (
-      <div style={appStyle}>
+      <div className='searchBarBG' style={appStyle}>
           <Menu />
           <div style={mainContentStyle}>
               <div style={searchBarContainerStyle}>

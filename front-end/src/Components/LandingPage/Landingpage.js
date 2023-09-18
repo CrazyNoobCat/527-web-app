@@ -1,8 +1,9 @@
-
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import Login from '../Login/LoginPage.js';
 import RegisterBox from '../RegisterPage.js';
+import logo from "../../Common/Cinematelogo.png"
+
 
 function LandingPage() {
   const [showLogin, setShowLogin] = useState(false);
@@ -25,8 +26,8 @@ function LandingPage() {
 
   return (
     <div className = 'backingColors' style={landingStyle}>
-      <h1>Movies Rater</h1>
-
+      <img src={logo} alt="Profile Logo" style={{ width: '20%', height: '20%', objectFit: 'contain' }} />
+      <h4 className='landingTitle'>Movie Rater</h4>
       <div classname="buttonBoxOuter">
         <div className="row">
           <div className='col-1'></div>
@@ -52,7 +53,7 @@ function LandingPage() {
         </div>
       )}
 
-      <div>
+      <div className='bottomsnap landingTitle'>
         <p>Authors: Courtney, Charles, Hannah and Niamh</p>
       </div>
     </div>
@@ -60,7 +61,3 @@ function LandingPage() {
 };
 
 export default LandingPage;
-
-
-
-
