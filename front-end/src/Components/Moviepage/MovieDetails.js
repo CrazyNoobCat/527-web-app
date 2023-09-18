@@ -5,6 +5,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../../UserContext/UserProvider';
 import addToWatchList from '../../Common/addtowatchlist';
 import addToWatchHistory from '../../Common/addHistory';
+import useMovieActions from '../Watchlist/useMovieActions';
 
 async function fetchMovieDetailsById(id, accessToken) {
     // Prepare the request configuration
@@ -40,6 +41,11 @@ function MovieDetails() {
     const watchListCheckboxRef = useRef(null);
     const watchedCheckboxRef = useRef(null);
 
+    const { 
+        handleMarkAsWatched, 
+        handleAddToWatchHistory, 
+        handleAddToWatchList
+    } = useMovieActions();
     
     useEffect(() => {
         async function fetchUserReviews() {
@@ -252,12 +258,10 @@ function MovieDetails() {
                     <div className='col-4'></div>
                     <div className='col-4' style={checkBoxContainerStyle}>
                         <div className='col-6' style={checkBoxStyle}>
-                            <input ref={watchListCheckboxRef} type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
-                            <label style={checkBoxLabelStyle} htmlFor="watchList">Add to Watch List</label>
+                            <button onClick={() => handleAddToWatchList(movieId, accessToken)}>Add to Watch List</button>
                         </div>
                         <div className='col-6' style={checkBoxStyle}>
-                            <input ref={watchedCheckboxRef} type="checkbox" id="watched" name="watched" onChange={handleWatchedChange} />
-                            <label style={checkBoxLabelStyle} htmlFor="watched">Mark as Watched</label>
+                            <button onClick={() => handleAddToWatchHistory(movieId, accessToken)}>Add to Watch History</button>
                         </div>
                     </div>
                     <div className='col-4'></div>
