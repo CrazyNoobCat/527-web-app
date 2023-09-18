@@ -120,6 +120,7 @@ function UserProfile() {
                             style={{ position: 'absolute', top: '5px', right: '5px' }} 
                             onChange={() => handleReviewRemove(review.movie.id)} 
                         />
+                        <label style={{position: 'absolute', top: '5px', right: '40px'}}>Delete Review</label>
                       <h4>{review.movie.title}</h4>
                       <p>{review.summary.substring(0, 100) + (review.summary.length > 100 ? '...' : '')}</p>
                       

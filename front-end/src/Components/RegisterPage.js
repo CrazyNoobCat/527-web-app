@@ -9,19 +9,25 @@ function RegisterBox({ handleClose }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
   
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email !== confirmEmail) {
-      alert('Emails do not match');
+      setErrorMessage('Emails do not match');
       return;
     }
 
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setErrorMessage('Passwords do not match');
       return;
     }
+    if (password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long.");
+      return;
+    }
+
     const userData = {
       username,
       email,
@@ -31,7 +37,7 @@ function RegisterBox({ handleClose }) {
     console.log(userData);
 
     try {
-      // Serialize userData to a JSON string
+     
       const jsonUserData = JSON.stringify(userData);
     
       // Make a POST request
@@ -43,7 +49,7 @@ function RegisterBox({ handleClose }) {
       console.log(response.data);
       // Handle the response from the backend.
       if (response.status >= 200 && response.status < 300) {
-        navigate('/login');
+        navigate('/landing');
       } else {
         alert('Registration failed. Please try again.');
       }
@@ -100,6 +106,7 @@ function RegisterBox({ handleClose }) {
         <button className="button-style" type="submit">
           Register
         </button>
+        {errorMessage && <p className="error-text">{errorMessage}</p>}
       </form>
     </div>
   );
