@@ -24,7 +24,7 @@ function LandingPage() {
   };
 
   return (
-    <div className = 'landingColors' style={landingStyle}>
+    <div className = 'backingColors' style={landingStyle}>
       <h1>Movies Rater</h1>
 
       <div classname="buttonBoxOuter">

@@ -26,10 +26,21 @@ function SearchBar({ onSearch }) {
       boxSizing: 'border-box',
     };
 
+    const searchBarButton = {
+        width: '100%',  // Full width
+        height: '100%',
+        fontSize: '20px',  // Bigger font
+        //backgroundColor: 'black',  // Black background
+        color: 'black',  // White text
+        alignItems: 'center',
+      };
+
+    /*
     const container = { // for button to sit in with search box 
       display: 'flex',
       alignItems: 'center'
     }
+    */
     // End of css //
   
     //Main functioning of search bar//
@@ -106,20 +117,23 @@ function SearchBar({ onSearch }) {
         }, [currentSearchTerm, currentSearchGenre]);
 
       return (
-        <div style={container}>
-            <input 
-                style={searchBarStyle}
-                type="text"
-                placeholder="Search for movies..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                onKeyPress={handleKeyPress}
-            />
-            <button onClick={() => {
+        <div className='row'>
+            <div className='col-10'>
+                <input 
+                    style={searchBarStyle}
+                    type="text"
+                    placeholder="Search for movies..."
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                />
+            </div>
+            <div className='col-2'>
+                <button style={searchBarButton} className = 'col-12' onClick={() => {
                     setCurrentSearchGenre("");
                     setCurrentSearchTerm(searchTerm);
                 }}>Search</button>
-
+            </div>
             {loading && <p>Loading...</p>}
             {initialSearchGenre && <p>Showing results for genre: {initialSearchGenre}</p>}
             {error && <p>{error}</p>}

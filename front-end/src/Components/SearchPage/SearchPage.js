@@ -32,7 +32,7 @@ function SearchPage() {
     const moviesContainerStyle = {
         flex: 1, 
         padding: '0.5rem',
-        backgroundColor: '#E2D0FD08',
+        //backgroundColor: '#E2D0FD08',
       };
   
     const mainContentStyle = {

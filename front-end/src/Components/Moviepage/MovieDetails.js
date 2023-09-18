@@ -236,15 +236,19 @@ function MovieDetails() {
                     </div>
                 </div>
     
-                <div style={checkBoxContainerStyle}>
-                    <div style={checkBoxStyle}>
-                        <input type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
-                        <label style={checkBoxLabelStyle} htmlFor="watchList">Add to Watch List</label>
+                <div className='row'>
+                    <div className='col-4'></div>
+                    <div className='col-4' style={checkBoxContainerStyle}>
+                        <div className='col-6' style={checkBoxStyle}>
+                            <input type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
+                            <label style={checkBoxLabelStyle} htmlFor="watchList">Add to Watch List</label>
+                        </div>
+                        <div className='col-6' style={checkBoxStyle}>
+                            <input type="checkbox" id="watched" name="watched" onChange={handleWatchedChange} />
+                            <label style={checkBoxLabelStyle} htmlFor="watched">Mark as Watched</label>
+                        </div>
                     </div>
-                    <div style={checkBoxStyle}>
-                        <input type="checkbox" id="watched" name="watched" onChange={handleWatchedChange} />
-                        <label style={checkBoxLabelStyle} htmlFor="watched">Mark as Watched</label>
-                    </div>
+                    <div className='col-4'></div>
                 </div>
     
                 {/* Add Review Form */}
@@ -257,9 +261,11 @@ function MovieDetails() {
                             placeholder="Write your review here..."
                             style={{ width: '100%', minHeight: '100px', padding: '10px' }}
                         />
-                        <div>
-                            <label>Rating:</label>
+                        <div><p></p></div>
+                        <div className='row p-auto'>
+                            <label className='col-1'>Rating:</label>
                             <select 
+                                className='col-1'
                                 value={reviewRating} 
                                 onChange={e => setReviewRating(parseInt(e.target.value, 10))}  // Parsing as integer
                             >
@@ -269,8 +275,9 @@ function MovieDetails() {
                                 <option value="4">4</option>
                                 <option value="5">5</option>
                             </select>
+                            <div className='col-8'></div>
+                            <button className='col-2' type="submit">Submit Review</button>
                         </div>
-                        <button type="submit">Submit Review</button>
                     </form>
                 </div>
     
