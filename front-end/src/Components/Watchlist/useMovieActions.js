@@ -3,6 +3,7 @@ import axios from 'axios';
 import addToWatchHistory from '../../Common/addHistory';
 import { deleteMovieFromWatchlist } from '../../Common/deletewatchlist';
 import {deleteMovieFromWatchHistory} from '../../Common/removewatchhistory';
+import addToWatchList from '../../Common/addtowatchlist';
 
 function useMovieActions() {
     const [movies, setMovies] = useState([]);
@@ -37,6 +38,12 @@ function useMovieActions() {
         await deleteMovieFromWatchHistory(movieId, accessToken);
         setMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));
     };
+    const handleAddToWatchList = async (movieId, accessToken) => {
+        await addToWatchList(movieId, accessToken);
+        const newMovie = {id: movieId};
+        setMovies(prevMovies => [...prevMovies, newMovie]);
+    };
+    
 
     const setMovieList = (movieList) => {
         setMovies(movieList);
@@ -48,7 +55,8 @@ function useMovieActions() {
         handleAddToWatchHistory, 
         handleRemoveFromWatchlist, 
         setMovieList,
-        handleDeleteFromWatchHistory
+        handleDeleteFromWatchHistory,
+        handleAddToWatchList
     };
 }
 

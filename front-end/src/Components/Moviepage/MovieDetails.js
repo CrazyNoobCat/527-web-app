@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from 'axios';
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../../UserContext/UserProvider';
-import addToWatchList from '../../Common/addtowatchlist';
-import addToWatchHistory from '../../Common/addHistory';
+
+import useMovieActions from '../Watchlist/useMovieActions';
 
 async function fetchMovieDetailsById(id, accessToken) {
     // Prepare the request configuration
@@ -37,9 +37,26 @@ function MovieDetails() {
     const [userReviews, setUserReviews] = useState([]);
     const [reviewText, setReviewText] = useState('');
     const [reviewRating, setReviewRating] = useState(0);
-    const watchListCheckboxRef = useRef(null);
-    const watchedCheckboxRef = useRef(null);
 
+
+    const { 
+        handleAddToWatchHistory: originalHandleAddToWatchHistory, 
+        handleAddToWatchList: originalHandleAddToWatchList 
+    } = useMovieActions();
+
+    const [watchListSuccessMessage, setWatchListSuccessMessage] = useState('');
+    const [watchHistorySuccessMessage, setWatchHistorySuccessMessage] = useState('');
+
+    const handleAddToWatchList = async (movieId, accessToken) => {
+    await originalHandleAddToWatchList(movieId, accessToken);
+    setWatchListSuccessMessage("Movie added to Watch List");
+    setTimeout(() => setWatchListSuccessMessage(''), 3000); // hide the message after 3 seconds
+    }
+    const handleAddToWatchHistory = async (movieId, accessToken) => {
+    await originalHandleAddToWatchHistory(movieId, accessToken);
+    setWatchHistorySuccessMessage("Movie marked as Watched");
+    setTimeout(() => setWatchHistorySuccessMessage(''), 3000); // hide the message after 3 seconds
+    }
     
     useEffect(() => {
         async function fetchUserReviews() {
@@ -74,28 +91,6 @@ function MovieDetails() {
         fetchData();
     }, [movieId, accessToken]); 
 
- 
-    const handleWatchListChange = (event) => {
-        const isChecked = event.target.checked;
-        if (isChecked) {
-            addToWatchList(movieId, accessToken);
-            setTimeout(() => {
-                alert("Movie added to Watch List");
-            }, 50); // 50 milliseconds delay
-        }
-        watchListCheckboxRef.current.checked = false;
-    }
-    const handleWatchedChange = (event) => {
-        const isChecked = event.target.checked;
-        if (isChecked) {
-            addToWatchHistory(movieId, accessToken);
-            setTimeout(() => {
-                alert("Movie marked as Watched");
-            }, 50); // 50 milliseconds delay
-        }
-        watchedCheckboxRef.current.checked = false;   
-    };
-    
 
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
@@ -129,9 +124,8 @@ function MovieDetails() {
                 summary: reviewText,
                 rating: reviewRating,
                 username: currentUsername,
-                
+                date: new Date().toLocaleDateString() // add this line for the current date in local format
             };
-            
     
             setUserReviews(prevReviews => [...prevReviews, newReview]);
         } catch (error) {
@@ -227,18 +221,18 @@ function MovieDetails() {
     }
 
     return (
-        <div style={appStyle}>
+        <div className='movieDetailsBG' style={appStyle}>
             <Menu />
             <div style={mainContentStyle}>
                 
                 {/* Main Movie Info Card */}
-                <div style={{ ...cardStyle, ...movieDetailsStyle }}>
+                <div className='movieShadowBoxes' style={{ ...cardStyle, ...movieDetailsStyle }}>
                     <h1 style={movieTitleStyle}>{movieDetails.title}</h1>
                     <p style={movieSummaryStyle}>{movieDetails.summary}</p>
                 </div>
     
                 {/* Smaller Info Card */}
-                <div style={smallerCardStyle}>
+                <div className='movieShadowBoxes' style={smallerCardStyle}>
                     <div style={movieinfo}>
                         <p style={movieInfoItemStyle}>Release Date: <span style={movieInfoValueStyle}>{movieDetails.release_date}</span></p>
                         <p style={movieInfoItemStyle}>Genres: <span style={movieInfoValueStyle}>{movieDetails.genre}</span></p>
@@ -253,19 +247,21 @@ function MovieDetails() {
                     <div className='col-4'></div>
                     <div className='col-4' style={checkBoxContainerStyle}>
                         <div className='col-6' style={checkBoxStyle}>
-                            <input type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
-                            <label style={checkBoxLabelStyle} htmlFor="watchList">Add to Watch List</label>
+                             {watchListSuccessMessage && <div style={{ color: 'green' }}>{watchListSuccessMessage}</div>}
+    
+                            <button onClick={() => handleAddToWatchList(movieId, accessToken)}>Add to Watch List</button>
                         </div>
                         <div className='col-6' style={checkBoxStyle}>
-                            <input type="checkbox" id="watched" name="watched" onChange={handleWatchedChange} />
-                            <label style={checkBoxLabelStyle} htmlFor="watched">Mark as Watched</label>
+                             {watchHistorySuccessMessage && <div style={{ color: 'green' }}>{watchHistorySuccessMessage}</div>}
+    
+                            <button onClick={() => handleAddToWatchHistory(movieId, accessToken)}>Add to Watch History</button>
                         </div>
                     </div>
                     <div className='col-4'></div>
                 </div>
     
                 {/* Add Review Form */}
-                <div style={cardStyle}>
+                <div className='movieShadowBoxes' style={cardStyle}>
                     <h2>Leave a Review</h2>
                     <form onSubmit={handleReviewSubmit}>
                         <textarea 
@@ -295,7 +291,7 @@ function MovieDetails() {
                 </div>
     
                 {/* Reviews Card */}
-                <div style={cardStyle}>
+                <div className='movieShadowBoxes' style={cardStyle}>
                     <h2>User Reviews</h2>
                     <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
                         {userReviews.length > 0 ? (
@@ -320,6 +316,7 @@ function MovieDetails() {
                         ) : (
                             <p>No users have left a review.</p>
                         )}
+                        
                     </div>
                 </div>
             </div>

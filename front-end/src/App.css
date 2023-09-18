@@ -20,7 +20,7 @@
   transform: translate(-50%, -50%);
   width: 300px;
   padding: 20px;
-  background-color: #ad94d2;
+  background-color: #df9cfd;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
@@ -32,7 +32,7 @@
   transform: translate(-50%, -50%);
   width: 300px;
   padding: 20px;
-  background-color: #ad94d2;
+  background-color: #df9cfd;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
@@ -131,7 +131,7 @@ h2 {
 }
 
 .backingColors {
-  background-color: #0e051d;
+  background-color: #390053;
 }
 
 h1 {
@@ -140,9 +140,68 @@ h1 {
 }
 
 button {
-  background-color: #ad94d2;
-  border-color: #804cce;
+  background-color: #ca7bee;
+  border-color: #661c88;
   padding: auto;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 10px;
+}
+
+.miniTitles {
+  color: #fff;
+}
+
+.landingTitle {
+  color:#fff
+}
+
+.bottomsnap {
+  position: absolute;
+  bottom: 0;
+  padding-bottom: 20px;
+}
+
+.menuLinks {
+  color: #ad94d2;
+}
+
+.menuColor {
+  background-color: #ca7bee85 !important;
+}
+
+.sideSearch {
+  background-color: #ca7bee85 !important;
+}
+
+.searchBarBG {
+  background-color: #f2d6ff !important;
+}
+
+.movieHistoryBG {
+  background-color: #f2d6ff !important;
+}
+
+.futureWatchlistBG {
+  background-color: #f2d6ff !important;
+}
+
+.movieShadowBoxes {
+  background-color: #ffffff85 !important;
+}
+
+.centeringRandom {
+  display: flex;
+  justify-content: center;
+}
+
+.userProfileBG {
+  background-color: #f2d6ff !important;
+}
+
+.movieDetailsBG {
+  background-color: #f2d6ff !important;
+}
+
+.movieDisplayBG {
+  background-color: #f2d6ff !important;
 }

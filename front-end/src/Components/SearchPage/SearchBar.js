@@ -6,6 +6,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function SearchBar({ onSearch }) {
     console.log("SearchBar rendered");
@@ -16,17 +19,16 @@ function SearchBar({ onSearch }) {
     const [hasNextPage, setHasNextPage] = useState(true); 
     const navigate = useNavigate();
 
-
-
   // CSS //
     const searchBarStyle = {
       width: '100%',  // Full width
       height: '100%',
       padding: '10px 10px',  // Padding for larger text area
       fontSize: '20px',  // Bigger font
-      backgroundColor: 'black',  // Black background
-      color: 'white',  // White text
-      boxSizing: 'border-box',
+      //backgroundColor: 'black',  // Black background
+      color: 'black',  // White text
+      //boxSizing: 'border-box',
+      //borderColor: 'black',
     };
 
     const searchBarButton = {
@@ -34,9 +36,14 @@ function SearchBar({ onSearch }) {
         height: '100%',
         fontSize: '20px',  // Bigger font
         //backgroundColor: 'black',  // Black background
-        color: 'black',  // White text
+        color: 'black', 
         alignItems: 'center',
       };
+
+      const searchTypeStyle = {
+        height: '100%',
+        width: '100%',
+    }
 
     /*
     const container = { // for button to sit in with search box 
@@ -64,11 +71,13 @@ function SearchBar({ onSearch }) {
         setError(null);
     
         let params = {};
+        let finalSearchTerm = searchTerm;
     
         if (searchType === 'title') {
             params.title = searchTerm;
         } else if (searchType === 'genre') {
-            params.genre = searchTerm;
+            finalSearchTerm = capitalizeFirstLetter(searchTerm);
+            params.genre = finalSearchTerm;
         }
     
         params.limit = 8;
@@ -90,6 +99,12 @@ function SearchBar({ onSearch }) {
             onSearch(searchTerm, searchType, response.data);
             setHasNextPage(response.data.movies.length === 8);
             setLoading(false);
+            // Sync the URL with the current page
+            if (searchType === 'title') {
+                navigate(`/search?query=${searchTerm}&page=${currentPage}`);
+            } else if (searchType === 'genre') {
+                navigate(`/search?genre=${searchTerm}&page=${currentPage}`);
+            }
         })
         .catch(err => {
             console.error("Error fetching movies:", err);
@@ -109,10 +124,11 @@ function SearchBar({ onSearch }) {
     }
     
     useEffect(() => {
-        if (initialSearchTerm) {
+        if (initialSearchTerm && initialSearchTerm !== "null") {
             fetchMovies();  // this will use the state values, which we have set based on URL params
         }
-    }, []);
+    }, [currentPage]);
+
     useEffect(() => {
         const pageFromURL = Number(query.get("page") || 1); // 
         setCurrentPage(pageFromURL);
@@ -129,9 +145,9 @@ function SearchBar({ onSearch }) {
     };
 
       return (
-        <div className='row'>
+        <div className='row searchBarBG'>
             <div className='col-2'>
-                <select value={searchType} onChange={e => setSearchType(e.target.value)}>
+                <select style = {searchTypeStyle} value={searchType} onChange={e => setSearchType(e.target.value)}>
                     <option value="title">By Title</option>
                     <option value="genre">By Genre</option>
                 </select>
@@ -148,11 +164,18 @@ function SearchBar({ onSearch }) {
             </div>
             <div className='col-2'>
                 <button style={searchBarButton} className = 'col-12' onClick={fetchMovies}>Search</button>
-        </div>
+            </div>
+            <div><p></p></div>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
-            {currentPage > 1 && <button onClick={handlePrevPage}>Previous</button>}
-            {hasNextPage && <button onClick={handleNextPage}>Next</button>} 
+            <div className='row' style={searchTypeStyle}>
+                <div className='col-6'>
+                    {currentPage > 1 && <button className='col-12' onClick={handlePrevPage}>Previous</button>}
+                </div>
+                <div className='col-6'>
+                    {hasNextPage && <button className='col-12' onClick={handleNextPage}>Next</button>} 
+                </div>
+            </div>
         </div>
     );
 }

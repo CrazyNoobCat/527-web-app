@@ -1,54 +1,56 @@
-import React, { useState } from 'react';
-import { Axios } from 'axios';
+import React, { useContext, useState } from 'react';
+import Axios from 'axios';
+import { UserContext } from '../../UserContext/UserProvider';
+
+function capitalizeWords(input) {
+    return input.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+}
+
 function AddMoviePopup({ onClose }) {
     const [title, setTitle] = useState('');
+    const [genreNames, setGenreNames] = useState('');
+    const [originalLanguage, setOriginalLanguage] = useState('');
     const [summary, setSummary] = useState('');
-    const [pgRating, setPgRating] = useState('');
-    const [hasWatched, setHasWatched] = useState(false);
-    const [review, setReview] = useState('');
+    const [runTime, setRunTime] = useState('');
+    const {accessToken} = useContext(UserContext);
+    const titleCapitalized = capitalizeWords(title);
+    const genresCapitalized = genreNames.split(',').map(genre => capitalizeWords(genre.trim())).join(',');
 
-    const handleSubmit = (e) => {
+    const originalLanguageCapitalized = capitalizeWords(originalLanguage);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-           // Construct the movie object from the state
         const movieData = {
-            title,
+            title: titleCapitalized,
+            genre_names: genresCapitalized,
+            original_language: originalLanguageCapitalized,
             summary,
-            pgRating
+            release_date: "Unknown",
+            budget: "1",
+            revenue: "1",
+            runtime: runTime
         };
-
-        // User-specific review data
-        const userReview = {
-           // userId: currentUser.id, // Assuming you have some way of identifying the current user
-           // review: watched ? review : null
-        };
-
-
-        // Make an API call to add the movie
-        Axios.post('YOUR_API_ENDPOINT_FOR_ADDING_MOVIES', movieData)
-        .then(response => {
-            // If the movie was added successfully, you can now add the review
-            // This assumes your backend returns the added movie's ID or some identifier
-            const movieId = response.data.id;
-
-            // Another API call to add the user review
-            return Axios.post('YOUR_API_ENDPOINT_FOR_ADDING_REVIEWS', { movieId, ...userReview });
-        })
-        .then(response => {
-            console.log('Review added successfully:', response.data);
-            onClose(); // Close the popup after a successful submission
-        })
-        .catch(error => {
+        console.log("Sending Payload:", movieData);
+    
+        try {
+            const response = await Axios.post('https://api.cinemate.link/movies', movieData, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+    
+            console.log('Movie added successfully:', response.data);
+            onClose();
+        } catch (error) {
             console.error('Error:', error);
-        });
-};
-
-
+        }
+    };
     const buttonStyle = {
         margin: '10px',
         padding: '10px 20px',
         fontSize: '1em',
-      };
+    };
 
     return (
         <div className='register-box'>
@@ -59,23 +61,21 @@ function AddMoviePopup({ onClose }) {
                     <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
                 </div>
                 <div>
-                    <label>Summary (optional):</label>
-                    <textarea value={summary} onChange={(e) => setSummary(e.target.value)} />
+                    <label>Genres (e.g., Horror,Comedy):</label>
+                    <input type="text" value={genreNames} onChange={(e) => setGenreNames(e.target.value)} required />
                 </div>
                 <div>
-                    <label>PG Rating:</label>
-                    <input type="text" value={pgRating} onChange={(e) => setPgRating(e.target.value)} required />
+                    <label>Original Language:</label>
+                    <input type="text" value={originalLanguage} onChange={(e) => setOriginalLanguage(e.target.value)} required />
                 </div>
                 <div>
-                    <label>Have you watched it?</label>
-                    <input type="checkbox" checked={hasWatched} onChange={() => setHasWatched(!hasWatched)} />
+                    <label>Summary:</label>
+                    <textarea value={summary} onChange={(e) => setSummary(e.target.value)} required />
                 </div>
-                {hasWatched && (
-                    <div>
-                        <label>Review:</label>
-                        <textarea value={review} onChange={(e) => setReview(e.target.value)} required />
-                    </div>
-                )}
+                <div>
+                    <label>Runtime (in minutes):</label>
+                    <input type="text" value={runTime} onChange={(e) => setRunTime(e.target.value)} required />
+                </div>
                 <button style={buttonStyle} type="submit">Add Movie</button>
             </form>
             <button style={buttonStyle} onClick={onClose}>Close</button>

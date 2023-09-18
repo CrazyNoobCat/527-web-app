@@ -5,9 +5,7 @@ import Menu from "../../Common/Menu.js";
 import MainSection from "./Mainsections.js";
 import SearchAndCategories from "./Search.js";
 
-
 import '../../App.css';
-
 
 function HomePage() { 
     const appStyle = {

@@ -67,6 +67,7 @@ function RegisterBox({ handleClose }) {
       <button className="close-button" onClick={handleClose}>X</button>
       <form onSubmit={handleSubmit}>
         <h1>Register</h1>
+        <div><p></p></div>
         <div className="inputs">
           <input
             required

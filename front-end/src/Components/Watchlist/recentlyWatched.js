@@ -51,7 +51,7 @@ function RecentlyWatchedPage() {
   };
 
   return (
-    <div style={appStyle}>
+    <div className='movieHistoryBG' style={appStyle}>
       <Menu />
       <div style={mainContentStyle}>
         <h1>Watch History</h1>
