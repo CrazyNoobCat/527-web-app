@@ -13,7 +13,7 @@ function LandingPage() {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '100vh',
+    height: '100vh', 
     //textAlign: 'center'
   };
   
@@ -24,7 +24,7 @@ function LandingPage() {
   };
 
   return (
-    <div style={landingStyle}>
+    <div className = 'landingColors' style={landingStyle}>
       <h1>Movies Rater</h1>
 
       <div classname="buttonBoxOuter">
