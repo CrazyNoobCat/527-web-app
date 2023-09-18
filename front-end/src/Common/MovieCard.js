@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import useMovieActions from '../Components/Watchlist/useMovieActions';
 
 
+
 function MovieDisplay({ movies, displayType, onDeleteClick,onMarkAsWatched, onAddToWatchHistory, onDeleteFromWatchHistory }) { 
 
     // CSS // 
@@ -40,7 +41,7 @@ function MovieDisplay({ movies, displayType, onDeleteClick,onMarkAsWatched, onAd
             case 'futureWatchlist':
                 return (
                     <>
-                      <button onClick={() => onDeleteClick(movie.id)}>Delete from Watchlist</button>
+                      <button onClick={()=> onDeleteClick(movie.id)}>Delete from Watchlist</button>
                       
                       {/* Checkbox to mark as watched */}
                       <div>
