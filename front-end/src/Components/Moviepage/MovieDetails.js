@@ -129,9 +129,8 @@ function MovieDetails() {
                 summary: reviewText,
                 rating: reviewRating,
                 username: currentUsername,
-                
+                date: new Date().toLocaleDateString() // add this line for the current date in local format
             };
-            
     
             setUserReviews(prevReviews => [...prevReviews, newReview]);
         } catch (error) {

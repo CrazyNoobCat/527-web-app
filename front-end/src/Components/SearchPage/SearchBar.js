@@ -94,6 +94,12 @@ function SearchBar({ onSearch }) {
             onSearch(searchTerm, searchType, response.data);
             setHasNextPage(response.data.movies.length === 8);
             setLoading(false);
+            // Sync the URL with the current page
+            if (searchType === 'title') {
+                navigate(`/search?query=${searchTerm}&page=${currentPage}`);
+            } else if (searchType === 'genre') {
+                navigate(`/search?genre=${searchTerm}&page=${currentPage}`);
+            }
         })
         .catch(err => {
             console.error("Error fetching movies:", err);
@@ -113,10 +119,11 @@ function SearchBar({ onSearch }) {
     }
     
     useEffect(() => {
-        if (initialSearchTerm) {
+        if (initialSearchTerm && initialSearchTerm !== "null") {
             fetchMovies();  // this will use the state values, which we have set based on URL params
         }
-    }, []);
+    }, [currentPage]);
+
     useEffect(() => {
         const pageFromURL = Number(query.get("page") || 1); // 
         setCurrentPage(pageFromURL);

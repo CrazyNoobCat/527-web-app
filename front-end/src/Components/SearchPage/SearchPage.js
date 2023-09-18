@@ -15,17 +15,17 @@ function SearchPage() {
     const [hasNextPage, setHasNextPage] = useState(true); 
 
     const handleSearch = (term, type, searchedMovies, error = null) => {
-        console.log('searchTerm:', term);
-        setMovies(searchedMovies.movies || []);
-        setHasSearched(true);
-        setApiError(error);
-
-        if (type === 'title') {
-            navigate(`/search?query=${term}`);
-        } else if (type === 'genre') {
-            navigate(`/search?genre=${term}`);
-        }
-    }
+      console.log('searchTerm:', term);
+      setMovies(searchedMovies.movies || []);
+      setHasSearched(true);
+      setApiError(error);
+  
+      if (type === 'title') {
+          navigate(`/search?query=${term}&page=${currentPage}`);
+      } else if (type === 'genre') {
+          navigate(`/search?genre=${term}&page=${currentPage}`);
+      }
+  }
 
     const appStyle = {
       display: 'flex',
