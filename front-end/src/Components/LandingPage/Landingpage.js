@@ -27,9 +27,18 @@ function LandingPage() {
     <div style={landingStyle}>
       <h1>Movies Rater</h1>
 
-      <button style={buttonStyle} onClick={() => setShowLogin(true)}>Login</button>
-      <button style={buttonStyle} onClick={() => setShowRegister(true)}>Register</button>
-      
+      <div classname="buttonBoxOuter">
+        <div className="row">
+          <div className='col-1'></div>
+          <div className='col-5'>
+            <button className = 'col-12' style={buttonStyle} onClick={() => setShowLogin(true)}>Login</button>
+          </div>
+          <div className='col-5'>
+            <button className = 'col-12' style={buttonStyle} onClick={() => setShowRegister(true)}>Register</button>
+          </div>
+          <div className='col-1'></div>
+        </div>
+      </div>
 
       {showLogin && (
         <div className="login-popup">
