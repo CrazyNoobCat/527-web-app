@@ -9,29 +9,34 @@ const Login = ({ handleClose }) => { // Added handleClose as a prop
   const {login} = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.preventDefault();
     if (username !== "" && password !== "") {
-      try {
-        await login(username, password);
-        navigate("/home");
-      } catch (error) {
-        if (error.response && error.response.data) {
-          console.error(error.response.data.error || error.message);
-        } else {
-          console.error("Login failed:", error.message);
+        setIsLoading(true); // Set loading to true when starting login
+        try {
+            await login(username, password);
+            navigate("/home");
+            setIsLoading(false); // Set loading to false after successful login
+        } catch (error) {
+            setIsLoading(false); // Set loading to false after failed login
+            if (error.response && error.response.data) {
+                console.error(error.response.data.error || error.message);
+            } else {
+                console.error("Login failed:", error.message);
+            }
         }
-      }
     } else {
-      console.error("Username or password cannot be empty.");
+        console.error("Username or password cannot be empty.");
     }
   };
   
 
   return (
     <div className="login-box">
-      <button className="close-button" onClick={handleClose}>X</button> {/* Added close button */}
+      <button className="close-button" onClick={handleClose}>X</button>
       <form onSubmit={handleSubmit}>
         <h1>Login</h1>
         <div className="inputs">
@@ -50,9 +55,9 @@ const Login = ({ handleClose }) => { // Added handleClose as a prop
             placeholder="Enter your password"
           />
         </div>
-        <button className="button-style" type="submit">
-          Login
+        <button className="button-style" type="submit">{isLoading ? 'Logging in...' : 'Login'}
         </button>
+        {isLoading && <p>Loading...</p>}
       </form>
     </div>
   );

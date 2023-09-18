@@ -25,7 +25,7 @@ function useMovieActions() {
 
     const handleAddToWatchHistory = async (movieId, accessToken) => {
         await addToWatchHistory(movieId, accessToken);
-        const newMovie = { id: movieId }; // This is just an example. In real scenarios, you might fetch full movie details.
+        const newMovie = { id: movieId }; 
         setMovies(prevMovies => [...prevMovies, newMovie]);
     };
 

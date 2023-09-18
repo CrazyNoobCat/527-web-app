@@ -87,6 +87,31 @@ h2 {
   padding-left: 1rem;
   padding-right: 1rem;
 }
+.header-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px;
+  position: fixed; 
+  width: 100%;
+  top: 0;
+  background-color: #fff; 
+  z-index: 1000; 
+}
+
+.header-container button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  /* Optional: A slight color change on hover for better UX */
+  &:hover {
+    background-color: #555;
+  }
+}
 
 @keyframes App-logo-spin {
   from {

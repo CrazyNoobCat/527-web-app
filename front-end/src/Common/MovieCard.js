@@ -41,7 +41,6 @@ function MovieDisplay({ movies, displayType, onDeleteClick,onMarkAsWatched, onAd
                 return (
                     <>
                       <button onClick={() => onDeleteClick(movie.id)}>Delete from Watchlist</button>
-
                       
                       {/* Checkbox to mark as watched */}
                       <div>
