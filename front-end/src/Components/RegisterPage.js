@@ -15,7 +15,7 @@ function RegisterBox({ handleClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email !== confirmEmail) {
-      setErrorMessage('Emails do not match');
+      setErrorMessage('Emails do not match'); //Just want to test 
       return;
     }
 
