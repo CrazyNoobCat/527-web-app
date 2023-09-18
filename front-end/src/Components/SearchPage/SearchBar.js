@@ -62,6 +62,7 @@ function SearchBar({ onSearch }) {
     const BASE_API_ENDPOINT = "https://api.cinemate.link/movies";
 
     const fetchMovies = () => {
+        
         if (!accessToken) {
             setError("Authentication failed.");
             return;
@@ -122,6 +123,11 @@ function SearchBar({ onSearch }) {
     const handlePrevPage = () => {
         setCurrentPage(prev => prev > 1 ? prev - 1 : 1);
     }
+    const handleNewSearch = () => {
+        setCurrentPage(1);
+        fetchMovies();
+    };
+    
     
     useEffect(() => {
         if (initialSearchTerm && initialSearchTerm !== "null") {
@@ -163,7 +169,7 @@ function SearchBar({ onSearch }) {
                 />
             </div>
             <div className='col-2'>
-                <button style={searchBarButton} className = 'col-12' onClick={fetchMovies}>Search</button>
+                <button style={searchBarButton} className = 'col-12' onClick={handleNewSearch}>Search</button>
             </div>
             <div><p></p></div>
             {loading && <p>Loading...</p>}
