@@ -111,7 +111,8 @@ function MainSection() {
             futureMovies.map((movie, index) => ( // Use slice to get the top 3 movies
               <div className='miniTitles' key={index} style={futuremovieRow}>
                 <strong>{movie.title}</strong>
-                <p>{movie.summary.substring(0, 20)}...</p>
+                <p>{movie.summary.substring(0, 70)}...</p>
+                
               </div>
             ))
           )}
@@ -128,7 +129,8 @@ function MainSection() {
             recentMovies.map((movie, index) => (
               <div className='miniTitles' key={index} style={recentMovieRow}>
                 <strong>{movie.title}</strong>
-                <p>{movie.summary.substring(0, 20)}...</p>
+                <p>{movie.summary.substring(0, 70)}...</p>
+                
               </div>
             ))
           )}

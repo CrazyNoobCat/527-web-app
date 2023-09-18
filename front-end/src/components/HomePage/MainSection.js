@@ -47,12 +47,6 @@ function MainSection() {
     position: 'relative'  // Enable absolute positioning for children
   };
 
-  //Fake movies for now
-  const movies = [
-    { title: 'Movie 1', bio: 'This is the bio for Movie 1', date: '10th August' },
-    { title: 'Movie 2', bio: 'This is the bio for Movie 2', date: '13th August' },
-    { title: 'Movie 3', bio: 'This is the bio for Movie 3' },
-  ];
 
   return (
 <div style={outerBoxStyle}>
@@ -63,7 +57,7 @@ function MainSection() {
           {movies.map((movie, index) => (
             <div key={index} style={futuremovieRow}>
               <strong>{movie.title}</strong>
-              <p>{movie.bio.substring(0, 20)}...</p> {/* Display the first 20 characters of the bio */}
+              <p>{movie.summary.substring(0, 70)}...</p> {/* Display the first 20 characters of the bio */}
             </div>
           ))}
         </div>
@@ -72,7 +66,7 @@ function MainSection() {
           {movies.map((movie, index) => (
             <div key={index} style={recentMovieRow}>
               <strong>{movie.title}</strong>
-              <p>{movie.bio.substring(0, 20)}...</p>
+              <p>{movie.summary.substring(0, 100)}...</p>
               {movie.date && <span style={dateStyle}>{movie.date}</span>}
             </div>
           ))}

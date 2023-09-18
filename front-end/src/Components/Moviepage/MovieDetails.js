@@ -3,8 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from 'axios';
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../../UserContext/UserProvider';
-import addToWatchList from '../../Common/addtowatchlist';
-import addToWatchHistory from '../../Common/addHistory';
+
 import useMovieActions from '../Watchlist/useMovieActions';
 
 async function fetchMovieDetailsById(id, accessToken) {
@@ -38,14 +37,26 @@ function MovieDetails() {
     const [userReviews, setUserReviews] = useState([]);
     const [reviewText, setReviewText] = useState('');
     const [reviewRating, setReviewRating] = useState(0);
-    const watchListCheckboxRef = useRef(null);
-    const watchedCheckboxRef = useRef(null);
+
 
     const { 
-        handleMarkAsWatched, 
-        handleAddToWatchHistory, 
-        handleAddToWatchList
+        handleAddToWatchHistory: originalHandleAddToWatchHistory, 
+        handleAddToWatchList: originalHandleAddToWatchList 
     } = useMovieActions();
+
+    const [watchListSuccessMessage, setWatchListSuccessMessage] = useState('');
+    const [watchHistorySuccessMessage, setWatchHistorySuccessMessage] = useState('');
+
+    const handleAddToWatchList = async (movieId, accessToken) => {
+    await originalHandleAddToWatchList(movieId, accessToken);
+    setWatchListSuccessMessage("Movie added to Watch List");
+    setTimeout(() => setWatchListSuccessMessage(''), 3000); // hide the message after 3 seconds
+    }
+    const handleAddToWatchHistory = async (movieId, accessToken) => {
+    await originalHandleAddToWatchHistory(movieId, accessToken);
+    setWatchHistorySuccessMessage("Movie marked as Watched");
+    setTimeout(() => setWatchHistorySuccessMessage(''), 3000); // hide the message after 3 seconds
+    }
     
     useEffect(() => {
         async function fetchUserReviews() {
@@ -80,28 +91,6 @@ function MovieDetails() {
         fetchData();
     }, [movieId, accessToken]); 
 
- 
-    const handleWatchListChange = (event) => {
-        const isChecked = event.target.checked;
-        if (isChecked) {
-            addToWatchList(movieId, accessToken);
-            setTimeout(() => {
-                alert("Movie added to Watch List");
-            }, 50); // 50 milliseconds delay
-        }
-        watchListCheckboxRef.current.checked = false;
-    }
-    const handleWatchedChange = (event) => {
-        const isChecked = event.target.checked;
-        if (isChecked) {
-            addToWatchHistory(movieId, accessToken);
-            setTimeout(() => {
-                alert("Movie marked as Watched");
-            }, 50); // 50 milliseconds delay
-        }
-        watchedCheckboxRef.current.checked = false;   
-    };
-    
 
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
@@ -258,9 +247,13 @@ function MovieDetails() {
                     <div className='col-4'></div>
                     <div className='col-4' style={checkBoxContainerStyle}>
                         <div className='col-6' style={checkBoxStyle}>
+                             {watchListSuccessMessage && <div style={{ color: 'green' }}>{watchListSuccessMessage}</div>}
+    
                             <button onClick={() => handleAddToWatchList(movieId, accessToken)}>Add to Watch List</button>
                         </div>
                         <div className='col-6' style={checkBoxStyle}>
+                             {watchHistorySuccessMessage && <div style={{ color: 'green' }}>{watchHistorySuccessMessage}</div>}
+    
                             <button onClick={() => handleAddToWatchHistory(movieId, accessToken)}>Add to Watch History</button>
                         </div>
                     </div>
@@ -323,6 +316,7 @@ function MovieDetails() {
                         ) : (
                             <p>No users have left a review.</p>
                         )}
+                        
                     </div>
                 </div>
             </div>
