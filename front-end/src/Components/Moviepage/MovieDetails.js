@@ -253,11 +253,11 @@ function MovieDetails() {
                     <div className='col-4'></div>
                     <div className='col-4' style={checkBoxContainerStyle}>
                         <div className='col-6' style={checkBoxStyle}>
-                            <input type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
+                            <input ref={watchListCheckboxRef} type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
                             <label style={checkBoxLabelStyle} htmlFor="watchList">Add to Watch List</label>
                         </div>
                         <div className='col-6' style={checkBoxStyle}>
-                            <input type="checkbox" id="watched" name="watched" onChange={handleWatchedChange} />
+                            <input ref={watchedCheckboxRef} type="checkbox" id="watched" name="watched" onChange={handleWatchedChange} />
                             <label style={checkBoxLabelStyle} htmlFor="watched">Mark as Watched</label>
                         </div>
                     </div>
