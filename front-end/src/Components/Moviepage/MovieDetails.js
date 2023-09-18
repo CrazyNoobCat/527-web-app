@@ -1,7 +1,7 @@
 import Menu from '../../Common/Menu';
 import { useParams } from "react-router-dom";
 import axios from 'axios';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../../UserContext/UserProvider';
 import addToWatchList from '../../Common/addtowatchlist';
 import addToWatchHistory from '../../Common/addHistory';
@@ -37,6 +37,8 @@ function MovieDetails() {
     const [userReviews, setUserReviews] = useState([]);
     const [reviewText, setReviewText] = useState('');
     const [reviewRating, setReviewRating] = useState(0);
+    const watchListCheckboxRef = useRef(null);
+    const watchedCheckboxRef = useRef(null);
 
     
     useEffect(() => {
@@ -72,17 +74,28 @@ function MovieDetails() {
         fetchData();
     }, [movieId, accessToken]); 
 
+ 
     const handleWatchListChange = (event) => {
-        if (event.target.checked) {
+        const isChecked = event.target.checked;
+        if (isChecked) {
             addToWatchList(movieId, accessToken);
+            setTimeout(() => {
+                alert("Movie added to Watch List");
+            }, 50); // 50 milliseconds delay
         }
-    };
-
+        watchListCheckboxRef.current.checked = false;
+    }
     const handleWatchedChange = (event) => {
-        if (event.target.checked) {
+        const isChecked = event.target.checked;
+        if (isChecked) {
             addToWatchHistory(movieId, accessToken);
+            setTimeout(() => {
+                alert("Movie marked as Watched");
+            }, 50); // 50 milliseconds delay
         }
+        watchedCheckboxRef.current.checked = false;   
     };
+    
 
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
@@ -238,11 +251,12 @@ function MovieDetails() {
     
                 <div style={checkBoxContainerStyle}>
                     <div style={checkBoxStyle}>
-                        <input type="checkbox" id="watchList" name="watchList" onChange={handleWatchListChange} />
+                         <input type="checkbox" ref={watchListCheckboxRef} id="watchList" name="watchList" onChange={handleWatchListChange} />
+
                         <label style={checkBoxLabelStyle} htmlFor="watchList">Add to Watch List</label>
                     </div>
                     <div style={checkBoxStyle}>
-                        <input type="checkbox" id="watched" name="watched" onChange={handleWatchedChange} />
+                        <input type="checkbox" ref={watchedCheckboxRef} id="watched" name="watched" onChange={handleWatchedChange} />
                         <label style={checkBoxLabelStyle} htmlFor="watched">Mark as Watched</label>
                     </div>
                 </div>

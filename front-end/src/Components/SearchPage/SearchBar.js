@@ -10,6 +10,7 @@ function useQuery() {
 
 function SearchBar({ onSearch }) {
 
+    console.log("SearchBar rendered");
     const query = useQuery();
     const initialSearchTerm = query.get("query");
     const initialSearchGenre = query.get("genre");
@@ -35,93 +36,59 @@ function SearchBar({ onSearch }) {
     //Main functioning of search bar//
     const {accessToken} = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState('');
-    const [loading, setLoading] = useState(false); // For loading state
-    const [error, setError] = useState(null); // For error state
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const API_ENDPOINT = "https://api.cinemate.link/movies";
-    const [currentSearchTerm, setCurrentSearchTerm] = useState(initialSearchTerm);
-    const [currentSearchGenre, setCurrentSearchGenre] = useState(initialSearchGenre);
-
 
     const fetchMovies = () => {
-        console.log("fetchMovies function triggered");
-            if (!accessToken) {
-                setError("Authentication failed.");
-                return;
+        if (!accessToken) {
+            setError("Authentication failed.");
+            return;
+        }
+
+        setLoading(true); 
+        setError(null);
+
+        Axios.get(API_ENDPOINT, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            params: {
+                title: searchTerm,
+                limit: 10,    
+                page: 1       
             }
-            let params = {}
+        })
+        .then(response => {
+            onSearch(searchTerm, response.data);
+            setLoading(false);
+        })
+        .catch(err => {
+            console.error("Error fetching movies:", err);
+            setError("Error fetching movies.");
+            setLoading(false);
+        });
+    };
 
-            if (currentSearchTerm) {
-                params.title = currentSearchTerm;
-            } else if (currentSearchGenre) {
-                params.genre = currentSearchGenre;
-            } else {
-                // Nothing to search for
-                return;
-            }
-
-            setLoading(true); // Set loading state before API call
-            setError(null); // Reset error state before new API call
-            console.log("API Query Parameters: ", params);
-
-            Axios.get(API_ENDPOINT, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                },
-                params: {
-                    ...params,
-                    limit: 10,    
-                    page: 1       
-                }
-            })
-            .then(response => {
-                onSearch(currentSearchTerm || currentSearchGenre, response.data);
-                 setLoading(false);
-                
-            })
-            .catch(error => {
-                console.error("Error fetching movies:", error);
-                setError("Error fetching movies."); // Set a user-friendly error message
-                setLoading(false); // Reset loading state after failed API call
-            });
-        };
-
-        const handleKeyPress = (event) => {
-            if (event.key === 'Enter') {
-                setCurrentSearchGenre("");  // Reset genre
-                setCurrentSearchTerm(searchTerm);  // Update the search term
-                // Don't call fetchMovies here as the state update will trigger the useEffect
-            }
-        };
-        
-        useEffect(() => {
-            setCurrentSearchTerm(initialSearchTerm);
-            setCurrentSearchGenre(initialSearchGenre);
-            
-            //fetchMovies(); // This will now fetch based on the updated state values
-        
-        }, [initialSearchTerm, initialSearchGenre]);
-
-        useEffect(() => {
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
             fetchMovies();
-        }, [currentSearchTerm, currentSearchGenre]);
+        }
+    };
 
-      return (
+    return (
         <div style={container}>
             <input 
                 style={searchBarStyle}
                 type="text"
-                placeholder="Search for movies..."
+                placeholder="Search for movies by title..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 onKeyPress={handleKeyPress}
             />
-            <button onClick={() => {
-                    setCurrentSearchGenre("");
-                    setCurrentSearchTerm(searchTerm);
-                }}>Search</button>
+            <button onClick={fetchMovies}>Search</button>
 
             {loading && <p>Loading...</p>}
-            {initialSearchGenre && <p>Showing results for genre: {initialSearchGenre}</p>}
             {error && <p>{error}</p>}
         </div>
     );
