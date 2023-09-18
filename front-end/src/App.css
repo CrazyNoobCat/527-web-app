@@ -130,11 +130,19 @@ h2 {
   transform: translate(-50%, -50%);
 }
 
-.landingColors {
-  background-color: #E2D0FD;
+.backingColors {
+  background-color: #0e051d;
 }
 
 h1 {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+button {
+  background-color: #ad94d2;
+  border-color: #804cce;
+  padding: auto;
+  text-align: center;
+  border-radius: 5px;
 }
