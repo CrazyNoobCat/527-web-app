@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import Axios from 'axios';
 import { UserContext } from '../../UserContext/UserProvider';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Select from 'react-select';
+import { genresOptions } from './sharedoptions';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -24,11 +26,10 @@ function SearchBar({ onSearch }) {
       width: '100%',  // Full width
       height: '100%',
       padding: '10px 10px',  // Padding for larger text area
-      fontSize: '20px',  // Bigger font
-      //backgroundColor: 'black',  // Black background
-      color: 'black',  // White text
-      //boxSizing: 'border-box',
-      //borderColor: 'black',
+      fontSize: '20px',  
+      
+      color: 'black',  
+    
     };
 
     const searchBarButton = {
@@ -44,6 +45,17 @@ function SearchBar({ onSearch }) {
         height: '100%',
         width: '100%',
     }
+    const customStyles = {
+        option: (provided, state) => ({
+            ...provided,
+            color: state.isFocused ? 'white' : 'black',  // Change 'black' to any color you want
+            backgroundColor: state.isFocused ? 'blue' : 'white',  // Optional: change the background color as well
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: 'black',  // Change 'black' to any color you want
+        })
+    };
 
     /*
     const container = { // for button to sit in with search box 
@@ -159,6 +171,7 @@ function SearchBar({ onSearch }) {
                 </select>
             </div>
             <div className='col-8'>
+            { searchType === "title" ? (
                 <input 
                     style={searchBarStyle}
                     type="text"
@@ -167,7 +180,17 @@ function SearchBar({ onSearch }) {
                     onChange={e => setSearchTerm(e.target.value)}
                     onKeyPress={handleKeyPress}
                 />
-            </div>
+            ) : (
+                <Select
+                    style={searchBarStyle}
+                    value={genresOptions.find(opt => opt.value === searchTerm)}
+                    onChange={e => setSearchTerm(e.value)}
+                    options={genresOptions}
+                    placeholder={`Select a genre...`}
+                    styles={customStyles}
+                />
+            )}
+        </div>
             <div className='col-2'>
                 <button style={searchBarButton} className = 'col-12' onClick={handleNewSearch}>Search</button>
             </div>
