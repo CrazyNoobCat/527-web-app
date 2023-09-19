@@ -20,6 +20,8 @@ function SearchBar({ onSearch }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(true); 
     const navigate = useNavigate();
+    const [searchInitiated, setSearchInitiated] = useState(false);
+
 
   // CSS //
     const searchBarStyle = {
@@ -79,7 +81,7 @@ function SearchBar({ onSearch }) {
             setError("Authentication failed.");
             return;
         }
-    
+        setSearchInitiated(true);
         setLoading(true); 
         setError(null);
     
@@ -199,10 +201,11 @@ function SearchBar({ onSearch }) {
             {error && <p>{error}</p>}
             <div className='row' style={searchTypeStyle}>
                 <div className='col-6'>
-                    {currentPage > 1 && <button className='col-12' onClick={handlePrevPage}>Previous</button>}
+                    {searchInitiated && currentPage > 1 && <button className='col-12' onClick={handlePrevPage}>Previous</button>}
                 </div>
                 <div className='col-6'>
-                    {hasNextPage && <button className='col-12' onClick={handleNextPage}>Next</button>} 
+                    {searchInitiated && hasNextPage && <button className='col-12' onClick={handleNextPage}>Next</button>}
+
                 </div>
             </div>
         </div>

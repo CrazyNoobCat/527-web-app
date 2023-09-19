@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import SearchBar from './SearchBar';
 import MovieDisplay1 from './MovieDisplay';
 import Menu from '../../Common/Menu';
 import AddMoviePopup from '../Addmovie/AddMoviePopup';
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 function SearchPage() {
     const [movies, setMovies] = useState([]);
@@ -13,6 +13,7 @@ function SearchPage() {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(true); 
+
 
     const handleSearch = (term, type, searchedMovies, error = null) => {
       console.log('searchTerm:', term);
