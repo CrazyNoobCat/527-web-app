@@ -56,9 +56,14 @@ function RegisterBox({ handleClose }) {
       }
     } catch (error) {
       console.error('There was an error registering the user:', error);
-      console.error('Error data:', error.response.data);
-      alert('Registration failed. Please try again.');
-    }
+  
+      // Check if the error response contains the specific error message
+      if (error.response && error.response.data && error.response.data.message === "Username already exists") {
+          setErrorMessage("Username already exists");
+      } else {
+          setErrorMessage("Registration failed. Please try again.");
+      }
+  }
 
   };
 
@@ -109,6 +114,7 @@ function RegisterBox({ handleClose }) {
           Register
         </button>
         {errorMessage && <p className="error-text">{errorMessage}</p>}
+      
       </form>
     </div>
   );

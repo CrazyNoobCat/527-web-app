@@ -66,7 +66,7 @@ function MovieDisplay1({ movies, hasSearched, onAddMovieClick }) {
                                 ? (movie.genre.split(',').length > 2 
                                     ? movie.genre.split(',').slice(0, 2).join(', ') + ' +' 
                                     : movie.genre)
-                                : "Genre not available"
+                                : "No genre"
                             }
                         </p>
                         <p>Language: {movie.language}</p>

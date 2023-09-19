@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import Axios from 'axios';
 import { UserContext } from '../../UserContext/UserProvider';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Select from 'react-select';
+import { genresOptions } from './sharedoptions';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -18,17 +20,18 @@ function SearchBar({ onSearch }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(true); 
     const navigate = useNavigate();
+    const [searchInitiated, setSearchInitiated] = useState(false);
+
 
   // CSS //
     const searchBarStyle = {
       width: '100%',  // Full width
       height: '100%',
       padding: '10px 10px',  // Padding for larger text area
-      fontSize: '20px',  // Bigger font
-      //backgroundColor: 'black',  // Black background
-      color: 'black',  // White text
-      //boxSizing: 'border-box',
-      //borderColor: 'black',
+      fontSize: '20px',  
+      
+      color: 'black',  
+    
     };
 
     const searchBarButton = {
@@ -44,6 +47,17 @@ function SearchBar({ onSearch }) {
         height: '100%',
         width: '100%',
     }
+    const customStyles = {
+        option: (provided, state) => ({
+            ...provided,
+            color: state.isFocused ? 'white' : 'black',  // Change 'black' to any color you want
+            backgroundColor: state.isFocused ? 'blue' : 'white',  // Optional: change the background color as well
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: 'black',  // Change 'black' to any color you want
+        })
+    };
 
     /*
     const container = { // for button to sit in with search box 
@@ -62,11 +76,12 @@ function SearchBar({ onSearch }) {
     const BASE_API_ENDPOINT = "https://api.cinemate.link/movies";
 
     const fetchMovies = () => {
+        
         if (!accessToken) {
             setError("Authentication failed.");
             return;
         }
-    
+        setSearchInitiated(true);
         setLoading(true); 
         setError(null);
     
@@ -122,6 +137,11 @@ function SearchBar({ onSearch }) {
     const handlePrevPage = () => {
         setCurrentPage(prev => prev > 1 ? prev - 1 : 1);
     }
+    const handleNewSearch = () => {
+        setCurrentPage(1);
+        fetchMovies();
+    };
+    
     
     useEffect(() => {
         if (initialSearchTerm && initialSearchTerm !== "null") {
@@ -153,6 +173,7 @@ function SearchBar({ onSearch }) {
                 </select>
             </div>
             <div className='col-8'>
+            { searchType === "title" ? (
                 <input 
                     style={searchBarStyle}
                     type="text"
@@ -161,19 +182,30 @@ function SearchBar({ onSearch }) {
                     onChange={e => setSearchTerm(e.target.value)}
                     onKeyPress={handleKeyPress}
                 />
-            </div>
+            ) : (
+                <Select
+                    style={searchBarStyle}
+                    value={genresOptions.find(opt => opt.value === searchTerm)}
+                    onChange={e => setSearchTerm(e.value)}
+                    options={genresOptions}
+                    placeholder={`Select a genre...`}
+                    styles={customStyles}
+                />
+            )}
+        </div>
             <div className='col-2'>
-                <button style={searchBarButton} className = 'col-12' onClick={fetchMovies}>Search</button>
+                <button style={searchBarButton} className = 'col-12' onClick={handleNewSearch}>Search</button>
             </div>
             <div><p></p></div>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
             <div className='row' style={searchTypeStyle}>
                 <div className='col-6'>
-                    {currentPage > 1 && <button className='col-12' onClick={handlePrevPage}>Previous</button>}
+                    {searchInitiated && currentPage > 1 && <button className='col-12' onClick={handlePrevPage}>Previous</button>}
                 </div>
                 <div className='col-6'>
-                    {hasNextPage && <button className='col-12' onClick={handleNextPage}>Next</button>} 
+                    {searchInitiated && hasNextPage && <button className='col-12' onClick={handleNextPage}>Next</button>}
+
                 </div>
             </div>
         </div>
